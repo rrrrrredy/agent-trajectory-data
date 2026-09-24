@@ -2,11 +2,24 @@
 
 A private repository for building an agent execution-trajectory and evaluation dataset from observed research workflows and explicitly labeled synthetic tasks.
 
-**Current status:** the controlled pipeline works, but the intended research-workflow dataset is not complete. Work is now limited to data provenance, task-to-event alignment, bounded execution, deterministic validation, failure retention, and dataset splits.
+**Current status:** the first research-slice dataset is built and independently verified. It aligns two existing research reports with four archived model reviews, including one truncated response, and adds six explicit fault variants with observed scripted controls. It covers review subtask inputs/outputs and registry-link checks; full research authoring trajectories remain outside this version.
 
-[构建计划](docs/PLAN.zh-CN.md) · [当前数据与缺口](docs/CONCLUSION.zh-CN.md) · [已有运行方式](docs/SYSTEM.zh-CN.md) · [验证记录](docs/ACCEPTANCE.zh-CN.md) · [Protocol](docs/PROTOCOL.md)
+[首版数据集](docs/DATASET-v0.1.zh-CN.md) · [构建计划](docs/PLAN.zh-CN.md) · [当前数据与缺口](docs/CONCLUSION.zh-CN.md) · [已有运行方式](docs/SYSTEM.zh-CN.md) · [验证记录](docs/ACCEPTANCE.zh-CN.md) · [Protocol](docs/PROTOCOL.md)
 
-## Existing data
+## Research-slice dataset v0.1
+
+The private archive contains two report families, 42 source registrations, 54 claim records, ten tasks and twenty episodes: four archived model reviews plus sixteen scripted runs. Its 96 events retain the original truncation and four deliberate control failures. All tasks are development data; no hidden-test or training claim is made. No new model calls were used.
+
+Build and verify using the standalone standard-library script:
+
+```powershell
+py -3 -B scripts/research_dataset.py build --source D:\Codex\research-toolkit --output data/research-slices-v0.1
+py -3 -B scripts/research_dataset.py verify data/research-slices-v0.1
+```
+
+The ZIP also includes its own verifier. See [the dataset guide](docs/DATASET-v0.1.zh-CN.md) for counts, provenance, commands and limitations. The complete implementation suite passed 91 tests.
+
+## Earlier control-pipeline data
 
 | Asset | Observed count | Boundary |
 |---|---:|---|

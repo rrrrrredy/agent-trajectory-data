@@ -1,5 +1,13 @@
 # Changelog
 
+## dataset-v0.1 — Research review and registry slices
+
+- Align two existing research reports, 42 source registrations and 54 claim records with four archived review calls, preserving one truncated response.
+- Build two artifact-derived tasks and six explicit fault variants; retain sixteen scripted executions with replayable observations.
+- Freeze historically seen sources and all descendants as development data; export no training records.
+- Package a standalone standard-library verifier with source bindings, failure retention, content deduplication and replay checks.
+- Pass 91 tests and independently verify the extracted data archive without the source repository.
+
 ## 2026-09-24 — Dataset construction scope
 
 - Center the active plan on research-task provenance, visible trajectories, meaningful synthetic variants and reproducible dataset verification.
