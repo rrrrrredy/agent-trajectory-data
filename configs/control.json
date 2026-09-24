@@ -1,0 +1,9 @@
+{
+  "policy": "reference",
+  "families": 1,
+  "seed": 20260924,
+  "max_steps": 5,
+  "max_task_seconds": 30,
+  "max_batch_seconds": 120,
+  "max_model_calls": 8
+}

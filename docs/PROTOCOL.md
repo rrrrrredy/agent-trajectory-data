@@ -1,14 +1,34 @@
 # Local protocol, quality gates, and limitations
 
+Version 0.2 adds finite production batches and the Codex CLI adapter. The original trusted-command interface below remains available for controls. See [running batches](RUN.zh-CN.md) for executable commands and current live results.
+
+## Observed model adapter
+
+The batch configuration selects policy codex, an explicit requested model, output-use policy, and finite call/time budgets. Each task step starts one non-interactive CLI invocation and records the host request, emitted visible events, session identity, returned usage, status, and a capture digest. Reasoning events are omitted. Authentication remains in the CLI login store.
+
+The CLI is invoked with a read-only sandbox, shell/web/app/plugin/delegation features disabled for the invocation, and an empty task working directory. Any unexpected runtime tool item causes the capture to fail validation. This is a controlled model-policy interface; the host's simulated fetch_source tool performs the actual environment transition.
+
+actor_kind=model_cli identifies an observed client invocation. model_requested is configuration; model_reported stays null when the client does not provide it. The capture is not provider-signed attestation, and request.json is not the client's full internal system context. Failed calls and unknown usage remain distinguishable from completed calls.
+
+The export gate rechecks request inputs against the task and preceding observations, client events against the returned action and usage, and capture references against the host event chain. It also checks model-output rights in addition to task rights. The supplied policy allows internal diagnostics only.
+
+## Batch admission and recovery
+
+pipeline freezes its configuration, generates task families, assigns run IDs, executes jobs, and creates diagnostic/SFT packages scoped to those run IDs. Budget reservations are durably saved before each adapter invocation; unknown calls are not refunded. Completed jobs are skipped on restart. An interrupted running job without a valid completed record becomes interrupted, with its partial files retained. It is not automatically reissued.
+
+An OS file lock prevents concurrent workers for the same batch and is released on worker exit. The original batch deadline and admission count persist across restarts. The count limits adapter invocations, not internal CLI transport retries; this adapter does not enforce a dollar budget.
+
+Model call inputs, captures, and visible events are embedded in accepted diagnostic exports. Complete resettable evaluation environments and recurring service installation remain outside this version.
+
 ## Data objects
 
 A task stores a public goal, available source identifiers, a synthetic environment, a private deterministic oracle, rights metadata, and a family identifier. A run stores the observed visible loop plus a task snapshot. The oracle and environment are excluded from external command input.
 
-The three independent provenance dimensions are:
+The independent provenance dimensions are:
 
 - Task origin: this generator uses `synthetic`; imported existing work uses `observed_workflow`.
 - Execution: generated control runs use `closed_world_observed`; imported summaries use `imported_metadata`.
-- Actor: `scripted_policy`, `external_command`, or `recorded_model_review`.
+- Actor: `scripted_policy`, `external_command`, `model_cli`, or `recorded_model_review`.
 
 Here `closed_world_observed` means execution against the simulated task environment. It does not mean an operating-system security sandbox. An external command remains a trusted program that can access its own host permissions.
 

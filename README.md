@@ -1,47 +1,54 @@
 # Agent Trajectory Data
 
-Private, proprietary repository for an automated agent trajectory data pipeline. The product direction is real observed executions plus executed synthetic tasks, with automatic quality gates and no human annotation or review queue.
+Private, proprietary pipeline for agent execution trajectories and evaluation data. Production decisions are automatic: validate, accept, quarantine, or stop within a budget. There is no human annotation or review queue.
 
-The current implementation is a **local control prototype**: fictional research tasks, scripted agents, deterministic grading, failure retention, family splits, and gated JSON exports. It does not yet produce authenticated model trajectories or operate a commercial service.
+Version 0.2 connects the local control environment to **observed Codex CLI model calls**, retains visible events and token usage, and runs finite batches with durable call admission and restart protection.
 
-[中文产品与构建方案](docs/PLAN.zh-CN.md) · [Protocol and boundaries](docs/PROTOCOL.md)
+[中文运行说明](docs/RUN.zh-CN.md) · [产品与架构方案](docs/PLAN.zh-CN.md) · [Protocol](docs/PROTOCOL.md) · [Validation](docs/VALIDATION.md)
 
-## Run
+## Run a complete batch
 
-Python 3.10+; runtime uses only the standard library. Run from this repository:
+Python 3.10+; runtime uses the standard library. Run from this repository:
 
 ```powershell
-py -3 -B -m agentdata --root data generate --families 8 --seed 1
-py -3 -B -m agentdata --root data run --policy reference
-py -3 -B -m agentdata --root data run --policy broken
-py -3 -B -m agentdata --root data run --policy loop --max-steps 2
-py -3 -B -m agentdata --root data export artifacts/diagnostic.json
-py -3 -B -m agentdata --root data export artifacts/sft.json --purpose sft
-py -3 -B -m agentdata --root data stats
+# Offline scripted controls
+py -3 -B -m agentdata --root data/control-v0.2 pipeline --config configs/control.json --batch-id control-001
+
+# Real model decisions using the existing Codex CLI login
+py -3 -B -m agentdata --root data/model-v0.2 pipeline --config configs/codex-local.json --batch-id model-001
+
+# Run this same command again to resume; completed tasks are not called again.
+py -3 -B -m agentdata --root data/model-v0.2 pipeline --config configs/codex-local.json --batch-id model-001
+
 py -3 -B -m unittest discover -s tests -v
 ```
 
-Use `python` instead of `py -3` where appropriate. Exports are immutable: use a new destination for a new release. Generation is idempotent; each execution creates a new attempt. No model credentials, network calls, or paid inference are required for these controls.
+The model configuration explicitly requests `gpt-6-astra`; it is not a claim about the latest model or a returned version. The real batch was tested with Codex CLI 0.155.0-alpha.16.3. Other versions may require an adapter update.
 
-## What is implemented
+A model batch requires a working local Codex login. Authentication stays with the CLI; the repository does not read or copy credentials. The shipped config allows at most 8 adapter calls, 90 seconds per task, and 600 seconds per batch. These are **CLI invocation and wall-time limits**, not a billable-dollar cap or a count of the CLI's internal transport retries.
 
-- Three synthetic task variants: available evidence, missing evidence, and a transient tool failure.
-- Observable action/observation traces, the initial visible task, terminal events, and immutable task snapshots.
-- Separate pass, fail, and not-assessed outcomes; unsuccessful attempts are retained.
-- Step, time, and tool-retry limits. An unknown remote cancellation is not automatically retried.
-- Deterministic answer/evidence checks; abstention without trying the required source fails.
-- Family-level train/development/holdout assignment and consistency checks.
-- Export regrading, event-chain and hash checks, purpose-specific rights checks, and automatic quarantine.
-- A trusted external-command protocol and a narrow importer for Research Toolkit review metadata.
+Outputs are under `<root>/batches/<batch-id>/`: state, summary, diagnostic export, and SFT export. Requests and captured events are under `<root>/runs/<run-id>/model_calls/`. Raw data and exports stay outside Git.
 
-The `diagnostic` export is an internal inspection package, including failed and ungraded executions when their records are consistent. It is **not** a public benchmark release. It may include solutions from holdout families. Keep this package private.
+## Implemented
 
-The default `sft` export rejects scripted controls and unverified external-command provenance. An empty training export is expected for the controls above. `--allow-scripted` enables explicit control-data export only; it does not turn scripts into model demonstrations.
+- Synthetic fact tasks covering available evidence, terminal missing sources, and transient 429 failures.
+- Scripted controls and actual observed model decisions against the same environment.
+- Visible task inputs, model action messages, tool results, terminal outcomes, and immutable task snapshots.
+- Separate pass, fail, and not-assessed outcomes; first failures remain intact.
+- Deterministic grading and export regrading, source/evidence checks, family splits, hash/chain checks, and quarantine.
+- Model request configuration, CLI session identity, original emitted visible events, actual returned usage, and action binding.
+- Durable admission before model calls; a single-worker OS lock; no automatic reissue of an interrupted unknown request.
+- A complete finite batch from generation through private exports in one command.
+- A narrow importer for existing Research Toolkit review metadata; those incomplete imports remain quarantined.
 
-## Remaining product work
+## Data and product boundaries
 
-A model-provider adapter with execution identity and usage capture; full authorized real-run capture; environment reset/replay packaging; broader semantic validators; automatic model judging with an explicit uncertain state; monetary admission control; unattended scheduling; packaged evaluation releases; customer delivery, payment, and licensing enforcement.
+A synthetic task executed by a model is labeled as a synthetic task with observed model execution. Scripted controls and imported metadata have separate labels.
 
-These are future components, not verified capabilities of this version. There are no customer interviews, manual labeling jobs, or human escalation queues in the design.
+The CLI does not return an authoritative model version or billing amount here. Those values remain unknown. The recorded request is the host's task input, not a dump of Codex's internal system context. Capture integrity checks establish local consistency, not cryptographic provider attestation.
 
-Data and artifacts are excluded from Git. The repository uses a proprietary license. Third-party source permissions and provider terms must be represented separately before admitting those sources to a commercial release.
+The shipped model-output policy permits local diagnostics only, so the real batch's SFT export is empty. The SFT gate can accept a consistent successful non-holdout model run only when its configured task and output policies allow that use. A config flag does not itself create legal rights.
+
+The diagnostic package is private and may contain answers for holdout families. It is not a public benchmark or a complete resettable evaluation release.
+
+Remaining work includes broader actual-business-task capture, other model providers, monetary reservation/settlement, complete environment packaging, stronger privacy filters, unattended recurring operation, and commercial delivery/payment. The current command runs a finite unattended batch; it does not install an always-on service or establish sales or training gains.

@@ -24,9 +24,15 @@ def main(argv=None):
     exported.add_argument("destination", type=Path)
     exported.add_argument("--purpose", choices=["diagnostic", "sft"], default="diagnostic")
     exported.add_argument("--allow-scripted", action="store_true")
+    pipeline = commands.add_parser("pipeline")
+    pipeline.add_argument("--config", type=Path, required=True)
+    pipeline.add_argument("--batch-id", required=True)
     commands.add_parser("stats")
     args = parser.parse_args(argv)
-    if args.operation == "generate":
+    if args.operation == "pipeline":
+        from .pipeline import run_pipeline
+        result = run_pipeline(args.root, read(args.config), args.batch_id)
+    elif args.operation == "generate":
         result = {"tasks": len(generate(args.root, args.families, args.seed)),
                   "origin": "synthetic", "actor": "not_executed"}
     elif args.operation == "run":

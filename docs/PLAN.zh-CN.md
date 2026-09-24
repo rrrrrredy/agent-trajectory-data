@@ -1,5 +1,7 @@
 # 私有 Agent 执行轨迹数据仓库：自动生产、自动验证、自助销售
 
+版本说明：本文记录产品设计与初始实现范围。v0.2 已接通实际 Codex 模型调用和有限自动批次；最新能力、运行命令及实测结果见[运行说明](RUN.zh-CN.md)。第 11 节保留 v0.1 初始实现边界。
+
 新项目采用独立的私有仓库，代码、任务、数据、评分器、隐藏测试和生产配方全部闭源。产品名称建议用“Agent 执行轨迹与评测数据集”，英文为 Agent Trajectories & Evaluation Dataset；内部生产系统可以叫 Agent Data Factory。Runtime 指执行这些任务的环境和运行程序，trajectory 指一次执行实际留下的行为记录。
 
 产品的生产链不安排访谈、人工标注、人工复核、专家裁判或人工异常队列。程序无法判定的样本进入隔离区；自动重试与复判到达预算上限就停止。这个约束决定了第一阶段应该选择有明确证据和可执行验收条件的任务，而不把“所有开放式研究报告都能自动判断优劣”当作前提。
@@ -100,7 +102,7 @@ flowchart LR
 
 每个自动任务都需要幂等键、最大尝试数、截止时间、终止原因和断点。发生“超时但不知远端是否取消”的调用时，先保留未知状态，不能无限重发并把费用当成零。
 
-当前实现提供命令行步骤，尚未提供定时调度、云队列、支付或收费 API。
+v0.2 已把命令行步骤组合为有限自动批次；全天候定时调度、云队列、支付或收费 API 尚未提供。
 
 ## 5. 决策机制与失败机制
 
@@ -203,7 +205,7 @@ flowchart LR
 
 相关一手资料：[Anthropic](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)、[SWE-smith](https://github.com/SWE-bench/SWE-smith)、[Harbor ATIF](https://github.com/harbor-framework/harbor/blob/main/rfcs/0001-trajectory-format.md)、[Langfuse](https://langfuse.com/docs/evaluation/experiments/datasets)、[Scale](https://scale.com/rlenvironments)。这些资料支持机制参考，不能证明本项目存在需求、已盈利或已经提升模型能力。
 
-## 11. 当前版本的实际边界
+## 11. v0.1 初始实现边界（历史记录）
 
 当前可运行的是标准库 Python 控制管线：合成事实任务、脚本策略与可信外部命令协议、可见事件记录、确定性评分、运行失败保留、按家族切分、用途门禁和隔离导出。默认训练导出排除脚本控制数据，也排除无法证实模型来源的外部命令数据。
 
