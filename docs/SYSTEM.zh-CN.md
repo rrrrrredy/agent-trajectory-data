@@ -1,6 +1,6 @@
 # 数据构建的现有运行入口
 
-当前数据集已更新为[研究执行与评审历史 v0.2](DATASET-v0.2.zh-CN.md)，其构建、验证、查询入口为 scripts/research_history.py。本文以下保留旧管线与范围整改记录；新旧数据分别计数。
+当前入口为 [可执行环境 v0.4](DATASET-v0.4.zh-CN.md)：scripts/runtime_dataset.py 构建、验证和导出；scripts/business_env.py 提供 JSONL 与 reset/step 接口。环境设计和使用见 [RL 环境说明](RL-ENVIRONMENT.zh-CN.md)。本文以下保留旧管线记录，不作为本版任务数或完成证据。
 
 当前建设顺序以[构建计划](PLAN.zh-CN.md)为准。下面说明已经可用的本地工具；工具存在不代表数据集内容已完成。
 
@@ -24,7 +24,7 @@ py -3 -B -m agentdata --root data/production-current import-session "D:\path\to\
 
 这里只处理明确选定的文件，不扫描全部历史。当前导入器保留可见消息和顶层工具请求、结果，排除 analysis、reasoning、系统和开发者消息。它会记录缺失配对和坏行，不会补造事件。
 
-这一旧会话仍缺少冻结的外部环境，旧 import-session 入口本身没有完成任务与产物对齐。v0.2 针对明确选定的历史研究运行另行完成了对应关系；网页返回正文缺失仍保留为限制。
+这一旧会话仍缺少冻结的外部环境，旧 import-session 入口本身没有完成任务与产物对齐。v0.2 针对明确选定的历史研究运行另行完成了对应关系；v0.3 已补回部分实际网页返回，原始截断与完整外部环境缺失继续保留。
 
 结构化产物入口 capture-facts 可按 JSON Pointer 选择已有字段并保存来源哈希。它得到的是 artifact_derived 样本；程序自身汇总派生的题不能替代研究任务轨迹。
 
