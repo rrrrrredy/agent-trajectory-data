@@ -2,57 +2,46 @@
 
 A private repository for building an agent execution-trajectory and evaluation dataset from observed research workflows and explicitly labeled synthetic tasks.
 
-**Current status:** the first research-slice dataset is built and independently verified. It aligns two existing research reports with four archived model reviews, including one truncated response, and adds six explicit fault variants with observed scripted controls. It covers review subtask inputs/outputs and registry-link checks; full research authoring trajectories remain outside this version.
+**Current delivery: dataset v0.2.** The local pipeline imports existing records, links tasks to visible events and report versions, verifies derived tables, and produces a portable archive. This version adds four observed research runs with 646 visible events, 98 artifact snapshots, eight report versions, and eight archived semantic-review calls containing 104 judgments.
 
-[首版数据集](docs/DATASET-v0.1.zh-CN.md) · [构建计划](docs/PLAN.zh-CN.md) · [当前数据与缺口](docs/CONCLUSION.zh-CN.md) · [已有运行方式](docs/SYSTEM.zh-CN.md) · [验证记录](docs/ACCEPTANCE.zh-CN.md) · [Protocol](docs/PROTOCOL.md)
+[数据集 v0.2](docs/DATASET-v0.2.zh-CN.md) · [首版 v0.1](docs/DATASET-v0.1.zh-CN.md) · [构建计划](docs/PLAN.zh-CN.md) · [当前结论](docs/CONCLUSION.zh-CN.md) · [验证记录](docs/ACCEPTANCE.zh-CN.md)
 
-## Research-slice dataset v0.1
+## Use the dataset
 
-The private archive contains two report families, 42 source registrations, 54 claim records, ten tasks and twenty episodes: four archived model reviews plus sixteen scripted runs. Its 96 events retain the original truncation and four deliberate control failures. All tasks are development data; no hidden-test or training claim is made. No new model calls were used.
+Python 3.10+ and its standard library are sufficient.
 
-Build and verify using the standalone standard-library script:
+    py -3 -B scripts/research_history.py verify data/research-history-v0.2
+    py -3 -B scripts/research_history.py show data/research-history-v0.2 --run run-03
 
-```powershell
-py -3 -B scripts/research_dataset.py build --source D:\Codex\research-toolkit --output data/research-slices-v0.1
-py -3 -B scripts/research_dataset.py verify data/research-slices-v0.1
-```
+The private release archive includes its own verifier and an unchanged copy of v0.1 under base/. After extraction:
 
-The ZIP also includes its own verifier. See [the dataset guide](docs/DATASET-v0.1.zh-CN.md) for counts, provenance, commands and limitations. The complete implementation suite passed 91 tests.
+    py -3 -B verify_dataset.py verify .
 
-## Earlier control-pipeline data
+See the [dataset guide](docs/DATASET-v0.2.zh-CN.md) for build commands, file relationships, counts, source revisions and limitations.
 
-| Asset | Observed count | Boundary |
-|---|---:|---|
-| Current synthetic tasks | 300; 30 parameter groups; 10 templates | Shared templates do not establish independent task coverage |
-| Scripted control trajectories | 300 | These are not model trajectories |
-| Current-profile model trajectories | 2; 8 adapter calls | Actual model execution on synthetic tasks |
-| Earlier-profile model trajectories | 3; 7 adapter calls | A separate synthetic family |
-| Selected real-session snapshot | 319 visible events | Partial; one unmatched call and no frozen external environment |
-| Real training exports | 0 SFT records; 0 preference pairs | Current model-output policies allow diagnostics only |
+## What the records establish
 
-The original capture of one failed integration probe is retained separately. Five successful model runs do not establish broad research quality or failure coverage.
+The four research runs cover two authored development tasks under two historical conditions. Eight turns contain 291 paired actions: 111 commands, 47 file changes and 133 web operations. Six checkpoint manifests bind retained snapshots to turn boundaries; other final-workspace artifacts explicitly lack that boundary evidence.
 
-## Minimal local workflow
+The semantic material contains twenty synthetic case families and two retained revisions. Model judgments, author annotations and revisions remain distinct; none is automatically promoted to a gold label. One changed judgment across reordered batches is retained without assigning a causal explanation.
 
-Python 3.10+, standard library runtime; Windows/Python 3.11 has been exercised.
+Web events contain action metadata without returned page bodies. Eight unrelated global-context outputs are omitted with their digests retained. Commands remain inert text. Runtime completion does not establish report quality, and later revisions do not inherit earlier review verdicts. All related data stays in development; training exports and held-out tasks are zero.
 
-```powershell
-# Inspect existing data without generating or calling a model.
-py -3 -B -m agentdata --root data/production-current stats
+## Existing data retained
 
-# Export existing eligible observations for local diagnostics.
-py -3 -B -m agentdata --root data/production-current export artifacts/diagnostic.json
+| Asset | Scope |
+|---|---|
+| v0.1 research slices | Two report families; four archived reviews, including one truncated response |
+| v0.1 controlled checks | Two artifact-derived tasks, six fault variants and sixteen scripted runs |
+| Earlier control pipeline | 300 template tasks, 300 scripted controls and five actual model trajectories on synthetic tasks |
+| Earlier selected session | 319 visible events; partial tool pairing and no frozen external environment |
 
-# Verify the implementation.
-py -3 -B -m unittest discover -s tests
-```
+These quantities use different units and are not added together as independent real research tasks. v0.2 uses the same two report families as v0.1.
 
-The existing finite runner and import commands are documented in [the operating notes](docs/SYSTEM.zh-CN.md). Background workers, HTTP evaluation and client credits are outside the active construction plan.
+## Verification and scope
 
-## Dataset rules
+101 implementation tests passed. The archive also passed independent extraction and verification. Five deliberately rehashed alterations were rejected: removing a nonzero exit, promoting a seen turn to holdout, inventing a web response, replacing a model judgment and transferring approval to a revised report.
 
-Preserve source snapshots, visible actions, tool observations, outputs, failures and lineage. Keep real-session records, model runs on synthetic tasks, and scripted controls distinct. Do not reconstruct missing events or private reasoning.
+The active workflow uses local Python and JSON/JSONL files. Existing service code is outside this dataset construction workflow. There are no interviews, annotation queues, commerce features or new model calls in this release.
 
-Group source-related tasks, attempts and derived variants before splitting. Unverifiable or incomplete samples retain an explicit status; routine processing has no interview, annotation or human review queue.
-
-Raw data, model captures and credentials stay outside Git. The repository and existing evaluation archive remain private. Passing implementation tests does not mark dataset construction complete.
+Raw data and model captures remain outside Git and are delivered only as private release assets. Preserve source snapshots, explicit unknowns, failures, lineage and allowed uses. Passing technical checks does not prove research quality or framework effectiveness.
