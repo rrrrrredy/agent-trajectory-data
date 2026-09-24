@@ -1,6 +1,7 @@
 """Observed Codex CLI calls; no copied credentials and no hidden reasoning capture."""
 from __future__ import annotations
 import hashlib
+import copy
 import json
 import shutil
 import subprocess
@@ -41,6 +42,22 @@ and evidence_ids. For submit_answer use null source_id, an evidence-based verdic
 an empty answer, and observed source ids. Give a short observable decision_reason, not
 private reasoning. A transient 429 is retryable; 404 establishes source unavailability.
 """
+
+
+def action_schema(public):
+    schema = copy.deepcopy(ACTION_SCHEMA)
+    fields = public.get("answer_fields")
+    if fields is not None:
+        if (not isinstance(fields, dict) or not 1 <= len(fields) <= 32
+                or not all(isinstance(k, str) and k and v in
+                           {"string", "integer", "number", "boolean", "null"}
+                           for k, v in fields.items())):
+            raise ValueError("unsupported_answer_fields")
+        schema["properties"]["answer"]["anyOf"][1] = {
+            "type": "object", "additionalProperties": False,
+            "properties": {k: {"type": v} for k, v in fields.items()},
+            "required": list(fields)}
+    return schema
 
 
 class ProviderError(RuntimeError):
@@ -133,7 +150,7 @@ class CodexProvider:
         request = {"protocol": "0.1", "adapter_config": self.visible_config,
                    "task": public, "observations": observations, "instruction": INSTRUCTION}
         write_new(folder / "request.json", request)
-        write_new(folder / "action.schema.json", ACTION_SCHEMA)
+        write_new(folder / "action.schema.json", action_schema(public))
         if self._version is None:
             version = subprocess.run([self.executable, "--version"], capture_output=True,
                                      text=True, encoding="utf-8", timeout=min(10, timeout), shell=False)

@@ -153,8 +153,9 @@ def invoke_policy(policy, public, observations, command=None, timeout=5):
 
 
 def grade(task, submission, observations):
+    grader_version = task.get("grading_contract", VERSIONS["grader"])
     if submission is None:
-        return {"source": "deterministic", "version": VERSIONS["grader"],
+        return {"source": "deterministic", "version": grader_version,
                 "outcome": "not_assessed", "passed": None,
                 "failure_codes": ["no_submission"]}
     flags = []
@@ -167,7 +168,10 @@ def grade(task, submission, observations):
         flags.append("unobserved_evidence")
     if submission.get("verdict") != task["oracle"]["verdict"]:
         flags.append("wrong_evidence_decision")
-    if submission.get("answer") != task["oracle"]["answer"]:
+    actual, expected = submission.get("answer"), task["oracle"]["answer"]
+    mismatch = (digest(actual) != digest(expected) if grader_version == "closed-facts-v2"
+                else actual != expected)
+    if mismatch:
         flags.append("incorrect_answer")
     if submission.get("verdict") == "insufficient_evidence":
         unavailable = set()
@@ -179,7 +183,7 @@ def grade(task, submission, observations):
             flags.append("unverified_source_unavailability")
     if submission.get("verdict") == "answered" and not evidence:
         flags.append("unsupported_answer")
-    return {"source": "deterministic", "version": VERSIONS["grader"],
+    return {"source": "deterministic", "version": grader_version,
             "outcome": "pass" if not flags else "fail", "passed": not flags,
             "failure_codes": flags}
 

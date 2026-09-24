@@ -1,0 +1,19 @@
+{
+  "policy": "codex",
+  "families": 1,
+  "seed": 20260924,
+  "max_steps": 5,
+  "max_task_seconds": 90,
+  "max_batch_seconds": 600,
+  "max_model_calls": 8,
+  "monthly_model_calls": 40,
+  "provider": {
+    "model": "gpt-6-astra",
+    "output_rights": {
+      "basis": "local_internal_diagnostics_only",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    }
+  }
+}

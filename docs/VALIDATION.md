@@ -1,5 +1,17 @@
 # Validation
 
+## Structured intake and standalone release — 2026-09-24
+
+58 automated tests passed. New coverage includes immutable structured-source intake, typed answer schemas, caller-receipt requirements, selected-task batches, holdout exclusion, distribution permissions, immutable archives, tamper detection before execution, monthly reservations and idempotent scheduled windows.
+
+An independent technical review identified four issues: boolean/numeric answer confusion, mismatched output schemas, bypassed origin receipts through direct frozen tasks, and private excluded task filenames in release cards. The new structured-fact contract uses typed grading; common intake validation checks schema and lineage; release cards contain exclusion counts only. Historical fixed-field tasks retain their original grading protocol.
+
+A separate local demonstration captured selected facts from the project's own existing batch summary. One artifact-derived family produced three variants, all passing under a scripted control. The resulting internal evaluation ZIP was extracted and executed independently of the factory repository, with three passes. These are local scripted executions, not new model calls or customer tasks.
+
+The attempted external model validation for that new intake was rejected by automatic approval before execution because authorization to transmit the internal payload was not established. No workaround sent that payload elsewhere. The earlier live model batch below remains separate evidence.
+
+Local record: data/artifact-delivery/delivery-verification.json. Internal ZIP SHA256: c72767be84d11fc861aefd9cdad97dc38a3493a02c058bfc55a306a8366c13b3. Raw data and archives remain outside Git.
+
 ## Version 0.2 — 2026-09-24
 
 44 automated tests passed on Windows with Python 3.11. Provider unit tests use explicit mocked CLI event fixtures; they are not live model execution evidence.

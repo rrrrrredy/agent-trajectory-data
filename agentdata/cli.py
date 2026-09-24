@@ -27,9 +27,35 @@ def main(argv=None):
     pipeline = commands.add_parser("pipeline")
     pipeline.add_argument("--config", type=Path, required=True)
     pipeline.add_argument("--batch-id", required=True)
+    intake = commands.add_parser("capture-facts")
+    intake.add_argument("source", type=Path)
+    intake.add_argument("--selectors", type=Path, required=True)
+    intake.add_argument("--source-group", required=True)
+    intake.add_argument("--rights", type=Path, required=True)
+    intake.add_argument("--origin", choices=["artifact_derived", "observed_task"],
+                        default="artifact_derived")
+    intake.add_argument("--task-receipt", type=Path)
+    release = commands.add_parser("release")
+    release.add_argument("destination", type=Path)
+    release.add_argument("--release-id", required=True)
+    release.add_argument("--audience", choices=["internal", "licensed"], default="internal")
+    cycle = commands.add_parser("cycle")
+    cycle.add_argument("--config", type=Path, required=True)
+    cycle.add_argument("--period-hours", type=int, default=24)
     commands.add_parser("stats")
     args = parser.parse_args(argv)
-    if args.operation == "pipeline":
+    if args.operation == "capture-facts":
+        from .taskpacks import capture_facts
+        result = capture_facts(args.root, args.source, read(args.selectors), args.source_group,
+                               read(args.rights), args.origin,
+                               read(args.task_receipt) if args.task_receipt else None)
+    elif args.operation == "release":
+        from .release import build_release
+        result = build_release(args.root, args.destination, args.release_id, args.audience)
+    elif args.operation == "cycle":
+        from .pipeline import run_cycle
+        result = run_cycle(args.root, read(args.config), args.period_hours)
+    elif args.operation == "pipeline":
         from .pipeline import run_pipeline
         result = run_pipeline(args.root, read(args.config), args.batch_id)
     elif args.operation == "generate":

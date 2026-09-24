@@ -58,7 +58,8 @@ def normalize_config(config):
     if not isinstance(config, dict):
         raise ValueError("pipeline config must be an object")
     allowed = {"schema_version", "policy", "families", "seed", "max_steps",
-               "max_task_seconds", "max_batch_seconds", "max_model_calls", "provider"}
+               "max_task_seconds", "max_batch_seconds", "max_model_calls", "provider",
+               "task_ids", "monthly_model_calls"}
     if set(config) - allowed or config.get("schema_version", "0.2") != "0.2":
         raise ValueError("unknown pipeline option or unsupported schema version")
     result = {
@@ -84,7 +85,48 @@ def normalize_config(config):
             raise ValueError(field + " must be finite and positive")
     if not isinstance(result["provider"], dict):
         raise ValueError("provider must be an object")
+    if "task_ids" in config:
+        ids = config["task_ids"]
+        if (not isinstance(ids, list) or not 1 <= len(ids) <= 3000
+                or not all(isinstance(x, str) and re.fullmatch(
+                    r"[A-Za-z0-9][A-Za-z0-9_-]{0,119}", x) for x in ids)
+                or len(set(ids)) != len(ids)):
+            raise ValueError("invalid_task_ids")
+        result["task_ids"] = ids
+    if "monthly_model_calls" in config:
+        cap = config["monthly_model_calls"]
+        if isinstance(cap, bool) or not isinstance(cap, int) or cap < 1:
+            raise ValueError("monthly_model_calls must be positive")
+        result["monthly_model_calls"] = cap
     return result
+
+
+def reserve_monthly(root, limit, run_id):
+    from datetime import datetime, timezone
+    month = datetime.now(timezone.utc).strftime("%Y-%m")
+    folder = Path(root) / "budgets"
+    folder.mkdir(parents=True, exist_ok=True)
+    path = folder / (month + ".json")
+    with batch_lock(folder / (month + ".lock")):
+        ledger = read(path) if path.exists() else {"month_utc": month, "calls_reserved": 0,
+                                                  "reservations": []}
+        if ledger["calls_reserved"] >= limit:
+            raise BudgetExceeded("monthly_call_budget_exhausted")
+        ledger["calls_reserved"] += 1
+        ledger["reservations"].append({"run_id": run_id, "reserved_at": now()})
+        atomic_json(path, ledger)
+
+
+def run_cycle(root, config, period_hours=24):
+    # Intended for an external scheduler; duplicate triggers in one UTC bucket are safe.
+    if isinstance(period_hours, bool) or not isinstance(period_hours, int) or not 1 <= period_hours <= 168:
+        raise ValueError("period_hours must be between 1 and 168")
+    config = normalize_config(config)
+    if config["policy"] == "codex" and "monthly_model_calls" not in config:
+        raise ValueError("scheduled_model_batches_require_monthly_call_budget")
+    bucket = int(time.time()) // (period_hours * 3600)
+    batch_id = "cycle-" + digest(config)[:12] + "-" + str(period_hours) + "-" + str(bucket)
+    return run_pipeline(root, config, batch_id)
 
 
 def run_pipeline(root, config, batch_id, provider_factory=CodexProvider):
@@ -101,7 +143,16 @@ def run_pipeline(root, config, batch_id, provider_factory=CodexProvider):
             if state["config_sha256"] != digest(config):
                 raise ValueError("batch configuration is immutable; use a new batch id")
         else:
-            tasks = generate(root, config["families"], config["seed"])
+            if "task_ids" in config:
+                from .taskpacks import validate_task
+                tasks = [root / "tasks" / (task_id + ".json") for task_id in config["task_ids"]]
+                for path in tasks:
+                    path.resolve().relative_to(root)
+                    task = validate_task(read(path))
+                    if task["task_id"] != path.stem:
+                        raise ValueError("task_file_identity_mismatch")
+            else:
+                tasks = generate(root, config["families"], config["seed"])
             state = {
                 "batch_id": batch_id, "config": config, "config_sha256": digest(config),
                 "created_at": now(), "deadline_epoch": time.time() + config["max_batch_seconds"],
@@ -136,6 +187,8 @@ def run_pipeline(root, config, batch_id, provider_factory=CodexProvider):
                 raise BudgetExceeded("batch_deadline_exhausted")
             if state["calls_reserved"] >= config["max_model_calls"]:
                 raise BudgetExceeded("model_call_budget_exhausted")
+            if "monthly_model_calls" in config:
+                reserve_monthly(root, config["monthly_model_calls"], active["run_id"])
             state["calls_reserved"] += 1
             state["reservations"].append({
                 "index": state["calls_reserved"], "run_id": active["run_id"], "reserved_at": now()})
@@ -188,7 +241,8 @@ def run_pipeline(root, config, batch_id, provider_factory=CodexProvider):
             "job_statuses": {key: sum(j["status"] == key for j in state["jobs"])
                              for key in ("pending", "running", "done", "failed", "interrupted")},
             "calls_reserved": state["calls_reserved"], "max_model_calls": config["max_model_calls"],
-            "exports": exports, "data_origin": "synthetic_tasks",
+             "exports": exports, "data_origin": "selected_tasks" if "task_ids" in config else "synthetic_tasks",
+            "monthly_call_limit": config.get("monthly_model_calls"),
             "model_identity_basis": "requested_configuration" if config["policy"] == "codex" else "not_applicable",
             "billing_amount": None, "billing_boundary": "Unknown; call count is the admission limit.",
         }

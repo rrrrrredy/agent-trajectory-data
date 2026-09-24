@@ -1,0 +1,6 @@
+{
+  "basis": "owner_selected_machine_artifact_internal_use",
+  "allowed_uses": [
+    "diagnostic"
+  ]
+}

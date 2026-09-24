@@ -1,0 +1,5 @@
+{
+  "batch_status": "/status",
+  "task_count": "/jobs",
+  "observed_calls": "/calls_reserved"
+}
