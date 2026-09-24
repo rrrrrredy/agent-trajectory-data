@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-24 — Dataset construction scope
+
+- Center the active plan on research-task provenance, visible trajectories, meaningful synthetic variants and reproducible dataset verification.
+- Document observed asset counts and distinguish implementation checks from dataset completion.
+- Remove the commercial roadmap and take background services and hosted evaluation out of the active workflow.
+- Preserve existing task snapshots, model observations and the private evaluation archive; the original 82-test suite still passes.
+
 ## 2026-09-24 — Structured intake and portable evaluation
 
 - Capture selected JSON facts with source hashes, family grouping and explicit task origins.
@@ -8,7 +15,7 @@
 - Exclude holdout tasks and keep private exclusion details outside delivered packages.
 - Add idempotent scheduler windows and shared per-root UTC monthly call reservations.
 - Use typed grading for new structured-fact tasks; retain historical fixed-field contracts.
-- Document the complete closed-source product strategy, self-service commercial experiments and current evidence.
+- Document data provenance, supported use boundaries and current evidence.
 
 ## 0.2.0
 

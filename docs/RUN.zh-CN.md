@@ -1,8 +1,8 @@
 # 自动批次运行与数据位置
 
-最新完整入口、后台服务和评测 API 见[当前系统](SYSTEM.zh-CN.md)。本文保留有限模型批次的原始运行说明。
+当前构建范围见[构建计划](PLAN.zh-CN.md)，已有本地入口见[运行说明](SYSTEM.zh-CN.md)。本文保留有限模型批次的原始运行说明。
 
-本文记录模型适配器与 v0.2 有限批次。新增结构化事实入口、独立评测包与月调用上限见[交付说明](DELIVERY.zh-CN.md)，产品结论见[完整报告](CONCLUSION.zh-CN.md)。
+本文记录模型适配器与 v0.2 有限批次。新增结构化事实入口、独立评测包与月调用上限见[交付说明](DELIVERY.zh-CN.md)，数据现状见[当前判断](CONCLUSION.zh-CN.md)。
 目前已经能用一个命令完成：生成任务 → 实际执行模型或脚本 → 保存轨迹和失败 → 程序验收 → 按用途导出。每个样本都由程序处理，无法验证时隔离，没有人工标注、人工复核或人工异常队列。
 
 ## 运行真实模型批次
@@ -79,4 +79,4 @@ request.json 保存本程序发送的任务输入，不包含 CLI 自己的完�
 
 这里的 3/3 是同一小型合成任务家族的控制结果，不代表开放式研究能力、训练收益或商业价值已经得到验证。
 
-接入依据：[OpenAI 非交互运行说明](https://developers.openai.com/codex/noninteractive/)、[配置参考](https://developers.openai.com/codex/config-reference/)。当前程序尚未安装全天候定时服务、接入收款或发布商业数据。
+接入依据：[OpenAI 非交互运行说明](https://developers.openai.com/codex/noninteractive/)、[配置参考](https://developers.openai.com/codex/config-reference/)。本轮不启动后台生产，也不增加模型调用预算。

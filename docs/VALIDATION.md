@@ -1,5 +1,7 @@
 # Validation
 
+Current dataset construction remains incomplete. The scope is limited to research-task provenance, observed events, meaningful synthetic variants and reproducible evaluation. The 82-test implementation suite passed again after removal of unrelated local development; the following sections retain earlier engineering evidence. See [the current construction plan](PLAN.zh-CN.md).
+
 ## Operational delivery — 2026-09-24
 
 82 automated tests passed on Windows / Python 3.11. Added checks cover all ten multi-source scenarios, independent literal grading examples, forged observations, crash recovery and bounded linked attempts, development/holdout exclusion from training, comparable training pairs, native-session filtering, source withdrawal, source deduplication, API authentication, ownership, persistence, concurrent credit reservation, request idempotency and bounded request size.
@@ -25,7 +27,7 @@ Current local evidence: data/production-current/acceptance-v2.json. It corrects 
 
 The proprietary delivery archive is artifacts/research-evidence-eval-20260924.zip, SHA256 bfa0ae5f7257e129faf5fbcee16e9dee6f91e99f011ffae72cf6863296ee2173. It contains 260 tasks, 26 procedural groups and ten templates, with no holdout task bodies or model trajectories. The executable files and task bytes match the independently executed internal archive; the final card and license state the distribution scope.
 
-These results establish a usable local production/evaluation system. They do not establish general research-agent quality, discrimination across competing models, external customer demand, commercial model-training rights, training improvements, payments or revenue.
+These results establish a usable local production/evaluation system. They do not establish general research-agent quality, discrimination across competing models, model-output training rights or training improvements.
 
 ## Structured intake and standalone release — 2026-09-24
 
@@ -59,7 +61,7 @@ A separate one-call integration probe preceded this batch. Its model action retu
 
 Tests additionally cover durable budget admission, interrupted-call recovery without reissue, exclusive worker locking, frozen batch config, secret-free provider config, host-input/capture/action binding, model output-use restrictions, token metadata integrity, and omission of reasoning events.
 
-These results establish observed model calls in a small controlled environment and local pipeline behavior. They do not establish general research quality, commercial rights for model outputs, training gains, revenue, or a production service.
+These results establish observed model calls in a small controlled environment and local pipeline behavior. They do not establish general research quality, training rights for model outputs or training gains.
 
 ## Version 0.1 — historical control validation
 
