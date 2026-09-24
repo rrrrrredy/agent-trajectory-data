@@ -1,5 +1,32 @@
 # Validation
 
+## Operational delivery — 2026-09-24
+
+82 automated tests passed on Windows / Python 3.11. Added checks cover all ten multi-source scenarios, independent literal grading examples, forged observations, crash recovery and bounded linked attempts, development/holdout exclusion from training, comparable training pairs, native-session filtering, source withdrawal, source deduplication, API authentication, ownership, persistence, concurrent credit reservation, request idempotency and bounded request size.
+
+Actual local production created 300 scripted controls across 30 procedural families and ten templates: 180 train, 80 development and 40 holdout tasks. The 260-task non-holdout archive ran independently and all controls passed. These are shared-template procedural groups, not 30 statistically independent task mechanisms.
+
+The factory was started, stopped and restarted as a real hidden background process. Duplicate starts returned the same process; no control run was repeated. Windows exposed temporary read locks on an atomic status replacement. A bounded local rename retry fixed this failure and has a regression test; the first failure log remains in the local data tree.
+
+The local evaluation HTTP service completed ten trials, restarted, completed two further trials, then restarted again with all 12 credit reservations retained. Trial ownership and action state survive process restarts. Verification processes are stopped, not silently left installed as system services.
+
+An explicitly selected actual session was imported locally: 319 visible events, 156 tool calls, 155 tool results, one unmatched call and no orphan results. Analysis/system/developer records are excluded. This is partial observed runtime without a frozen external environment, and is ineligible for training.
+
+A separate fresh live model batch used only owned, procedurally generated fictional documents:
+- Annual-to-monthly conversion: 3 observed calls, pass.
+- Two transient 429 responses followed by recovery: 5 observed calls, pass.
+- Returned totals: input 90,048, cached input 0, output 519 tokens.
+- Requested model: gpt-6-astra. Authoritative served version and billed amount: unknown.
+- Two diagnostic records accepted, zero SFT records. Repeating the completed batch kept reservations and capture files at eight.
+
+This batch does not contain the internal artifact payload whose earlier transmission was rejected. That rejection remains respected.
+
+Current local evidence: data/production-current/acceptance-v2.json. It corrects the first one-off receipt's dev/development reporting key; source task splits never changed. The original receipt is retained.
+
+The proprietary delivery archive is artifacts/research-evidence-eval-20260924.zip, SHA256 bfa0ae5f7257e129faf5fbcee16e9dee6f91e99f011ffae72cf6863296ee2173. It contains 260 tasks, 26 procedural groups and ten templates, with no holdout task bodies or model trajectories. The executable files and task bytes match the independently executed internal archive; the final card and license state the distribution scope.
+
+These results establish a usable local production/evaluation system. They do not establish general research-agent quality, discrimination across competing models, external customer demand, commercial model-training rights, training improvements, payments or revenue.
+
 ## Structured intake and standalone release — 2026-09-24
 
 58 automated tests passed. New coverage includes immutable structured-source intake, typed answer schemas, caller-receipt requirements, selected-task batches, holdout exclusion, distribution permissions, immutable archives, tamper detection before execution, monthly reservations and idempotent scheduled windows.

@@ -8,7 +8,7 @@ from pathlib import Path
 from .core import SCHEMA, digest, read, split_for, write_new, redact
 
 SAFE_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,119}")
-USES = {"diagnostic", "sft", "evaluation_distribution"}
+USES = {"diagnostic", "sft", "preference", "evaluation_distribution"}
 
 
 def scalar(value):
@@ -32,6 +32,9 @@ def validate_task(task):
     """This adapter supports one frozen structured source, not arbitrary research."""
     if not isinstance(task, dict):
         raise ValueError("task_not_object")
+    if task.get("profile") == "research-evidence-v1":
+        from .research_tasks import validate_research_task
+        return validate_research_task(task)
     for key in ("task_id", "family_id"):
         if not isinstance(task.get(key), str) or not SAFE_ID.fullmatch(task[key]):
             raise ValueError("invalid_task_identity")

@@ -107,7 +107,11 @@ class DeliveryTests(unittest.TestCase):
         with zipfile.ZipFile(archive) as bundle:
             card = json.loads(bundle.read("DATA_CARD.json"))
             self.assertNotIn("quarantined", card)
-            self.assertNotIn("file", json.dumps(card))
+            self.assertNotIn('"file":', json.dumps(card))
+            for path in (self.root / "data/tasks").glob("*.json"):
+                task = read(path)
+                if task["split"] == "holdout":
+                    self.assertNotIn(task["task_id"], json.dumps(card))
         private_receipt = read(next((self.root / "data/releases").glob("*.json")))
         self.assertTrue(private_receipt["excluded"])
         with self.assertRaisesRegex(ValueError, "no_eligible"):

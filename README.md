@@ -1,43 +1,53 @@
 # Agent Trajectory Data
 
-Private, proprietary software for automated agent trajectories and evaluation data. The production path uses deterministic acceptance, bounded retries, quarantine and budget stops. It has no interview, annotation or human review queue.
+Private, proprietary software for producing agent tasks, visible trajectories and executable evaluation suites. Routine production uses deterministic acceptance, bounded attempts, quarantine and budget stops. It has no interview, annotation or human review queue.
 
-[产品结论与完整方案](docs/CONCLUSION.zh-CN.md) · [数据采集与评测包运行](docs/DELIVERY.zh-CN.md) · [模型调用说明](docs/RUN.zh-CN.md) · [Protocol](docs/PROTOCOL.md) · [Validation](docs/VALIDATION.md)
+[当前系统与运行方式](docs/SYSTEM.zh-CN.md) · [产品结论与商业方案](docs/CONCLUSION.zh-CN.md) · [验收结果](docs/ACCEPTANCE.zh-CN.md) · [Protocol](docs/PROTOCOL.md) · [Validation](docs/VALIDATION.md)
 
-## Complete local workflow
+Python 3.10+, standard library runtime. Windows/Python 3.11 was exercised.
 
-Python 3.10+, standard library runtime.
+## Produce and operate
 
 ```powershell
-# Create, execute, grade and export an offline control batch.
-py -3 -B -m agentdata --root data/control pipeline --config configs/control.json --batch-id control-001
+# Generate 30 procedural families / 300 multi-source tasks, run controls and package.
+py -3 -B -m agentdata --root data/production-current factory --config configs/factory-control.json
 
-# Produce a standalone proprietary evaluation ZIP, excluding holdouts.
-py -3 -B -m agentdata --root data/control release artifacts/control-eval.zip --release-id control-001
+# Watch configured sources in a hidden local background process.
+py -3 -B -m agentdata --root data/production-current service-start --kind factory --config configs/factory-control.json
+py -3 -B -m agentdata --root data/production-current service-status --kind factory
+py -3 -B -m agentdata --root data/production-current service-stop --kind factory
 
-# Model batch using an existing local Codex login and durable admission limits.
-py -3 -B -m agentdata --root data/model pipeline --config configs/codex-local.json --batch-id model-001
-
-# Safe repeated scheduler entry; a monthly call limit is mandatory for this model route.
-py -3 -B -m agentdata --root data/scheduled cycle --config configs/codex-scheduled.json --period-hours 24
-
+# Run the tests.
 py -3 -B -m unittest discover -s tests
 ```
 
-A complete batch can be invoked again to resume without repeating completed tasks. Use a new batch ID for changed inputs. Data and release artifacts are excluded from Git.
+Unchanged inputs are skipped. New supported source snapshots create immutable jobs. Bad inputs are quarantined without blocking other inputs. Background processes are explicitly started local processes; installation as an operating-system service or boot-time task is outside this implementation.
 
-## Data sources and outputs
+## Evaluate client agents
 
-Synthetic tasks and selected structured facts share frozen environments, visible tool traces and deterministic grading. The structured-fact adapter records original artifact hashes and source groups; task requests claimed as observed require a workflow receipt. These are caller records, not independent authenticity certifications.
+```powershell
+py -3 -B -m agentdata --root data/production-current issue-key --file data/production-current/keys/demo.json --label demo --credits 20
+py -3 -B -m agentdata --root data/production-current service-start --kind eval --port 8765
+py -3 -B -m agentdata evaluate-api --key-file data/production-current/keys/demo.json --output artifacts/api-control.json --limit 10
+py -3 -B -m agentdata --root data/production-current service-stop --kind eval
+```
 
-The pipeline retains the first failures, separates pass/fail/not-assessed outcomes, checks provenance consistency and purpose permissions, and keeps family splits stable. Captured Codex events include returned usage and requested model configuration; the CLI does not report an authoritative served model version or billing amount here.
+The API binds to 127.0.0.1. SQLite retains trial ownership, credit reservations, frozen environments and idempotent action responses across restarts. Add `--agent-config path/to/argv.json` to the client command to run your trusted local agent. The default client is an explicitly labeled scripted control. The server executes only its two declared tools and never executes client-supplied programs. Credits are local trial allowances, not payments.
 
-A standalone evaluation package contains task snapshots, a resettable local command runner, grader, scripted control, manifest, data card and proprietary license. Downloaded answers are visible to recipients. Holdout bodies and internal exclusion filenames are omitted. The command runner is for trusted local agents, not a sandbox for untrusted programs.
+The API is a local diagnostic service, not a public production deployment. Its answer key stays server-side; clients still receive public task instructions and requested tool observations. A downloaded evaluation ZIP contains readable answers and cannot serve as a hidden benchmark.
 
-The default real-model output policy allows internal diagnostics only; it does not allow SFT. The SFT exporter is a gated trajectory container, not a trainer-specific converter. Distribution policies do not themselves establish legal rights.
+## Data and evidence
 
-## Operational scope
+Ten procedural scenarios cover authority, dates, region, conflicting evidence, missing fields, annual price conversion, injected instructions, retries and unavailable sources. Family groups share templates; their count does not establish statistical independence or out-of-template generalization.
 
-The scheduler command supports idempotent time buckets; it does not install an always-on service. Optional monthly call admission is shared within one data root by participating batches; it is not an account-wide or monetary budget. Unknown costs stay unknown.
+Structured-fact intake records source hashes and stable source groups. Native session intake retains selected visible messages and top-level tool calls/results, omits analysis/system/developer channels and labels missing environment snapshots. A partial imported session is never treated as a verified training trajectory.
 
-The working deliverable is a local data/evaluation pipeline and standalone internal sample. Payment, customer entitlements, hosted hidden evaluation, training gains and revenue have not been established. The linked Chinese conclusion explains the commercial product, licensing, pricing experiments and automatic expansion/stopping rules.
+Training exports include vendor-neutral messages and comparable success/failure pairs only when checks and explicit task/model-output policies permit them. Development and holdout records stay outside training; control scripts are excluded by default. The current real model output policy allows diagnostics only.
+
+Sources can be withdrawn to block future exports, API access and governed release delivery. Previously downloaded copies cannot be recalled. Rights metadata states a policy; it does not establish legal ownership.
+
+## Observed validation
+
+82 tests passed. Local production created 300 scripted control runs; the standalone non-holdout suite passed 260 controls. Twelve API trials passed across process restarts. Two additional live model tasks used eight adapter calls and passed; requested model configuration and returned tokens are recorded, while billing amount and authoritative served-model version remain unknown.
+
+Data, credentials, model captures and release archives are excluded from Git. The repository is private. There is no claim of external customer data, proven training gains, paid transactions or revenue.

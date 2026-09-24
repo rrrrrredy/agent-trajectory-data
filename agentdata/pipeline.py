@@ -19,7 +19,16 @@ def atomic_json(path, value):
         stream.write("\n")
         stream.flush()
         os.fsync(stream.fileno())
-    os.replace(temp, path)
+    for attempt in range(20):
+        try:
+            os.replace(temp, path)
+            break
+        except PermissionError:
+            # Windows readers/indexers can briefly hold the old file without
+            # FILE_SHARE_DELETE. Retrying this local rename cannot repeat model calls.
+            if attempt == 19:
+                raise
+            time.sleep(0.025 * (attempt + 1))
 
 
 @contextmanager
@@ -59,7 +68,7 @@ def normalize_config(config):
         raise ValueError("pipeline config must be an object")
     allowed = {"schema_version", "policy", "families", "seed", "max_steps",
                "max_task_seconds", "max_batch_seconds", "max_model_calls", "provider",
-               "task_ids", "monthly_model_calls"}
+               "task_ids", "monthly_model_calls", "profile", "command_argv", "max_attempts_per_task"}
     if set(config) - allowed or config.get("schema_version", "0.2") != "0.2":
         raise ValueError("unknown pipeline option or unsupported schema version")
     result = {
@@ -70,7 +79,7 @@ def normalize_config(config):
         "max_model_calls": config.get("max_model_calls", 8),
         "provider": config.get("provider", {}),
     }
-    if result["policy"] not in {"reference", "broken", "loop", "codex"}:
+    if result["policy"] not in {"reference", "broken", "loop", "codex", "command"}:
         raise ValueError("unsupported pipeline policy")
     for field in ("families", "max_steps", "max_model_calls"):
         if not isinstance(result[field], int) or isinstance(result[field], bool) or result[field] < 1:
@@ -85,6 +94,24 @@ def normalize_config(config):
             raise ValueError(field + " must be finite and positive")
     if not isinstance(result["provider"], dict):
         raise ValueError("provider must be an object")
+    if "max_attempts_per_task" in config:
+        attempts = config["max_attempts_per_task"]
+        if type(attempts) is not int or not 1 <= attempts <= 3:
+            raise ValueError("max_attempts_per_task must be between 1 and 3")
+        result["max_attempts_per_task"] = attempts
+
+    if "profile" in config:
+        if config["profile"] not in {"closed-facts-v1", "research-evidence-v1"}:
+            raise ValueError("unsupported_profile")
+        result["profile"] = config["profile"]
+    if result["policy"] == "command":
+        argv = config.get("command_argv")
+        if not isinstance(argv, list) or not argv or not all(isinstance(x, str) and x for x in argv):
+            raise ValueError("command_policy_requires_argv")
+        result["command_argv"] = argv
+    elif "command_argv" in config:
+        raise ValueError("command_argv_without_command_policy")
+
     if "task_ids" in config:
         ids = config["task_ids"]
         if (not isinstance(ids, list) or not 1 <= len(ids) <= 3000
@@ -151,6 +178,9 @@ def run_pipeline(root, config, batch_id, provider_factory=CodexProvider):
                     task = validate_task(read(path))
                     if task["task_id"] != path.stem:
                         raise ValueError("task_file_identity_mismatch")
+            elif config.get("profile") == "research-evidence-v1":
+                from .research_tasks import generate_research
+                tasks = generate_research(root, config["families"], config["seed"])
             else:
                 tasks = generate(root, config["families"], config["seed"])
             state = {
@@ -165,6 +195,15 @@ def run_pipeline(root, config, batch_id, provider_factory=CodexProvider):
             atomic_json(state_path, state)
         def save():
             atomic_json(state_path, state)
+        def enqueue_retry(job, result):
+            if (result["terminal_reason"] == "submitted"
+                    and result["evaluation"]["outcome"] == "fail"
+                    and job.get("attempt", 1) < config.get("max_attempts_per_task", 1)
+                    and not any(j.get("parent_run_id") == job["run_id"] for j in state["jobs"])):
+                state["jobs"].append({
+                    "task_path": job["task_path"], "task_hash": job["task_hash"],
+                    "task_id": job["task_id"], "run_id": uuid.uuid4().hex, "status": "pending",
+                    "attempt": job.get("attempt", 1) + 1, "parent_run_id": job["run_id"]})
         # A lost worker must not reissue a model request with unknown cancellation.
         for job in state["jobs"]:
             if job["status"] == "running":
@@ -174,7 +213,9 @@ def run_pipeline(root, config, batch_id, provider_factory=CodexProvider):
                         result = read(result_path)
                         if result["task_hash"] != job["task_hash"] or result["run_id"] != job["run_id"]:
                             raise ValueError("mismatched recovered run")
-                        job.update(status="done", terminal_reason=result["terminal_reason"])
+                        job.update(status="done", terminal_reason=result["terminal_reason"],
+                                   evaluation=result["evaluation"])
+                        enqueue_retry(job, result)
                     except (OSError, ValueError, TypeError, KeyError):
                         job.update(status="interrupted", reason="inconsistent_recovered_record")
                 else:
@@ -217,9 +258,11 @@ def run_pipeline(root, config, batch_id, provider_factory=CodexProvider):
                     root, task, policy=config["policy"], max_steps=config["max_steps"],
                     max_seconds=min(config["max_task_seconds"], max(
                         0.001, state["deadline_epoch"]-time.time())),
-                    provider=provider, run_id=job["run_id"])
+                    provider=provider, run_id=job["run_id"], command=config.get("command_argv"),
+                    parent_run_id=job.get("parent_run_id"))
                 job.update(status="done", terminal_reason=result["terminal_reason"],
                            evaluation=result["evaluation"], ended_at=now())
+                enqueue_retry(job, result)
             except Exception as exc:
                 # Preserve any partial run directory. Class names avoid secret-bearing error text.
                 job.update(status="failed", reason=type(exc).__name__, ended_at=now())
@@ -227,6 +270,9 @@ def run_pipeline(root, config, batch_id, provider_factory=CodexProvider):
                     "run_id": job["run_id"], "task_id": job["task_id"],
                     "error_type": type(exc).__name__, "partial_run_preserved": True})
             save()
+            if job.get("terminal_reason") == "monthly_call_budget_exhausted":
+                state["status"] = "monthly_call_budget_exhausted"
+                break
         if all(j["status"] in {"done", "failed", "interrupted"} for j in state["jobs"]):
             state["status"] = "completed_with_errors" if any(
                 j["status"] != "done" for j in state["jobs"]) else "completed"

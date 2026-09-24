@@ -104,3 +104,19 @@ Imports remain `partial_review_metadata`, with unverified rights and no outcome 
 - Unknown provider usage remains unknown, not zero.
 - Raw data, export packages, and environment files containing secrets stay out of Git.
 - Third-party material needs an explicit, applicable allowed-use policy before commercial packaging. A metadata flag does not create rights.
+
+## Research evidence and operational interfaces
+
+The research-evidence-v1 profile adds a visible source-selection contract: region and cutoff-date filters, authority then recency ordering, abstention for missing/conflicting top-ranked facts, exact winning-source citations, and annual price conversion rounded half-up. Environments use immutable response schedules. The private generator stays outside customer archives; the deterministic client protocol is distributed under the proprietary evaluation license.
+
+Native visible-session-v1 imports retain top-level visible messages and tool interactions. Observed sessions, artifact-derived tasks, synthetic tasks, model_cli runs, external_command runs and scripted controls remain distinct provenance classes. Imported sessions without frozen environments remain unassessed and training-ineligible.
+
+Training outputs use atd-visible-messages-v1 and atd-trajectory-preference-v1. These are vendor-neutral containers, not direct claims of compatibility with a trainer. Only the train split is eligible; task and model-output permissions are checked. Linked fresh attempts do not establish causal repair.
+
+The factory persists immutable input jobs and frozen pipeline configurations. Supported sources are selected structured JSON facts and explicitly registered native sessions. Exact source hash/selector duplicates cannot claim different source groups. Metadata quarantine is automatic. A failed submitted answer may produce at most three linked attempts; timeouts with unknown cancellation never trigger automatic reissue.
+
+The loopback API uses /v1/tasks, /v1/trials and /v1/trials/{id}/actions. A start request has request_id and task_id; an action has request_id, expected_step and action. SQLite transactions reserve one local trial credit, isolate owners and cache action responses by idempotency key. Trials freeze their task/environment, admit only fetch_source and submit_answer, and finish within eight actions or 300 seconds. API actors are external clients with unverified model identity.
+
+Withdrawals match source_group or source_sha256. Export, API access and governed release resolution check current policy. Retained evidence is not deleted and previously delivered copies cannot be recalled.
+
+Service lifecycle is explicit local start/status/stop. OS locks detect an active process; heartbeats describe progress. Cooperative stop does not cancel in-flight model calls. These are not installed operating-system services and the HTTP server is not a public production gateway.

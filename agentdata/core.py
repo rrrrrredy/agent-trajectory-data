@@ -112,6 +112,9 @@ def redact(value):
 
 
 def reference_policy(public, observations):
+    if public.get("profile") == "research-evidence-v1":
+        from .research_protocol import reference_action
+        return reference_action(public, observations)
     if not observations:
         return {"tool": "fetch_source", "source_id": public["source_ids"][0]}
     last = observations[-1]
@@ -153,6 +156,9 @@ def invoke_policy(policy, public, observations, command=None, timeout=5):
 
 
 def grade(task, submission, observations):
+    if task.get("profile") == "research-evidence-v1":
+        from .research_protocol import grade as research_grade
+        return research_grade(task, submission, observations)
     grader_version = task.get("grading_contract", VERSIONS["grader"])
     if submission is None:
         return {"source": "deterministic", "version": grader_version,
@@ -189,7 +195,7 @@ def grade(task, submission, observations):
 
 
 def run_task(root, task, policy="reference", max_steps=8, max_seconds=30,
-             max_tool_retries=2, command=None, provider=None, run_id=None):
+             max_tool_retries=2, command=None, provider=None, run_id=None, parent_run_id=None):
     if not isinstance(max_steps, int) or isinstance(max_steps, bool) or max_steps < 1:
         raise ValueError("max_steps must be a positive integer")
     if not isinstance(max_seconds, (int, float)) or not math.isfinite(max_seconds) or max_seconds <= 0:
@@ -202,6 +208,9 @@ def run_task(root, task, policy="reference", max_steps=8, max_seconds=30,
         raise ValueError("codex policy requires a provider and admission budget")
     if run_id is not None and not re.fullmatch(r"[0-9a-f]{32}", run_id):
         raise ValueError("run_id must be a UUID hex string")
+    if parent_run_id is not None and (not isinstance(parent_run_id, str)
+            or not re.fullmatch(r"[0-9a-f]{32}", parent_run_id) or parent_run_id == run_id):
+        raise ValueError("invalid_parent_run_id")
     run_id = run_id or uuid.uuid4().hex
     folder = Path(root) / "runs" / run_id
     folder.mkdir(parents=True, exist_ok=False)
@@ -231,6 +240,7 @@ def run_task(root, task, policy="reference", max_steps=8, max_seconds=30,
     emit("run_started", {"policy": policy, "task_hash": digest(task),
                          "max_steps": max_steps, "max_seconds": max_seconds,
                          "visible_task": task["public"],
+                         **({"parent_run_id": parent_run_id} if parent_run_id else {}),
                          **({"model_config": provider.visible_config} if policy == "codex" else {})})
     for step in range(max_steps):
         remaining = max_seconds - (time.monotonic() - start)
@@ -318,6 +328,9 @@ def run_task(root, task, policy="reference", max_steps=8, max_seconds=30,
         "usage_status": "unknown" if policy == "command" else "not_applicable",
         "provider_cost": None, "created_at": now(),
     }
+    if parent_run_id:
+        result["parent_run_id"] = parent_run_id
+        result["attempt_strategy"] = "fresh_run_same_task_and_policy"
     if policy == "codex":
         from .providers import valid_usage
         known = [c["usage"] for c in model_captures if valid_usage(c.get("usage"))]
@@ -418,6 +431,10 @@ def quality_decision(root, record, purpose="diagnostic", allow_scripted=False):
                 task_path = (Path(root) / record.get("task_snapshot_path", "")).resolve()
                 task_path.relative_to(Path(root).resolve())
                 task = read(task_path)
+                from .governance import withdrawal_reason
+                withdrawn = withdrawal_reason(root, task)
+                if withdrawn:
+                    reasons.append(withdrawn)
                 if digest(task) != record.get("task_hash"):
                     reasons.append("task_hash_mismatch")
                 if (task.get("family_id") != record.get("family_id")
@@ -425,6 +442,22 @@ def quality_decision(root, record, purpose="diagnostic", allow_scripted=False):
                         or task.get("rights") != record.get("rights")):
                     reasons.append("task_provenance_mismatch")
                 observed = [e["payload"] for e in events if e["event_type"] == "observation"]
+                counters = Counter()
+                for observation in observed:
+                    source = observation.get("source_id")
+                    config = task["environment"].get(source)
+                    if config is None:
+                        reasons.append("observation_outside_environment")
+                        continue
+                    statuses = config["responses"]
+                    status = statuses[min(counters[source], len(statuses) - 1)]
+                    counters[source] += 1
+                    expected_observation = {"source_id": source, "status": status,
+                                            "attempt": counters[source]}
+                    if status == 200:
+                        expected_observation["document"] = config["document"]
+                    if observation != redact(expected_observation):
+                        reasons.append("observation_environment_mismatch")
                 regraded = grade(task, record.get("submission"), observed)
                 if regraded != record.get("evaluation"):
                     reasons.append("evaluation_mismatch")
@@ -455,6 +488,8 @@ def quality_decision(root, record, purpose="diagnostic", allow_scripted=False):
                         or events[0]["payload"].get("visible_task") != redact(task["public"])):
                     reasons.append("initial_task_mismatch")
                 if events:
+                    if record.get("parent_run_id") != events[0]["payload"].get("parent_run_id"):
+                        reasons.append("attempt_lineage_mismatch")
                     policy = events[0].get("payload", {}).get("policy")
                     actor = ("model_cli" if policy == "codex" else "external_command" if policy == "command" else
                              "scripted_policy" if policy in {"reference", "broken", "loop"} else None)
@@ -475,6 +510,8 @@ def quality_decision(root, record, purpose="diagnostic", allow_scripted=False):
             reasons.append("model_execution_provenance_not_established")
         if record.get("split") == "holdout":
             reasons.append("holdout_not_for_training")
+        elif record.get("split") != "train":
+            reasons.append("development_not_for_training")
     return {"decision": "quarantine" if reasons else "accept",
             "reasons": sorted(set(reasons)), "purpose": purpose}
 

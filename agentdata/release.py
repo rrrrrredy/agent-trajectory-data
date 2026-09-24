@@ -64,6 +64,10 @@ def run(task, command, steps, seconds):
             result["document"] = config["document"]
         seen.append(result)
         events.append({"observation": result})
+    if task.get("profile") == "research-evidence-v1":
+        from research_runtime import grade
+        return {"task_id": task["task_id"], "family_id": task["family_id"],
+                **grade(task, answer, seen), "terminal_reason": terminal, "events": events}
     failures = []
     passed = None
     if answer is not None:
@@ -124,7 +128,10 @@ import json
 import sys
 payload = json.load(sys.stdin)
 task, obs = payload["task"], payload["observations"]
-if not obs or obs[-1]["status"] == 429:
+if task.get("profile") == "research-evidence-v1":
+    from research_runtime import reference_action
+    action = reference_action(task, obs)
+elif not obs or obs[-1]["status"] == 429:
     action = {"tool": "fetch_source", "source_id": task["source_ids"][0]}
 elif obs[-1]["status"] == 404:
     action = {"tool": "submit_answer", "verdict": "insufficient_evidence",
@@ -140,15 +147,26 @@ def bytes_json(value):
     return (json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode()
 
 
-def build_release(root, destination, release_id, audience="internal"):
+def build_release(root, destination, release_id, audience="internal", task_ids=None):
     if audience not in {"internal", "licensed"}:
         raise ValueError("unknown_release_audience")
     if not isinstance(release_id, str) or not release_id or len(release_id) > 100:
         raise ValueError("invalid_release_id")
     tasks, rejected = [], []
+    selected = None if task_ids is None else set(task_ids)
+    if selected is not None and (not selected or not all(isinstance(x, str) for x in selected)):
+        raise ValueError("invalid_task_selection")
+    found = set()
     for path in sorted((Path(root) / "tasks").glob("*.json")):
+        if selected is not None and path.stem not in selected:
+            continue
+        found.add(path.stem)
         try:
             task = validate_task(read(path))
+            from .governance import withdrawal_reason
+            withdrawn = withdrawal_reason(root, task)
+            if withdrawn:
+                raise ValueError(withdrawn)
             if task["split"] == "holdout":
                 raise ValueError("holdout_reserved")
             purpose = "evaluation_distribution" if audience == "licensed" else "diagnostic"
@@ -157,14 +175,17 @@ def build_release(root, destination, release_id, audience="internal"):
             # Positive/negative grader controls before releasing a task.
             seen = []
             submission = None
-            for step in range(5):
+            calls = {}
+            for step in range(3 * len(task["environment"]) + 1):
                 action = reference_policy(task["public"], seen)
                 if action["tool"] == "submit_answer":
                     submission = action
                     break
-                source = task["public"]["source_ids"][0]
+                source = action["source_id"]
                 env = task["environment"][source]
-                status = env["responses"][min(len(seen), len(env["responses"]) - 1)]
+                count = calls.get(source, 0)
+                calls[source] = count + 1
+                status = env["responses"][min(count, len(env["responses"]) - 1)]
                 obs = {"source_id": source, "status": status}
                 if status == 200:
                     obs["document"] = env["document"]
@@ -177,10 +198,14 @@ def build_release(root, destination, release_id, audience="internal"):
         except (ValueError, KeyError, TypeError, OSError) as exc:
             rejected.append({"file": path.name, "reason": str(exc) if isinstance(exc, ValueError)
                              and str(exc).replace("_", "").isalnum() else "invalid_task_structure"})
+    if selected is not None and found != selected:
+        raise ValueError("missing_selected_tasks")
     if not tasks:
         raise ValueError("no_eligible_tasks")
     files = {"tasks.json": bytes_json(tasks), "evaluate.py": RUNNER.encode(),
              "control_agent.py": CONTROL.encode()}
+    if any(task.get("profile") == "research-evidence-v1" for task in tasks):
+        files["research_runtime.py"] = Path(__file__).with_name("research_protocol.py").read_bytes()
     notice = ("Internal evaluation only. Redistribution and training are not granted."
               if audience == "internal" else
               "Proprietary evaluation package. Authorized licensees may use this release "
@@ -189,13 +214,16 @@ def build_release(root, destination, release_id, audience="internal"):
     files["LICENSE.txt"] = ("Copyright 2026 rrrrrredy. All rights reserved.\n" + notice + "\n").encode()
     card = {
         "release_id": release_id, "audience": audience,
-        "task_count": len(tasks), "independent_families": len({t["family_id"] for t in tasks}),
+        "task_count": len(tasks), "family_count": len({t["family_id"] for t in tasks}),
         "origins": dict(Counter(t["task_origin"] for t in tasks)),
         "variants": dict(Counter(t["variant"] for t in tasks)),
         "splits": dict(Counter(t["split"] for t in tasks)),
          "model_trajectories_included": False,
         "exclusions_by_reason": dict(Counter(x["reason"] for x in rejected)),
-        "oracle": "Deterministic extraction from frozen structured facts.",
+         "oracle": "Versioned deterministic facts and evidence-selection rules.",
+        "profiles": dict(Counter(t.get("profile", "closed-facts") for t in tasks)),
+        "template_count": len({t["variant"] for t in tasks}),
+        "family_boundary": "Source/seed groups can share templates; this count does not establish statistical independence.",
         "limits": [
             "A downloaded suite exposes its answers; it is not a secret benchmark.",
             "The command adapter is for trusted local agents, not an operating-system sandbox.",
@@ -232,7 +260,10 @@ def build_release(root, destination, release_id, audience="internal"):
             bundle.writestr(info, files[name])
     body = buffer.getvalue()
     build_record = {"release_id": release_id, "audience": audience,
-                    "sha256": hashlib.sha256(body).hexdigest(), "excluded": rejected}
+                    "sha256": hashlib.sha256(body).hexdigest(), "excluded": rejected,
+                    "artifact_path": str(destination.resolve()),
+                    "task_ids": [t["task_id"] for t in tasks],
+                    "task_hashes": {t["task_id"]: digest(t) for t in tasks}}
     receipt_path = Path(root) / "releases" / (digest([release_id, audience]) + ".json")
     if receipt_path.exists() and read(receipt_path) != build_record:
         raise ValueError("immutable_release_record_conflict")

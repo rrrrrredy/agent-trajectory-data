@@ -120,7 +120,7 @@ class CodexProvider:
             "basis": "local_internal_diagnostics_only", "allowed_uses": ["diagnostic"]})
         if (not isinstance(rights, dict) or not isinstance(rights.get("basis"), str)
                 or not rights["basis"] or not isinstance(rights.get("allowed_uses"), list)
-                or any(x not in {"diagnostic", "sft"} for x in rights["allowed_uses"])):
+                or any(x not in {"diagnostic", "sft", "preference"} for x in rights["allowed_uses"])):
             raise ValueError("invalid provider output rights policy")
         self.executable = shutil.which(config.get("executable", "codex"))
         if not self.executable:

@@ -1,0 +1,22 @@
+{
+  "max_attempts_per_task": 1,
+  "max_batch_seconds": 600,
+  "max_model_calls": 8,
+  "max_steps": 8,
+  "max_task_seconds": 180,
+  "monthly_model_calls": 8,
+  "policy": "codex",
+  "provider": {
+    "model": "gpt-6-astra",
+    "output_rights": {
+      "allowed_uses": [
+        "diagnostic"
+      ],
+      "basis": "local_internal_diagnostics_only"
+    }
+  },
+  "task_ids": [
+    "research-20260924-00000-annual_price",
+    "research-20260924-00000-transient_retry"
+  ]
+}

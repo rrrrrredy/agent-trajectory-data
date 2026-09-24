@@ -1,0 +1,38 @@
+{
+  "pipeline": {
+    "policy": "reference",
+    "max_steps": 8,
+    "max_task_seconds": 30,
+    "max_batch_seconds": 600,
+    "max_model_calls": 8,
+    "max_attempts_per_task": 1
+  },
+  "generators": [
+    {
+      "id": "research-starter",
+      "profile": "research-evidence-v1",
+      "families": 30,
+      "seed": 20260924
+    }
+  ],
+  "inbox": "../data/factory-input/inbox",
+  "sources": {
+    "own-structured-workflow": {
+      "root": "../data/factory-input/sources",
+      "selectors": {
+        "batch_status": "/status",
+        "task_count": "/jobs",
+        "observed_calls": "/calls_reserved"
+      },
+      "rights": {
+        "basis": "owner_selected_internal_machine_artifact",
+        "allowed_uses": [
+          "diagnostic"
+        ]
+      },
+      "external_model_allowed": false
+    }
+  },
+  "max_jobs_per_tick": 10,
+  "release_audience": "internal"
+}
