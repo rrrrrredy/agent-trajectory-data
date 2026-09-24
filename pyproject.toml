@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-trajectory-data"
+version = "0.1.0"
+description = "Private automated task, trajectory and evaluation data pipeline"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+atd = "agentdata.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["agentdata*"]
