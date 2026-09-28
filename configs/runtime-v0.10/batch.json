@@ -1,0 +1,39 @@
+{
+  "dataset_version": "0.10",
+  "max_steps": 30,
+  "prior_release": {
+    "sha256": "ccdf8879c035dbaa1b85bba2d4addab6b9acf4d0fc14db9a8278b70e29efafa0",
+    "tag": "dataset-v0.9"
+  },
+  "source_archive_sha256": "f665f77514d3ca7502b15868d943dd6eb10f3fc55a43311af26629e071f3b2e2",
+  "source_manifest_sha256": "6cfe956d48636207552255f6c883c00d0ef613b7e6dfa99a11e6e63e530dff7f",
+  "source_release": "dataset-v0.4",
+  "sources": [
+    {
+      "task_id": "jsonl-unicode",
+      "variants": [
+        "clean",
+        "layout",
+        "stale_patch"
+      ]
+    },
+    {
+      "task_id": "manifest-hashes",
+      "variants": [
+        "clean",
+        "layout",
+        "stale_patch"
+      ]
+    },
+    {
+      "task_id": "stable-observations",
+      "variants": [
+        "clean",
+        "layout",
+        "stale_patch"
+      ]
+    }
+  ],
+  "toolkit_commit": "28524448eaf6534125a24dd1ea26e986016c8aea",
+  "version": "runtime-repair-batch-1"
+}

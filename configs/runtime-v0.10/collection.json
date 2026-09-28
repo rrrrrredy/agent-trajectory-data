@@ -1,0 +1,26 @@
+{
+  "version": "runtime-collection-1",
+  "dataset_version": "0.10",
+  "environment_profile": "bounded_program_repair",
+  "evaluation_mode": "first_attempt_derived_development",
+  "model": "gpt-6-astra",
+  "task_ids": [
+    "repair-jsonl-unicode-clean-v1",
+    "repair-jsonl-unicode-layout-v1",
+    "repair-manifest-hashes-clean-v1",
+    "repair-manifest-hashes-stale_patch-v1",
+    "repair-stable-observations-clean-v1",
+    "repair-stable-observations-layout-v1"
+  ],
+  "max_new_calls": 180,
+  "monthly_model_calls": 357,
+  "max_call_seconds": 90,
+  "max_batch_seconds": 1800,
+  "execution_authorization": "approved_by_user",
+  "approval_record": {
+    "user_instruction": "可以，继续推进。",
+    "scope": "Build v0.10 real-incident-derived executable tasks, cross-version lineage checks, failure exports, actual bounded model collection and private release.",
+    "payload": "Only minimal reproduction code, contract, public example cases and public tool history. Archived process evidence, solutions and private tests stay evaluator-side.",
+    "model_inherited_from_previous_approved_batch": "gpt-6-astra"
+  }
+}

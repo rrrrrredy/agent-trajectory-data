@@ -51,6 +51,9 @@ def environment_module(scenario):
     if scenario["version"]=="research-runtime-4":
         import research_env_v4
         return research_env_v4
+    if scenario["version"]=="research-repair-1":
+        import repair_env
+        return repair_env
     raise ValueError("unsupported_environment_version")
 
 def new_env(scenario):return environment_module(scenario).ResearchEnv(scenario)
@@ -58,6 +61,9 @@ def record_env(env,actor_kind):return environment_module(env.scenario).record(en
 def verify_episode(scenario,run):return environment_module(scenario).verify_record(scenario,run)
 def expected_outcome(scenario):return environment_module(scenario).expected(scenario,scenario["documents"])[0]
 def runtime_files(config):
+    if config["version"]=="runtime-repair-batch-1":
+        import repair_batch
+        return repair_batch.RUNTIME_FILES
     names=["research_env_v3.py","runtime_batch.py"]
     if config["version"]=="runtime-batch-2":names.extend(["research_env_v4.py","runtime_tasks_v4.py"])
     return names
@@ -133,6 +139,9 @@ def public_report(initial,observations):
     return report
 
 def reference_action(initial,history):
+    if initial["mechanism"]=="bounded_program_repair":
+        import repair_batch
+        return repair_batch.reference_action(initial,history)
     if initial["mechanism"] not in e.SCOPES:
         import runtime_tasks_v4
         return runtime_tasks_v4.reference_action(initial,history)
@@ -158,6 +167,9 @@ def reference_action(initial,history):
     return act("submit",note_id=notes[-1],ticket_version=ticket["version"])
 
 def run_reference(scenario,mutation=None):
+    if scenario["version"]=="research-repair-1":
+        import repair_batch
+        return repair_batch.run_reference(scenario,mutation)
     if scenario["version"]=="research-runtime-4":
         import runtime_tasks_v4
         return runtime_tasks_v4.run_reference(scenario,mutation)
@@ -197,6 +209,9 @@ def validate_config(config,base):
 
 def build(config_path,output):
     config_path=Path(config_path).resolve();root=Path(output).resolve();config=read(config_path)
+    if config["version"]=="runtime-repair-batch-1":
+        import repair_batch
+        return repair_batch.build(config_path,root)
     validate_config(config,config_path.parent);e.check(not root.exists(),"output_exists")
     put(root/"config.json",config);tasks=[];controls=[];training=[]
     for name in runtime_files(config):write(root/name,(Path(__file__).parent/name).read_bytes())
@@ -228,7 +243,11 @@ def build(config_path,output):
 
 def verify(root):
     root=Path(root).resolve();manifest=read(root/"manifest.json");e.check(manifest["files"]==hashes(root),"batch_files_changed")
-    config=read(root/"config.json");validate_config(config,root/"inputs")
+    config=read(root/"config.json")
+    if config["version"]=="runtime-repair-batch-1":
+        import repair_batch
+        return repair_batch.verify(root)
+    validate_config(config,root/"inputs")
     tasks=lines(root/"tasks.jsonl");expected_tasks=[];source_map={s["family_id"]:s for s in config["sources"]}
     for source in config["sources"]:
         for variant in source["variants"]:

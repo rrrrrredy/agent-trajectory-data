@@ -1,5 +1,21 @@
 # Changelog
 
+## dataset-v0.10 — Real-incident repairs, lineage and recovery exports
+
+- Derive nine executable minimal repair tasks from three archived incident chains, retaining their shared diagnostic source and original evidence.
+- Execute six successful model first attempts in 62 calls, preserving baseline failures, patches, a version conflict and code-bound verification.
+- Carry forward 205 source records across 11 components; reject known split conflicts and inherited-use promotion.
+- Export 25 failure/censoring records, 21 distinct events and 17 recovery pairs, including seven eligible historical train-source pairs.
+- Retain development-only labels for the six new trajectories and preserve original budget-censored attempts.
+- Pass 225 regression tests, 20 independent archive execution/behavior checks, 54 negative controls and 16 rehashed semantic mutations.
+
+## dataset-v0.9 — Dependency, conflict and revision environments
+
+- Add 24 synthetic tasks across six source families, with dependency tracing, unresolved evidence conflicts and multi-claim revision.
+- Record six successful first model attempts in 70 calls; export three train trajectories and 37 decisions.
+- Preserve time-based visibility, rate limits, revision conflicts and separate source-family splits.
+- Pass 195 regression tests, 20 independent checks and 14 rehashed semantic mutations.
+
 ## dataset-v0.8 — Structured research environments and first attempts
 
 - Add six synthetic source families and 24 versioned scenarios across temporal evidence, numeric consistency and verified review revision.

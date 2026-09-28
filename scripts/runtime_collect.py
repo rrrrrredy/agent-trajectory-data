@@ -18,6 +18,25 @@ SCHEMA={"type":"object","additionalProperties":False,"properties":{
     "tool":{"type":"string","enum":list(e.TOOLS)},"arguments_json":{"type":"string"},"decision_summary":{"type":"string"}},
     "required":["tool","arguments_json","decision_summary"]}
 
+def instruction_for(config):
+    return INSTRUCTION.replace("offline research environment", "offline repair environment") if config.get("environment_profile")=="bounded_program_repair" else INSTRUCTION
+
+def schema_for(config):
+    schema=copy.deepcopy(SCHEMA)
+    if config.get("environment_profile")=="bounded_program_repair":
+        import repair_env
+        schema["properties"]["tool"]["enum"]=list(repair_env.TOOLS)
+    return schema
+
+def training_eligible(row,scenario):
+    return row["split"]=="train" and row["reward"]==1 and scenario["rights"].get("training_eligible") is True
+
+def exclusion_reason(row,scenario):
+    if row["split"]=="test":return "test_family"
+    if row["split"]=="development":return "source_restricted_development"
+    if scenario["rights"].get("training_eligible") is not True:return "source_not_training_eligible"
+    return "unsuccessful_or_incomplete"
+
 def parse_visible(raw):
     events=[];omitted=0
     for line in raw.split("\n"):
@@ -27,7 +46,7 @@ def parse_visible(raw):
         else:events.append(value)
     return events,omitted
 
-def parse_action(events):
+def parse_action(events,allowed_tools=None):
     e.check(not any(x.get("type") in {"error","turn.failed"} for x in events),"provider_reported_failure")
     e.check(not any(x.get("type","").startswith("item.") and x.get("item",{}).get("type")!="agent_message" for x in events),"unexpected_model_tool")
     messages=[x["item"]["text"] for x in events if x.get("type")=="item.completed" and x.get("item",{}).get("type")=="agent_message"]
@@ -36,7 +55,7 @@ def parse_action(events):
     e.check(len(messages)==len(completed)==len(threads)==1 and isinstance(threads[0],str),"incomplete_model_turn")
     value=json.loads(messages[0]);e.check(set(value)==set(SCHEMA["required"]),"model_action_contract")
     args=json.loads(value["arguments_json"])
-    e.check(value["tool"] in e.TOOLS and isinstance(args,dict) and isinstance(value["decision_summary"],str),"invalid_model_action")
+    e.check(value["tool"] in (allowed_tools or e.TOOLS) and isinstance(args,dict) and isinstance(value["decision_summary"],str),"invalid_model_action")
     e.canonical(args)
     return {"tool":value["tool"],"args":args},value["decision_summary"],threads[0],completed[0].get("usage")
 
@@ -45,7 +64,7 @@ def request_for(env,config,calls_remaining,seconds_remaining):
     e.check(type(calls_remaining) is int and calls_remaining<=config.get("max_new_calls",calls_remaining),"invalid_remaining_call_budget")
     e.check(seconds_remaining<=config.get("max_batch_seconds",seconds_remaining)+0.01,"invalid_remaining_time_budget")
     e.check(steps>0 and calls_remaining>0 and seconds_remaining>0,"no_collection_budget")
-    return {"instruction":INSTRUCTION,"initial_observation":env.initial,
+    return {"instruction":instruction_for(config),"initial_observation":env.initial,
             "history":[{"action":x["action"],"observation":x["observation"]} for x in env.events],
             "runtime_budget":{"environment_total_steps":env.scenario["max_steps"],"environment_steps_used":len(env.events),
                               "environment_steps_remaining":steps,"batch_calls_remaining_including_this":calls_remaining,
@@ -53,7 +72,7 @@ def request_for(env,config,calls_remaining,seconds_remaining):
 
 def invoke(request,folder,config,timeout):
     folder=Path(folder);workspace=folder/"workspace";workspace.mkdir(exist_ok=True)
-    b.put(folder/"request.json",request);b.put(folder/"action.schema.json",SCHEMA)
+    b.put(folder/"request.json",request);b.put(folder/"action.schema.json",schema_for(config))
     executable=shutil.which("codex");e.check(executable is not None,"model_cli_missing")
     argv=[executable,"exec","--json","--ephemeral","--ignore-user-config","--skip-git-repo-check","--sandbox","read-only",
           "--color","never","--model",config["model"],"--cd",str(workspace),"--output-schema",str(folder/"action.schema.json"),
@@ -74,7 +93,7 @@ def invoke(request,folder,config,timeout):
     events=[];omitted=0;action=summary=thread=usage=None
     try:
         events,omitted=parse_visible(raw)
-        if error is None:action,summary,thread,usage=parse_action(events)
+        if error is None:action,summary,thread,usage=parse_action(events,schema_for(config)["properties"]["tool"]["enum"])
     except (ValueError,TypeError,KeyError,AttributeError) as exc:error=error or "model_protocol_error:"+str(exc)[:160]
     b.put_lines(folder/"visible-events.jsonl",events);b.write(folder/"stderr.txt",stderr[-8000:].encode())
     capture={"status":"failed" if error else "completed","error":error,"action":action,"decision_summary":summary,"thread_id":thread,
@@ -89,18 +108,20 @@ def verify_capture(folder,env,config):
     expected=request_for(env,config,budget["batch_calls_remaining_including_this"],budget["batch_seconds_remaining"])
     e.check(e.equal(request,expected),"public_request_changed")
     e.check(cap["request_sha256"]==b.sha((folder/"request.json").read_bytes()) and cap["visible_events_sha256"]==b.sha((folder/"visible-events.jsonl").read_bytes()),"capture_input_changed")
-    e.check(b.read(folder/"action.schema.json")==SCHEMA and cap["model_requested"]==config["model"] and cap["model_identity_basis"]=="requested_configuration" and cap["model_reported"] is None,"provider_contract_changed")
+    e.check(b.read(folder/"action.schema.json")==schema_for(config) and cap["model_requested"]==config["model"] and cap["model_identity_basis"]=="requested_configuration" and cap["model_reported"] is None,"provider_contract_changed")
     e.check(cap["isolation"]=={"empty_workspace":True,"user_config_ignored":True,"built_in_tools_disabled":list(DISABLED)},"isolation_changed")
     if cap["status"]=="completed":
-        action,summary,thread,usage=parse_action(b.lines(folder/"visible-events.jsonl"))
+        action,summary,thread,usage=parse_action(b.lines(folder/"visible-events.jsonl"),schema_for(config)["properties"]["tool"]["enum"])
         e.check(e.equal([cap["action"],cap["decision_summary"],cap["thread_id"],cap["usage"]],[action,summary,thread,usage]) and cap["error"] is None and cap["exit_code"]==0,"capture_action_changed")
     else:e.check(cap["status"]=="failed" and bool(cap["error"]),"invalid_capture_failure")
     return cap
 
 def config_validate(config,tasks):
-    e.check(config["version"]=="runtime-collection-1" and config["evaluation_mode"]=="first_attempt_synthetic_development","collection_mode_changed")
+    e.check(config["version"]=="runtime-collection-1" and config["evaluation_mode"] in {"first_attempt_synthetic_development","first_attempt_derived_development"},"collection_mode_changed")
     e.check(config["execution_authorization"]=="approved_by_user" and bool(config["approval_record"]),"execution_not_authorized")
     e.check(config["task_ids"] and len(set(config["task_ids"]))==len(config["task_ids"]) and all(t in tasks for t in config["task_ids"]),"invalid_task_selection")
+    e.check(config.get("environment_profile") in {None,"bounded_program_repair"},"invalid_environment_profile")
+    e.check(all((tasks[t]["version"]=="research-repair-1")==bool(config.get("environment_profile")) for t in config["task_ids"]),"environment_profile_mismatch")
     for key in ("max_new_calls","monthly_model_calls","max_call_seconds","max_batch_seconds"):
         e.check(type(config[key]) is int and config[key]>0,"invalid_budget")
     e.check(config["max_new_calls"]<=sum(tasks[t]["max_steps"] for t in config["task_ids"]),"budget_exceeds_environment_steps")
@@ -120,7 +141,7 @@ def _execute(batch,config_path,output,ledger_root,provider,after_capture):
     b.verify(batch);rows=b.lines(batch/"tasks.jsonl");tasks={r["task_id"]:b.read(batch/r["scenario"]) for r in rows};row_map={r["task_id"]:r for r in rows}
     config=b.read(config_path);config_validate(config,tasks)
     source_hashes={name:b.sha((HERE/name).read_bytes()) for name in (["runtime_collect.py"]+b.runtime_files(b.read(batch/"config.json")))}
-    freeze={"batch_manifest_sha256":b.sha((batch/"manifest.json").read_bytes()),"source_sha256":source_hashes,"instruction_sha256":b.sha(INSTRUCTION.encode())}
+    freeze={"batch_manifest_sha256":b.sha((batch/"manifest.json").read_bytes()),"source_sha256":source_hashes,"instruction_sha256":b.sha(instruction_for(config).encode())}
     if output.exists():
         e.check(e.equal(b.read(output/"config.json"),config) and e.equal(b.read(output/"input-freeze.json"),freeze),"resume_inputs_changed")
         if (output/"manifest.json").exists():return verify(batch,output)
@@ -168,14 +189,14 @@ def _execute(batch,config_path,output,ledger_root,provider,after_capture):
     b.put_lines(output/"episodes.jsonl",indices)
     exported=[];decisions=[];excluded=[]
     for row in indices:
-        if row["split"]=="train" and row["reward"]==1:
+        if training_eligible(row,tasks[row["task_id"]]):
             run=b.read(output/row["path"]);pairs=[]
             for ref in run["capture_refs"]:
                 path=output/ref["path"];cap=b.read(path/"capture.json")
                 pairs.append({"request":b.read(path/"request.json"),"action":cap["action"],"decision_summary":cap["decision_summary"],"capture_path":ref["path"]})
             exported.append({"task_id":row["task_id"],"family_id":row["family_id"],"actor_kind":"isolated_model_cli","pairs":pairs})
             decisions.extend({"task_id":row["task_id"],"decision":i+1,**pair} for i,pair in enumerate(pairs))
-        else:excluded.append({"task_id":row["task_id"],"reason":"test_family" if row["split"]=="test" else "unsuccessful_or_incomplete"})
+        else:excluded.append({"task_id":row["task_id"],"reason":exclusion_reason(row,tasks[row["task_id"]])})
     b.put_lines(output/"training/model-trajectories.jsonl",exported);b.put_lines(output/"training/model-sft.jsonl",decisions);b.put(output/"training/selection.json",{"excluded":excluded})
     b.put(output/"ledger-final.json",{"entries":ledger_entries(ledger_root)})
     b.put(output/"manifest.json",{"version":"runtime-collection-1","files":b.hashes(output),"episodes":len(indices),"calls":sum(r["model_calls"] for r in indices),"admissions":len(list(output.glob("episodes/*/calls/*/admission.json"))),
@@ -189,7 +210,7 @@ def verify(batch,output):
     e.check(manifest["batch_manifest_sha256"]==b.sha((batch/"manifest.json").read_bytes()),"batch_binding_changed")
     tasks={r["task_id"]:b.read(batch/r["scenario"]) for r in b.lines(batch/"tasks.jsonl")};config_validate(config,tasks)
     freeze=b.read(output/"input-freeze.json")
-    e.check(freeze["batch_manifest_sha256"]==manifest["batch_manifest_sha256"] and freeze["instruction_sha256"]==b.sha(INSTRUCTION.encode()),"input_freeze_changed")
+    e.check(freeze["batch_manifest_sha256"]==manifest["batch_manifest_sha256"] and freeze["instruction_sha256"]==b.sha(instruction_for(config).encode()),"input_freeze_changed")
     for name,h in freeze["source_sha256"].items():e.check(b.sha(b.local(output/"code",name).read_bytes())==h,"frozen_collector_changed")
     rows=b.lines(output/"episodes.jsonl");e.check([r["task_id"] for r in rows]==config["task_ids"],"model_selection_changed")
     admission_order={};ordinal=0
@@ -220,10 +241,10 @@ def verify(batch,output):
         elif run["capture_refs"] and b.read(output/run["capture_refs"][-1]["path"]/"capture.json")["status"]=="failed":
             e.check(run["stop_reason"]==b.read(output/run["capture_refs"][-1]["path"]/"capture.json")["error"],"provider_stop_reason_changed")
         else:e.check(run["stop_reason"] in {"unknown_inflight_call_quarantined","batch_time_budget_exhausted","batch_call_budget_exhausted","monthly_call_budget_exhausted"},"invalid_incomplete_stop_reason")
-        if row["split"]=="train" and row["reward"]==1:
+        if training_eligible(row,tasks[row["task_id"]]):
             exports.append({"task_id":row["task_id"],"family_id":row["family_id"],"actor_kind":"isolated_model_cli","pairs":pairs})
             decisions.extend({"task_id":row["task_id"],"decision":i+1,**pair} for i,pair in enumerate(pairs))
-        else:excluded.append({"task_id":row["task_id"],"reason":"test_family" if row["split"]=="test" else "unsuccessful_or_incomplete"})
+        else:excluded.append({"task_id":row["task_id"],"reason":exclusion_reason(row,tasks[row["task_id"]])})
     e.check(e.equal(b.lines(output/"training/model-trajectories.jsonl"),exports) and e.equal(b.lines(output/"training/model-sft.jsonl"),decisions) and b.read(output/"training/selection.json")=={"excluded":excluded},"model_training_selection_changed")
     entries=b.read(output/"ledger-final.json")["entries"];prior=b.read(output/"started.json")["prior_ledger_entries"]
     e.check(entries[:len(prior)]==prior,"prior_ledger_changed")

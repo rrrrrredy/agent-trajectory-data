@@ -26,7 +26,8 @@ def accept(archive,work,report):
     for row in index:
         command("actual_model_grade_"+row["task_id"],[base/"task-entrypoints"/row["task_id"]/"tests/verify.py",base/"model"/row["path"]],0 if row["reward"] else 1)
     version=read(base/"batch/config.json")["version"]
-    tasks=(["willow-dispatch-tool_retry-v4","cedar-access-clean-v4","aster-routing-stale_revision-v4"]
+    repair=version=="runtime-repair-batch-1"
+    tasks=(["repair-jsonl-unicode-layout-v1","repair-manifest-hashes-stale_patch-v1","repair-stable-observations-clean-v1"] if repair else ["willow-dispatch-tool_retry-v4","cedar-access-clean-v4","aster-routing-stale_revision-v4"]
            if version=="runtime-batch-2" else ["orchid-quota-counterfactual-v3"])
     for task in tasks:
         reference=work/(task+"-reference.json")
@@ -47,6 +48,12 @@ def accept(archive,work,report):
         blocked=read(work/"cedar-access-clean-v4-reference.json")
         assert blocked["grade"]["reward"]==1 and blocked["final_state"]["ticket"]["status"]=="blocked"
         checks.append({"name":"future_visibility_and_legitimate_uncertainty","exit_code":0,"stdout":"future document hidden; unresolved peer conflict accepted as blocked","stderr":""})
+    if repair:
+        scenario=read(base/"batch/tasks/repair-manifest-hashes-clean-v1/scenario.json")
+        partial=r.b.run_reference(scenario,"partial_fix")
+        assert partial["final_state"]["tests"][-1]["passed"] and partial["grade"]["reward"]==0 and not partial["grade"]["checks"]["private_behavior"]
+        public=r.b.new_env(scenario);assert public.step({"tool":"read","args":{"document_id":"private_cases"}})[0]["status"]==404
+        checks.append({"name":"partial_public_pass_rejected_by_private_behavior","exit_code":0,"stdout":"Public tests alone do not certify completion; private cases remain unavailable.","stderr":""})
     first=index[0];episode_rel=Path("model")/first["path"];call=episode_rel.parent/"calls/001"
     def mutate(name,change,expected):
         target=work/("mutation-"+name);shutil.copytree(base,target);change(target)
@@ -55,7 +62,7 @@ def accept(archive,work,report):
             path=model/row["path"];run=read(path)
             for ref in run["capture_refs"]:ref["capture_sha256"]=sha(model/ref["path"]/"capture.json")
             save(path,run)
-        for component in (target/"batch",model):
+        for component in ([target/"batch",model,target/"catalog",target/"failures"] if repair else [target/"batch",model]):
             manifest=read(component/"manifest.json");manifest["files"]=r.b.hashes(component);save(component/"manifest.json",manifest)
         manifest=read(target/"manifest.json");manifest["files"]=r.all_hashes(target);save(target/"manifest.json",manifest)
         try:r.verify(target)
@@ -76,14 +83,14 @@ def accept(archive,work,report):
         p=root/episode_rel;value=read(p);value["final_state"]["notes"]["note-1"]["text"]="All facts externally verified.";save(p,value)
     mutate("unsupported_delivered_text",note,"final_state_changed")
     def missing_failure(root):
-        p=root/episode_rel;value=read(p);value["events"]=[event for event in value["events"] if event["observation"]["status"]!=429];save(p,value)
-    mutate("rate_limit_history_removed",missing_failure,"event_replay_changed")
+        p=root/episode_rel;value=read(p);value["events"]=[event for event in value["events"] if not (event["action"]["tool"]=="test" and not event["observation"].get("test",{}).get("passed",True))] if repair else [event for event in value["events"] if event["observation"]["status"]!=429];save(p,value)
+    mutate("baseline_failure_removed" if repair else "rate_limit_history_removed",missing_failure,"event_replay_changed")
     def model_origin(root):
         p=root/episode_rel;value=read(p);value["evaluation_mode"]="independent_blind_benchmark";save(p,value)
     mutate("development_claimed_blind",model_origin,"model_origin_changed")
     def train(root):
         p=root/"model/training/model-sft.jsonl";values=rows(p);values.append({"task_id":index[1]["task_id"],"split":"train"});row_save(p,values)
-    mutate("test_family_in_training",train,"model_training_selection_changed")
+    mutate("restricted_source_in_training" if repair else "test_family_in_training",train,"model_training_selection_changed")
     def ledger(root):
         p=root/"model/ledger-final.json";value=read(p);value["entries"]=value["entries"][1:];save(p,value)
     mutate("prior_reservation_removed",ledger,"prior_ledger_changed")
@@ -108,6 +115,28 @@ def accept(archive,work,report):
             row=next(x for x in index if any(event["observation"]["status"]==409 for event in read(root/"model"/x["path"])["events"]))
             p=root/"model"/row["path"];value=read(p);value["events"]=[x for x in value["events"] if x["observation"]["status"]!=409];save(p,value)
         mutate("claim_conflict_history_removed",conflict_removed,"event_replay_changed")
+    if repair:
+        mutate("wrong_remaining_batch_calls",lambda root:request_change(root,"batch"),"visible_batch_calls_changed")
+        def reward(root):
+            p=root/episode_rel;value=read(p);value["events"][0]["reward"]=1;save(p,value)
+        mutate("nonterminal_reward_forged",reward,"event_replay_changed")
+        def conflict_removed(root):
+            row=next(x for x in index if any(y["observation"]["status"]==409 for y in read(root/"model"/x["path"])["events"]))
+            p=root/"model"/row["path"];value=read(p);value["events"]=[x for x in value["events"] if x["observation"]["status"]!=409];save(p,value)
+        mutate("patch_conflict_history_removed",conflict_removed,"event_replay_changed")
+        def source_evidence(root):
+            p=root/"batch/inputs/jsonl-unicode.json";value=read(p);value["source_events"]=value["source_events"][1:];save(p,value)
+        mutate("historical_failure_evidence_removed",source_evidence,"material_derivation_changed")
+        def catalog_promotion(root):
+            p=root/"catalog/records.jsonl";values=rows(p);values[-1].update(split="train",training_eligible=True);row_save(p,values)
+        mutate("catalog_rights_promoted",catalog_promotion,"catalog_projection_changed")
+        def censoring(root):
+            p=root/"failures/failures.jsonl";values=rows(p);row=next(x for x in values if x["censored"]);row.update(category="model_error",censored=False);row_save(p,values)
+        mutate("budget_censoring_claimed_model_error",censoring,"failure_export_projection_changed")
+        def restricted_pair(root):
+            all_pairs=rows(root/"failures/recovery-pairs.jsonl");pair=next(x for x in all_pairs if x["split"]=="development");pair.update(split="train",training_eligible=True)
+            p=root/"failures/training/recovery-pairs.jsonl";values=rows(p);values.append(pair);row_save(p,values)
+        mutate("restricted_recovery_pair_in_training",restricted_pair,"failure_export_projection_changed")
     report.parent.mkdir(parents=True,exist_ok=True)
     result={"passed":True,"archive_sha256":sha(archive),"archive_bytes":archive.stat().st_size,"summary":summary,
             "acceptance_script_sha256":sha(Path(__file__)),"packaged_verifier_sha256":sha(base/"runtime_release.py"),

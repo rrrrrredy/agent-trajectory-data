@@ -2,13 +2,33 @@
 
 当前管线只依赖 Python 标准库、JSON 配置和不可变输出目录。每批先冻结素材、切分、环境规则与预算，离线检验参考轨迹和错误对照，再收集实际模型动作。每次发布保留上一版的地址和摘要。
 
-## 配置与输入
+## v0.10：历史故障适配、跨版本目录和恢复导出
+
+新增配置为 configs/runtime-v0.10/。当前适配器从 dataset-v0.4 的三个归档修复任务读取原始契约、代码、用例、失败事件和修复参考；核对原 ZIP 与 manifest 摘要后，再生成可执行复现。每个派生任务保留 parent_task_id、source_group_id、split、rights 与 missingness。新的问题类别需要新的复现契约、适配逻辑和行为反例；增加 seed、重命名或复制变体不增加独立来源。
+
+首次构建要求旧私有归档按既有目录恢复到 data/，含 research-slices-v0.1、research-history-v0.2、research-corpus-v0.3 及 agent-runtime-v0.4 至 v0.9；原始 archive 放在 artifacts/。首次来源目录使用这些原始索引，后续继承上一版 runtime-catalog-v<version> 并追加当前批次。失败导出读取 runtime-model-v0.6-first、runtime-model-v0.7-recovery 及已完成的旧 runtime-model-v<version> 和对应任务批次；不读取候选或缺少 manifest 的采集目录。独立发布包已经包含验证需要的历史索引与轨迹快照，解包验收无需连接旧仓库。
+
+完成任务批次和真实模型采集后，按顺序构建附加产物。以下输出目录必须尚不存在：
+
+    py -3 -X utf8 -B scripts/source_catalog.py build . data/<任务批次> data/<来源目录>
+    py -3 -X utf8 -B scripts/failure_exports.py build . data/<任务批次> data/<模型批次> data/<失败导出>
+    py -3 -X utf8 -B scripts/runtime_release.py build data/<任务批次> data/<模型批次> data/<处理记录> artifacts/<验证回执> data/<发布包> --catalog data/<来源目录> --failures data/<失败导出>
+    py -3 -X utf8 -B scripts/runtime_release.py pack data/<发布包> artifacts/<发布包>.zip
+    py -3 -X utf8 -B scripts/accept_runtime_release.py artifacts/<发布包>.zip D:/Codex/_tmp/<独立验收目录> artifacts/<验收报告>.json
+
+catalog/ 保留原索引、原清单与投影结果，根据 family、parent_task、related_task 和精确内容摘要连接来源；阻止已知关系的 train/test 交叉和受限来源用途升级。它没有提供语义近重复识别。不同组件的保留版本要按 record_version_id 标识，不能丢弃同一 case_id 的修订。
+
+failures/ 区分预期复现失败、修改后测试失败、动作错误、工具暂时失败、证据不可取得、版本冲突、外部预算截断和终局验证失败。恢复对只携带当时公开观察，单次工具接受、公开测试通过和最终目标通过分别标明。恢复前缀用事件指纹去重；正向训练恢复导出还要求来源允许、train 切分、完整终局成功及可用上下文。
+
+本版六条新模型执行成功，但原始过程数据只允许诊断，所以新增完整模型训练导出为 0。七组可训练恢复样本来自以前已允许的来源。不要为增加训练量改写原始用途。主包按冻结前缀记录处理证据，后续验收事件放独立补充包，避免自引用。
+
+## 合成研究任务的配置与输入
 
 新机制参考 `configs/runtime-v0.9/batch.json`，原 v3 机制保留 `configs/runtime-v0.8/batch.json`。每个来源声明 family_id、train/test、mechanism、material 和 variants；批次声明 as_of、max_steps、评分范围、上游 toolkit 提交及上一发布版本。
 
 v4 的素材文件保存文档、行标识、引用依赖、文档版本、可取得时间、任务上下文、原始主张和用途权利。按 documents 的实质内容检查完全重复；仅更改 handoff 中的公司名不能成为新家族。该检查不是语义去重，改写后的近重复仍需另行识别。同源素材及全部变体必须属于同一切分。
 
-适配器只接纳明确标注的 authored_synthetic 材料。历史真实报告继续使用原导入器，不能改标签后混入新合成来源；生成题目也不能补造原报告没有记录的工具调用。
+v3/v4 合成研究适配器只接纳明确标注的 authored_synthetic 材料。历史真实报告继续使用原导入器，不能改标签后混入新合成来源；生成题目也不能补造原报告没有记录的工具调用。
 
 | 环境与机制 | 必要材料 | 可验证结果 |
 |---|---|---|
