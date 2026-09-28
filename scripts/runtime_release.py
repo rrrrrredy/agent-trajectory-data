@@ -1,4 +1,4 @@
-"""Assemble and independently verify the incremental v0.8 data release."""
+"""Assemble and independently verify the versioned incremental data release."""
 from __future__ import annotations
 import argparse,json,shutil,zipfile
 from collections import Counter
@@ -13,14 +13,15 @@ def all_hashes(root):
 
 def task_entrypoints(root):
     for task in b.lines(Path(root)/"batch/tasks.jsonl"):
-        tid=task["task_id"]
+        tid=task["task_id"];scenario=b.read(Path(root)/"batch"/task["scenario"]);module=b.environment_module(scenario).__name__
         base="from pathlib import Path\nimport json,sys\nROOT=Path(__file__).resolve().parents[3]\nsys.path.insert(0,str(ROOT))\nimport research_env_v3 as e\nimport runtime_batch as b\nSCENARIO=b.read(ROOT/"+repr("batch/"+task["scenario"])+")\n"
         verify=base+"run=b.read(sys.argv[1])\ngrade=e.verify_record(SCENARIO,run)\nprint(json.dumps(grade,indent=2))\nsys.exit(0 if grade['reward'] else 1)\n"
         solution=base+"run=b.run_reference(SCENARIO)\nb.put(sys.argv[1],run)\nprint(json.dumps(e.verify_record(SCENARIO,run),indent=2))\n"
+        verify=verify.replace("import research_env_v3 as e","import "+module+" as e");solution=solution.replace("import research_env_v3 as e","import "+module+" as e")
         yield "task-entrypoints/"+tid+"/tests/verify.py",verify.encode()
         yield "task-entrypoints/"+tid+"/solution/reference.py",solution.encode()
-        yield "task-entrypoints/"+tid+"/environment.json",b.encoded({"runtime":"CPython >= 3.10","dependencies":[],"environment_version":e.VERSION,
-              "api":"research_env_v3.ResearchEnv.reset / step","stdio":"research_env_v3.py","scenario":"batch/"+task["scenario"],
+        yield "task-entrypoints/"+tid+"/environment.json",b.encoded({"runtime":"CPython >= 3.10","dependencies":[],"environment_version":scenario["version"],
+              "api":module+".ResearchEnv.reset / step","stdio":module+".py","scenario":"batch/"+task["scenario"],
               "network_required":False,"max_steps":b.read(Path(root)/"batch"/task["scenario"])["max_steps"]})
 
 def metrics(root):
@@ -33,7 +34,7 @@ def metrics(root):
         if "counterfactual" not in variants:continue
         e.check("clean" in variants,"counterfactual_without_baseline")
         original=b.read(root/"batch"/variants["clean"]["scenario"]);changed=b.read(root/"batch"/variants["counterfactual"]["scenario"])
-        e.check(not e.equal(e.expected(original,original["documents"])[0],e.expected(changed,changed["documents"])[0]),"ineffective_counterfactual:"+family)
+        e.check(not e.equal(b.expected_outcome(original),b.expected_outcome(changed)),"ineffective_counterfactual:"+family)
         contrasts+=1
     status=Counter();usage=Counter();stops=Counter()
     for row in episodes:
@@ -72,22 +73,23 @@ def build(batch,model,processing,checks,output):
     root=Path(output).resolve();e.check(not root.exists(),"output_exists")
     b.verify(batch);c.verify(batch,model)
     root.mkdir();shutil.copytree(batch,root/"batch");shutil.copytree(model,root/"model");shutil.copytree(processing,root/"processing");shutil.copytree(checks,root/"checks")
-    for name in ("research_env_v3.py","runtime_batch.py","runtime_collect.py","runtime_release.py"):
+    for name in b.runtime_files(b.read(root/"batch/config.json"))+["runtime_collect.py","runtime_release.py"]:
         b.write(root/name,(Path(__file__).parent/name).read_bytes())
     for name,data in task_entrypoints(root):b.write(root/name,data)
     config=b.read(root/"batch/config.json")
-    b.put(root/"lineage.json",{"dataset_version":"0.8","incremental":True,"prior_release":config["prior_release"],"toolkit_commit":config["toolkit_commit"],
+    b.put(root/"lineage.json",{"dataset_version":config["dataset_version"],"incremental":True,"prior_release":config["prior_release"],"toolkit_commit":config["toolkit_commit"],
         "prior_artifacts_modified":False,"source_and_grader_identity":"batch/tasks.jsonl and per-task scenario; model/input-freeze.json",
         "rights":"Synthetic train families may enter training; test families and processing diagnostics remain excluded."})
     b.put(root/"metrics.json",metrics(root))
-    b.write(root/"README.md",("# Agent Runtime Dataset v0.8\n\nIncremental private release. Verify with Python 3.10+:\n\n    python -B runtime_release.py verify .\n\n"
+    version=config["dataset_version"];environment_name=b.environment_module(b.read(root/"batch"/b.lines(root/"batch/tasks.jsonl")[0]["scenario"])).__name__
+    b.write(root/"README.md",(f"# Agent Runtime Dataset v{version}\n\nIncremental private release. Verify with Python 3.10+:\n\n    python -B runtime_release.py verify .\n\n"
        "Each batch/tasks/<id>/ contains the scenario, reference trajectory and negative controls. Evaluator-only files must stay outside policy context.\n\n"
-       "Start a fresh policy session with `python -B research_env_v3.py batch/tasks/<id>/scenario.json --output ../episode.json`. Send one {tool,args} JSON action per line. The host exposes reset/step observations, reward, terminated and truncated.\n\n"
-       "The episode output is a complete observable trajectory. To grade it independently: import research_env_v3, load the task scenario and episode JSON, and call verify_record(scenario, episode).\n\n"
+       f"Start a fresh policy session with `python -B {environment_name}.py batch/tasks/<id>/scenario.json --output ../episode.json`. Send one {{tool,args}} JSON action per line. The host exposes reset/step observations, reward, terminated and truncated.\n\n"
+       f"The episode output is a complete observable trajectory. To grade it independently: import {environment_name}, load the task scenario and episode JSON, and call verify_record(scenario, episode).\n\n"
        "Actual model requests, visible replies, actions, tool failures and checkpoints are under model/. Only model/training/ contains actual model training exports. Scripted references are separately identified in batch/training/.\n\n"
-       "The original v0.7 release is retained by tag and SHA-256 in lineage.json. Earlier real report material remains in its original private releases. This increment adds authored synthetic material, not new company records.\n\n"
+       "The prior release is retained by tag and SHA-256 in lineage.json. Earlier real report material remains in its original private releases. This increment adds authored synthetic material, not new company records.\n\n"
        "See metrics.json and processing/ for quality boundaries and the actual diagnosis-to-verification evidence. Archived commands are inert evidence and must not be executed.\n").encode())
-    b.put(root/"manifest.json",{"version":"agent-runtime-v0.8","files":all_hashes(root)})
+    b.put(root/"manifest.json",{"version":"agent-runtime-v"+config["dataset_version"],"files":all_hashes(root)})
     return verify(root)
 
 def pack(root,archive):

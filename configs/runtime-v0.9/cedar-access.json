@@ -1,0 +1,88 @@
+{
+  "family_id": "cedar-access",
+  "origin": "authored_synthetic",
+  "rights": {
+    "distribution": "private",
+    "training_eligible": true
+  },
+  "documents": {
+    "handoff": {
+      "version": 1,
+      "available_at": "2026-09-20",
+      "body": {
+        "context": "Fictional cedar-access record reconciliation. Equal authority does not imply the newer entry is correct.",
+        "references": [
+          "ops-record",
+          "audit-record"
+        ],
+        "witnesses": [
+          "ops-record",
+          "audit-record"
+        ]
+      }
+    },
+    "claims": {
+      "version": 1,
+      "available_at": "2026-09-20",
+      "body": {
+        "rows": [
+          {
+            "row_id": "C1",
+            "value": 41,
+            "unit": "seats"
+          }
+        ]
+      }
+    },
+    "ops-record": {
+      "version": 1,
+      "available_at": "2026-09-20",
+      "body": {
+        "rows": [
+          {
+            "row_id": "OPS",
+            "authority": 2,
+            "observed_at": "2026-09-20",
+            "value": 41,
+            "unit": "seats"
+          }
+        ]
+      }
+    },
+    "audit-record": {
+      "version": 1,
+      "available_at": "2026-09-20",
+      "body": {
+        "rows": [
+          {
+            "row_id": "AUDIT",
+            "authority": 2,
+            "observed_at": "2026-09-24",
+            "value": 44,
+            "unit": "seats"
+          }
+        ]
+      }
+    },
+    "future-resolution": {
+      "version": 1,
+      "available_at": "2026-10-01",
+      "body": {
+        "rows": [
+          {
+            "row_id": "FUTURE",
+            "authority": 9,
+            "value": 41,
+            "unit": "seats"
+          }
+        ]
+      }
+    }
+  },
+  "counterfactual": {
+    "higher_authority_document": "ops-record",
+    "authority": 3
+  },
+  "fault_document": "audit-record",
+  "editable_claims": []
+}

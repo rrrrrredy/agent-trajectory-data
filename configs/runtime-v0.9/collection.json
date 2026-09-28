@@ -1,0 +1,25 @@
+{
+  "version": "runtime-collection-1",
+  "model": "gpt-6-astra",
+  "task_ids": [
+    "willow-dispatch-tool_retry-v4",
+    "marina-capacity-counterfactual-v4",
+    "cedar-access-clean-v4",
+    "flint-retention-counterfactual-v4",
+    "aster-routing-stale_revision-v4",
+    "cobalt-release-counterfactual-v4"
+  ],
+  "max_new_calls": 192,
+  "monthly_model_calls": 299,
+  "max_call_seconds": 90,
+  "max_batch_seconds": 1800,
+  "evaluation_mode": "first_attempt_synthetic_development",
+  "execution_authorization": "approved_by_user",
+  "approval_record": {
+    "user_instruction": "继续",
+    "scope": "Continue the authorized private dataset with six harder synthetic first attempts, executable environments, independent verification and a separate private release.",
+    "model_inherited_from_previous_approved_batch": "gpt-6-astra",
+    "payload": "Only authored synthetic documents, public observations and explicit task/budget policy; no reference solution or evaluator-only state."
+  },
+  "dataset_version": "0.9"
+}

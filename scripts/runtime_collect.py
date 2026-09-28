@@ -42,6 +42,8 @@ def parse_action(events):
 
 def request_for(env,config,calls_remaining,seconds_remaining):
     steps=env.scenario["max_steps"]-len(env.events)
+    e.check(type(calls_remaining) is int and calls_remaining<=config.get("max_new_calls",calls_remaining),"invalid_remaining_call_budget")
+    e.check(seconds_remaining<=config.get("max_batch_seconds",seconds_remaining)+0.01,"invalid_remaining_time_budget")
     e.check(steps>0 and calls_remaining>0 and seconds_remaining>0,"no_collection_budget")
     return {"instruction":INSTRUCTION,"initial_observation":env.initial,
             "history":[{"action":x["action"],"observation":x["observation"]} for x in env.events],
@@ -117,7 +119,7 @@ def _execute(batch,config_path,output,ledger_root,provider,after_capture):
     from agentdata.providers import BudgetExceeded
     b.verify(batch);rows=b.lines(batch/"tasks.jsonl");tasks={r["task_id"]:b.read(batch/r["scenario"]) for r in rows};row_map={r["task_id"]:r for r in rows}
     config=b.read(config_path);config_validate(config,tasks)
-    source_hashes={name:b.sha((HERE/name).read_bytes()) for name in ("runtime_collect.py","runtime_batch.py","research_env_v3.py")}
+    source_hashes={name:b.sha((HERE/name).read_bytes()) for name in (["runtime_collect.py"]+b.runtime_files(b.read(batch/"config.json")))}
     freeze={"batch_manifest_sha256":b.sha((batch/"manifest.json").read_bytes()),"source_sha256":source_hashes,"instruction_sha256":b.sha(INSTRUCTION.encode())}
     if output.exists():
         e.check(e.equal(b.read(output/"config.json"),config) and e.equal(b.read(output/"input-freeze.json"),freeze),"resume_inputs_changed")
@@ -128,9 +130,9 @@ def _execute(batch,config_path,output,ledger_root,provider,after_capture):
         b.put(output/"started.json",{"started_epoch":time.time(),"deadline_epoch":time.time()+config["max_batch_seconds"],"prior_ledger_entries":ledger_entries(ledger_root)})
     start=b.read(output/"started.json");deadline=start["deadline_epoch"];indices=[]
     for tid in config["task_ids"]:
-        scenario=tasks[tid];env=e.ResearchEnv(scenario);folder=output/"episodes"/tid
+        scenario=tasks[tid];env=b.new_env(scenario);folder=output/"episodes"/tid
         if (folder/"episode.json").exists():
-            run=b.read(folder/"episode.json");e.verify_record(scenario,run);indices.append(b.read(folder/"index.json"));continue
+            run=b.read(folder/"episode.json");b.verify_episode(scenario,run);indices.append(b.read(folder/"index.json"));continue
         refs=[];stop=None
         while not env.finished:
             step=len(env.events)+1;call_folder=folder/"calls"/str(step).zfill(3);rel=call_folder.relative_to(output).as_posix()
@@ -141,7 +143,7 @@ def _execute(batch,config_path,output,ledger_root,provider,after_capture):
                 remaining=deadline-time.time()
                 if remaining<=0:stop="batch_time_budget_exhausted";break
                 if calls>=config["max_new_calls"] and not (call_folder/"admission.json").exists():stop="batch_call_budget_exhausted";break
-                run_id="runtime-v08-"+b.sha(str(output).encode())[:10]+"-"+tid+"-"+str(step)
+                run_id="runtime-v"+config.get("dataset_version","0.8").replace(".","")+"-"+b.sha(str(output).encode())[:10]+"-"+tid+"-"+str(step)
                 b.put(call_folder/"admission.json",{"run_id":run_id})
                 if not any(x["run_id"]==run_id for x in ledger_entries(ledger_root)):
                     try:reserve_monthly(ledger_root,config["monthly_model_calls"],run_id)
@@ -155,10 +157,10 @@ def _execute(batch,config_path,output,ledger_root,provider,after_capture):
             refs.append({"path":rel,"capture_sha256":b.sha((call_folder/"capture.json").read_bytes())})
             if cap["status"]!="completed":stop=cap["error"];break
             observation,_,_,_,_=env.step(cap["action"])
-            b.put(folder/"checkpoints"/(str(step).zfill(3)+".json"),e.record(env,"isolated_model_cli"))
+            b.put(folder/"checkpoints"/(str(step).zfill(3)+".json"),b.record_env(env,"isolated_model_cli"))
             print(json.dumps({"task":tid,"step":step,"tool":cap["action"]["tool"],"status":observation["status"],"finished":env.finished}),flush=True)
         if env.truncated:stop="environment_step_budget_exhausted"
-        run=e.record(env,"isolated_model_cli");run.update(capture_refs=refs,stop_reason=stop,evaluation_mode=config["evaluation_mode"],model_identity="requested:"+config["model"])
+        run=b.record_env(env,"isolated_model_cli");run.update(capture_refs=refs,stop_reason=stop,evaluation_mode=config["evaluation_mode"],model_identity="requested:"+config["model"])
         index={"task_id":tid,"family_id":scenario["family_id"],"split":scenario["split"],"path":"episodes/"+tid+"/episode.json",
                "reward":run["grade"]["reward"],"complete":run["complete"],"model_calls":len(refs),"stop_reason":stop,"actor_kind":"isolated_model_cli"}
         # Index first: a crash after the episode file can never lose the corresponding index.
@@ -190,24 +192,34 @@ def verify(batch,output):
     e.check(freeze["batch_manifest_sha256"]==manifest["batch_manifest_sha256"] and freeze["instruction_sha256"]==b.sha(INSTRUCTION.encode()),"input_freeze_changed")
     for name,h in freeze["source_sha256"].items():e.check(b.sha(b.local(output/"code",name).read_bytes())==h,"frozen_collector_changed")
     rows=b.lines(output/"episodes.jsonl");e.check([r["task_id"] for r in rows]==config["task_ids"],"model_selection_changed")
+    admission_order={};ordinal=0
+    for task_id in config["task_ids"]:
+        for path in sorted((output/"episodes"/task_id/"calls").glob("*/admission.json")):
+            ordinal+=1;admission_order[path.parent.relative_to(output).as_posix()]=ordinal
     threads=set();calls=0;exports=[];decisions=[];excluded=[]
     for row in rows:
-        scenario=tasks[row["task_id"]];run=b.read(b.local(output,row["path"]));grade=e.verify_record(scenario,run)
+        scenario=tasks[row["task_id"]];run=b.read(b.local(output,row["path"]));grade=b.verify_episode(scenario,run)
         e.check(row["reward"]==grade["reward"] and row["complete"]==run["complete"] and row["split"]==scenario["split"] and row["family_id"]==scenario["family_id"],"model_index_changed")
         e.check(run["actor_kind"]==row["actor_kind"]=="isolated_model_cli" and run["evaluation_mode"]==config["evaluation_mode"],"model_origin_changed")
         e.check(run["model_identity"]=="requested:"+config["model"] and row["model_calls"]==len(run["capture_refs"]) and row["stop_reason"]==run["stop_reason"],"episode_metadata_changed")
         e.check(b.read(output/"episodes"/row["task_id"]/"index.json")==row,"episode_index_changed")
-        env=e.ResearchEnv(scenario);pairs=[]
+        env=b.new_env(scenario);pairs=[]
         for ref in run["capture_refs"]:
             folder=b.local(output,ref["path"]);cap=verify_capture(folder,env,config);calls+=1
+            e.check(b.read(folder/"request.json")["runtime_budget"]["batch_calls_remaining_including_this"]==config["max_new_calls"]-admission_order[ref["path"]]+1,"visible_batch_calls_changed")
             e.check(ref["capture_sha256"]==b.sha((folder/"capture.json").read_bytes()),"capture_changed")
             if cap["status"]=="completed":
                 e.check(cap["thread_id"] not in threads,"model_context_reused");threads.add(cap["thread_id"])
                 env.step(cap["action"])
                 checkpoint=output/"episodes"/row["task_id"]/"checkpoints"/(str(len(env.events)).zfill(3)+".json")
-                e.check(e.equal(b.read(checkpoint),e.record(env,"isolated_model_cli")),"checkpoint_changed")
+                e.check(e.equal(b.read(checkpoint),b.record_env(env,"isolated_model_cli")),"checkpoint_changed")
                 pairs.append({"request":b.read(folder/"request.json"),"action":cap["action"],"decision_summary":cap["decision_summary"],"capture_path":ref["path"]})
         e.check(e.equal(env.events,run["events"]),"model_action_replay_changed")
+        if env.terminated:e.check(run["stop_reason"] is None,"submitted_stop_reason_changed")
+        elif env.truncated:e.check(run["stop_reason"]=="environment_step_budget_exhausted","truncation_stop_reason_changed")
+        elif run["capture_refs"] and b.read(output/run["capture_refs"][-1]["path"]/"capture.json")["status"]=="failed":
+            e.check(run["stop_reason"]==b.read(output/run["capture_refs"][-1]["path"]/"capture.json")["error"],"provider_stop_reason_changed")
+        else:e.check(run["stop_reason"] in {"unknown_inflight_call_quarantined","batch_time_budget_exhausted","batch_call_budget_exhausted","monthly_call_budget_exhausted"},"invalid_incomplete_stop_reason")
         if row["split"]=="train" and row["reward"]==1:
             exports.append({"task_id":row["task_id"],"family_id":row["family_id"],"actor_kind":"isolated_model_cli","pairs":pairs})
             decisions.extend({"task_id":row["task_id"],"decision":i+1,**pair} for i,pair in enumerate(pairs))
@@ -219,6 +231,7 @@ def verify(batch,output):
         rid=b.read(path)["run_id"];e.check(sum(x["run_id"]==rid for x in entries)==1,"call_reservation_missing_or_duplicate")
     admissions=list(output.glob("episodes/*/calls/*/admission.json"))
     e.check(calls==manifest["calls"] and calls<=len(admissions)==manifest["admissions"]<=config["max_new_calls"],"call_budget_changed")
+    e.check(manifest["unknown_inflight_calls"]==sum(r["stop_reason"]=="unknown_inflight_call_quarantined" for r in rows),"unknown_call_count_changed")
     e.check(manifest["episodes"]==len(rows) and manifest["successes"]==sum(r["reward"] for r in rows) and manifest["model_train_trajectories"]==len(exports) and manifest["sft_decisions"]==len(decisions),"collection_counts_changed")
     return {"passed":True,"episodes":len(rows),"calls":calls,"first_attempt_successes":sum(r["reward"] for r in rows),"model_train_trajectories":len(exports),"sft_decisions":len(decisions),"source_family_overlap":0}
 

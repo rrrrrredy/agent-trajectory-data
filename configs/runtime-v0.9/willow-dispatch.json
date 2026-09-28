@@ -1,0 +1,150 @@
+{
+  "family_id": "willow-dispatch",
+  "origin": "authored_synthetic",
+  "rights": {
+    "distribution": "private",
+    "training_eligible": true
+  },
+  "documents": {
+    "handoff": {
+      "version": 1,
+      "available_at": "2026-09-20",
+      "body": {
+        "context": "Fictional willow-dispatch allocation review. Trace the provided dependency graph before deciding.",
+        "references": [
+          "capacity-net"
+        ],
+        "root_node": "capacity-net"
+      }
+    },
+    "claims": {
+      "version": 1,
+      "available_at": "2026-09-20",
+      "body": {
+        "rows": [
+          {
+            "row_id": "C1",
+            "metric": "allocatable_items",
+            "value": 6000,
+            "unit": "units"
+          }
+        ]
+      }
+    },
+    "capacity-net": {
+      "version": 1,
+      "available_at": "2026-09-20",
+      "body": {
+        "references": [
+          "capacity-total",
+          "reservation-current"
+        ],
+        "rows": [
+          {
+            "row_id": "N-net",
+            "kind": "subtract",
+            "inputs": [
+              "capacity-total",
+              "reservation-current"
+            ]
+          }
+        ]
+      }
+    },
+    "capacity-total": {
+      "version": 1,
+      "available_at": "2026-09-20",
+      "body": {
+        "references": [
+          "supply-east",
+          "supply-west"
+        ],
+        "rows": [
+          {
+            "row_id": "N-total",
+            "kind": "sum",
+            "inputs": [
+              "supply-east",
+              "supply-west"
+            ]
+          }
+        ]
+      }
+    },
+    "supply-east": {
+      "version": 1,
+      "available_at": "2026-09-20",
+      "body": {
+        "rows": [
+          {
+            "row_id": "E1",
+            "kind": "value",
+            "value": 4,
+            "unit": "thousand_units"
+          }
+        ]
+      }
+    },
+    "supply-west": {
+      "version": 1,
+      "available_at": "2026-09-20",
+      "body": {
+        "rows": [
+          {
+            "row_id": "W1",
+            "kind": "value",
+            "value": 3000,
+            "unit": "units"
+          }
+        ]
+      }
+    },
+    "reservation-current": {
+      "version": 1,
+      "available_at": "2026-09-20",
+      "body": {
+        "rows": [
+          {
+            "row_id": "R1",
+            "kind": "value",
+            "value": 700,
+            "unit": "units"
+          }
+        ]
+      }
+    },
+    "reservation-revised": {
+      "version": 1,
+      "available_at": "2026-09-20",
+      "body": {
+        "rows": [
+          {
+            "row_id": "R2",
+            "kind": "value",
+            "value": 1000,
+            "unit": "units"
+          }
+        ]
+      }
+    },
+    "future-resolution": {
+      "version": 1,
+      "available_at": "2026-10-01",
+      "body": {
+        "rows": [
+          {
+            "row_id": "FUTURE",
+            "kind": "value",
+            "value": 99999,
+            "unit": "units"
+          }
+        ]
+      }
+    }
+  },
+  "counterfactual": {
+    "switch_reservation_to": "reservation-revised"
+  },
+  "fault_document": "supply-west",
+  "editable_claims": []
+}

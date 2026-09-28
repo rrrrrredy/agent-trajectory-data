@@ -62,6 +62,21 @@ class RuntimeCollectTests(unittest.TestCase):
         self.assertEqual(request["history"][0]["observation"]["body"]["rows"][0]["value"],37)
         self.assertFalse({"final_state","scenario","expected","checks","grade"}&set(request))
         with self.assertRaisesRegex(ValueError,"no_collection_budget"):c.request_for(env,{"max_call_seconds":90},0,80)
+    def test_v4_collector_preserves_conflict_and_all_runtime_dependencies(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);batch=root/"batch";b.build(ROOT/"configs/runtime-v0.9/batch.json",batch)
+            cfg=self.setup_case(root);cfg.update(dataset_version="0.9",task_ids=["aster-routing-stale_revision-v4"],max_new_calls=32)
+            (root/"config.json").write_bytes(b.encoded(cfg));requests=[]
+            with patch.object(c.subprocess,"run",side_effect=self.fake_model(requests)),patch.object(c.shutil,"which",return_value="fixture"):
+                result=c.execute(batch,root/"config.json",root/"out",root/"ledger")
+            self.assertEqual((result["first_attempt_successes"],result["calls"]),(1,15))
+            freeze=b.read(root/"out/input-freeze.json")
+            self.assertIn("research_env_v4.py",freeze["source_sha256"]);self.assertIn("runtime_tasks_v4.py",freeze["source_sha256"])
+            episode=b.read(root/"out/episodes/aster-routing-stale_revision-v4/episode.json")
+            self.assertIn(409,[x["observation"]["status"] for x in episode["events"]])
+            self.assertEqual(episode["events"][-1]["reward"],1)
+            self.assertNotIn("stale_revision",requests[0]["initial_observation"]["task_id"])
+
     def test_unicode_transport_and_incomplete_return(self):
         value={"tool":"read_ticket","arguments_json":"{}","decision_summary":"before\u2028after"}
         events=[{"type":"thread.started","thread_id":"fixture"},{"type":"item.completed","item":{"type":"agent_message","text":json.dumps(value,ensure_ascii=False)}},{"type":"turn.completed"}]

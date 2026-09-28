@@ -1,0 +1,122 @@
+{
+  "family_id": "cobalt-release",
+  "origin": "authored_synthetic",
+  "rights": {
+    "distribution": "private",
+    "training_eligible": false
+  },
+  "documents": {
+    "handoff": {
+      "version": 1,
+      "available_at": "2026-09-20",
+      "body": {
+        "context": "Fictional cobalt-release review handoff: repair both supported findings and preserve the unrelated claim.",
+        "references": [
+          "review"
+        ]
+      }
+    },
+    "claims": {
+      "version": 1,
+      "available_at": "2026-09-20",
+      "body": {
+        "rows": [
+          {
+            "row_id": "C1",
+            "value": 223,
+            "unit": "requests_per_day"
+          },
+          {
+            "row_id": "C2",
+            "value": 21,
+            "unit": "hours"
+          },
+          {
+            "row_id": "C0",
+            "value": 7,
+            "unit": "batches"
+          }
+        ]
+      }
+    },
+    "review": {
+      "version": 1,
+      "available_at": "2026-09-20",
+      "body": {
+        "references": [
+          "quota-record",
+          "duration-record"
+        ],
+        "rows": [
+          {
+            "row_id": "F1",
+            "claim_id": "C1",
+            "source_document": "quota-record",
+            "proposed_value": 240,
+            "unit": "requests_per_day"
+          },
+          {
+            "row_id": "F2",
+            "claim_id": "C2",
+            "source_document": "duration-record",
+            "proposed_value": 21,
+            "unit": "days"
+          }
+        ]
+      }
+    },
+    "quota-record": {
+      "version": 1,
+      "available_at": "2026-09-20",
+      "body": {
+        "rows": [
+          {
+            "row_id": "Q1",
+            "value": 240,
+            "unit": "requests_per_day"
+          }
+        ]
+      }
+    },
+    "duration-record": {
+      "version": 1,
+      "available_at": "2026-09-20",
+      "body": {
+        "rows": [
+          {
+            "row_id": "D1",
+            "value": 21,
+            "unit": "days"
+          }
+        ]
+      }
+    },
+    "future-resolution": {
+      "version": 1,
+      "available_at": "2026-10-01",
+      "body": {
+        "rows": [
+          {
+            "row_id": "FUTURE",
+            "value": 9999,
+            "unit": "requests_per_day"
+          }
+        ]
+      }
+    }
+  },
+  "counterfactual": {
+    "additional_finding": {
+      "row_id": "F3",
+      "claim_id": "C1",
+      "source_document": "quota-record",
+      "proposed_value": 480,
+      "unit": "requests_per_day"
+    }
+  },
+  "fault_document": "duration-record",
+  "editable_claims": [
+    "C1",
+    "C2"
+  ]
+}

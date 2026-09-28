@@ -46,7 +46,32 @@ def local(root,name):
     e.check(not Path(name).is_absolute() and ".." not in Path(name).parts and path.resolve().is_relative_to(root) and not path.is_symlink(),"unsafe_path")
     return path
 
+def environment_module(scenario):
+    if scenario["version"]==e.VERSION:return e
+    if scenario["version"]=="research-runtime-4":
+        import research_env_v4
+        return research_env_v4
+    raise ValueError("unsupported_environment_version")
+
+def new_env(scenario):return environment_module(scenario).ResearchEnv(scenario)
+def record_env(env,actor_kind):return environment_module(env.scenario).record(env,actor_kind)
+def verify_episode(scenario,run):return environment_module(scenario).verify_record(scenario,run)
+def expected_outcome(scenario):return environment_module(scenario).expected(scenario,scenario["documents"])[0]
+def runtime_files(config):
+    names=["research_env_v3.py","runtime_batch.py"]
+    if config["version"]=="runtime-batch-2":names.extend(["research_env_v4.py","runtime_tasks_v4.py"])
+    return names
+
+def control_names(scenario):
+    if scenario["version"]=="research-runtime-4":
+        import runtime_tasks_v4
+        return runtime_tasks_v4.control_names(scenario)
+    return ["overclaim_text","empty_assertion","wrong_scope","wrong_result","missing_citation"]
+
 def scenario_for(config,source,material,variant):
+    if config["version"]=="runtime-batch-2":
+        import runtime_tasks_v4
+        return runtime_tasks_v4.scenario_for(config,source,material,variant)
     docs={"policy":{"version":1,"body":copy.deepcopy(POLICY)},
           "handoff":{"version":1,"body":{"context":material["context"],"as_of":config["as_of"]}},
           "sources":{"version":1,"body":{"rows":copy.deepcopy(material["source_rows"])}},
@@ -108,6 +133,9 @@ def public_report(initial,observations):
     return report
 
 def reference_action(initial,history):
+    if initial["mechanism"] not in e.SCOPES:
+        import runtime_tasks_v4
+        return runtime_tasks_v4.reference_action(initial,history)
     observations=[h["observation"] for h in history]
     read_obs={o["document_id"]:o for o in observations if "receipt" in o and o["status"] in (200,403)}
     def act(tool,**args):return {"tool":tool,"args":args}
@@ -130,6 +158,9 @@ def reference_action(initial,history):
     return act("submit",note_id=notes[-1],ticket_version=ticket["version"])
 
 def run_reference(scenario,mutation=None):
+    if scenario["version"]=="research-runtime-4":
+        import runtime_tasks_v4
+        return runtime_tasks_v4.run_reference(scenario,mutation)
     env=e.ResearchEnv(scenario)
     changed=False
     while not env.finished:
@@ -147,13 +178,19 @@ def run_reference(scenario,mutation=None):
     return e.record(env,"scripted_negative_control" if mutation else "scripted_reference")
 
 def validate_config(config,base):
-    e.check(config["version"]=="runtime-batch-1" and config["sources"],"config_version_or_empty_sources")
+    e.check(config["version"] in {"runtime-batch-1","runtime-batch-2"} and config["sources"],"config_version_or_empty_sources")
     ids=set();fingerprints=set()
     for source in config["sources"]:
         fid=source["family_id"];e.check(re.fullmatch(r"[a-z0-9-]+",fid) and fid not in ids,"duplicate_or_invalid_family")
-        ids.add(fid);material=read(local(base,source["material"]));fingerprint=e.digest(material["source_rows"])
+        ids.add(fid);material=read(local(base,source["material"]))
+        fingerprint=e.digest(material["source_rows"] if config["version"]=="runtime-batch-1" else {key:doc for key,doc in material["documents"].items() if key!="handoff"})
         e.check(fingerprint not in fingerprints,"duplicate_source_content");fingerprints.add(fingerprint)
-        e.check(source["split"] in {"train","test"} and source["mechanism"] in e.SCOPES,"invalid_split_or_mechanism")
+        e.check(source["split"] in {"train","test"},"invalid_split_or_mechanism")
+        if config["version"]=="runtime-batch-2":
+            import runtime_tasks_v4
+            runtime_tasks_v4.validate_material(source,material,config["as_of"])
+            continue
+        e.check(source["mechanism"] in e.SCOPES,"invalid_split_or_mechanism")
         e.check(material["family_id"]==fid and material["origin"]=="authored_synthetic","source_identity_changed")
         e.check(material["rights"]=={"distribution":"private","training_eligible":source["split"]=="train"},"rights_mismatch")
         e.check(len(set(source["variants"]))==len(source["variants"]) and set(source["variants"])<={"clean","counterfactual","tool_retry","access_revoked","concurrent_edit"},"invalid_variants")
@@ -162,7 +199,7 @@ def build(config_path,output):
     config_path=Path(config_path).resolve();root=Path(output).resolve();config=read(config_path)
     validate_config(config,config_path.parent);e.check(not root.exists(),"output_exists")
     put(root/"config.json",config);tasks=[];controls=[];training=[]
-    for name in ("research_env_v3.py","runtime_batch.py"):write(root/name,(Path(__file__).parent/name).read_bytes())
+    for name in runtime_files(config):write(root/name,(Path(__file__).parent/name).read_bytes())
     for source in config["sources"]:
         material=read(config_path.parent/source["material"]);put(root/"inputs"/source["material"],material)
         for variant in source["variants"]:
@@ -173,13 +210,19 @@ def build(config_path,output):
             tasks.append({"task_id":tid,"family_id":source["family_id"],"split":source["split"],"mechanism":source["mechanism"],
                           "variant":variant,"scenario":"tasks/"+tid+"/scenario.json","reference":"tasks/"+tid+"/reference.json",
                           "source_sha256":scenario["source_sha256"],"origin":scenario["origin"],"rights":scenario["rights"]})
-            for mutation in ("overclaim_text","empty_assertion","wrong_scope","wrong_result","missing_citation"):
+            for mutation in control_names(scenario):
                 run=run_reference(scenario,mutation);e.check(run["grade"]["reward"]==0,"negative_accepted")
                 rel="tasks/"+tid+"/controls/"+mutation+".json";put(root/rel,run)
                 controls.append({"task_id":tid,"mutation":mutation,"path":rel,"expected_reward":0})
             if source["split"]=="train":training.append({"task_id":tid,"family_id":source["family_id"],"actor_kind":"scripted_reference","trajectory":reference})
+    for source in config["sources"]:
+        if "counterfactual" in source["variants"]:
+            e.check("clean" in source["variants"],"counterfactual_without_baseline")
+            material=read(root/"inputs"/source["material"])
+            original=scenario_for(config,source,material,"clean");changed=scenario_for(config,source,material,"counterfactual")
+            e.check(not e.equal(expected_outcome(original),expected_outcome(changed)),"ineffective_counterfactual:"+source["family_id"])
     put_lines(root/"tasks.jsonl",tasks);put_lines(root/"controls.jsonl",controls);put_lines(root/"training/scripted-trajectories.jsonl",training)
-    put(root/"manifest.json",{"version":"runtime-batch-1","files":hashes(root),"task_count":len(tasks),"family_count":len(config["sources"]),
+    put(root/"manifest.json",{"version":config["version"],"files":hashes(root),"task_count":len(tasks),"family_count":len(config["sources"]),
         "control_count":len(controls),"source_family_overlap":0,"model_calls":0,"claim":"synthetic development tasks; shared mechanisms; no broad generalization claim"})
     return verify(root)
 
@@ -188,21 +231,24 @@ def verify(root):
     config=read(root/"config.json");validate_config(config,root/"inputs")
     tasks=lines(root/"tasks.jsonl");expected_tasks=[];source_map={s["family_id"]:s for s in config["sources"]}
     for source in config["sources"]:
-        for variant in source["variants"]:expected_tasks.append(source["family_id"]+"-"+variant+"-v3")
+        for variant in source["variants"]:
+            material=read(local(root/"inputs",source["material"]))
+            expected_tasks.append(scenario_for(config,source,material,variant)["task_id"])
     e.check([t["task_id"] for t in tasks]==expected_tasks,"task_inventory_changed")
     task_map={t["task_id"]:t for t in tasks};trained=[]
     for task in tasks:
         source=source_map[task["family_id"]];material=read(local(root/"inputs",source["material"]))
         scenario=read(local(root,task["scenario"]));expected_scenario=scenario_for(config,source,material,task["variant"])
         e.check(e.equal(scenario,expected_scenario) and task["split"]==source["split"] and task["rights"]==material["rights"] and task["source_sha256"]==e.digest(material),"task_lineage_changed")
-        run=read(local(root,task["reference"]));e.check(e.verify_record(scenario,run)["reward"]==1,"reference_changed")
+        run=read(local(root,task["reference"]));e.check(verify_episode(scenario,run)["reward"]==1,"reference_changed")
         e.check(e.equal(run,run_reference(scenario)),"reference_policy_changed")
         if task["split"]=="train":trained.append({"task_id":task["task_id"],"family_id":task["family_id"],"actor_kind":"scripted_reference","trajectory":run})
     controls=lines(root/"controls.jsonl")
-    e.check(len(controls)==len(tasks)*5,"control_inventory_changed")
+    expected_controls=[(task["task_id"],name) for task in tasks for name in control_names(read(local(root,task["scenario"])))]
+    e.check([(row["task_id"],row["mutation"]) for row in controls]==expected_controls,"control_inventory_changed")
     for row in controls:
         task=task_map[row["task_id"]];scenario=read(local(root,task["scenario"]));run=read(local(root,row["path"]))
-        e.check(e.verify_record(scenario,run)["reward"]==row["expected_reward"]==0,"negative_control_changed")
+        e.check(verify_episode(scenario,run)["reward"]==row["expected_reward"]==0,"negative_control_changed")
         e.check(e.equal(run,run_reference(scenario,row["mutation"])),"negative_policy_changed")
     e.check(e.equal(lines(root/"training/scripted-trajectories.jsonl"),trained),"training_selection_changed")
     train={t["family_id"] for t in tasks if t["split"]=="train"};test={t["family_id"] for t in tasks if t["split"]=="test"}

@@ -1,0 +1,87 @@
+{
+  "version": "runtime-batch-2",
+  "dataset_version": "0.9",
+  "as_of": "2026-09-25",
+  "max_steps": 32,
+  "toolkit_commit": "28524448eaf6534125a24dd1ea26e986016c8aea",
+  "prior_release": {
+    "tag": "dataset-v0.8",
+    "sha256": "214145355124ea866bb6e257db8908b425bc05b3826e481a09e0ae31ae04c1b6"
+  },
+  "sources": [
+    {
+      "family_id": "willow-dispatch",
+      "split": "train",
+      "mechanism": "evidence_chain",
+      "material": "willow-dispatch.json",
+      "variants": [
+        "clean",
+        "counterfactual",
+        "tool_retry",
+        "withheld_evidence"
+      ]
+    },
+    {
+      "family_id": "marina-capacity",
+      "split": "test",
+      "mechanism": "evidence_chain",
+      "material": "marina-capacity.json",
+      "variants": [
+        "clean",
+        "counterfactual",
+        "tool_retry",
+        "withheld_evidence"
+      ]
+    },
+    {
+      "family_id": "cedar-access",
+      "split": "train",
+      "mechanism": "evidence_conflict",
+      "material": "cedar-access.json",
+      "variants": [
+        "clean",
+        "counterfactual",
+        "tool_retry",
+        "withheld_evidence"
+      ]
+    },
+    {
+      "family_id": "flint-retention",
+      "split": "test",
+      "mechanism": "evidence_conflict",
+      "material": "flint-retention.json",
+      "variants": [
+        "clean",
+        "counterfactual",
+        "tool_retry",
+        "withheld_evidence"
+      ]
+    },
+    {
+      "family_id": "aster-routing",
+      "split": "train",
+      "mechanism": "revision_workflow",
+      "material": "aster-routing.json",
+      "variants": [
+        "clean",
+        "counterfactual",
+        "stale_revision",
+        "withheld_evidence"
+      ]
+    },
+    {
+      "family_id": "cobalt-release",
+      "split": "test",
+      "mechanism": "revision_workflow",
+      "material": "cobalt-release.json",
+      "variants": [
+        "clean",
+        "counterfactual",
+        "stale_revision",
+        "withheld_evidence"
+      ]
+    }
+  ],
+  "split_policy": "source_family_disjoint_shared_mechanisms_author_seen_development",
+  "grading_scope": "bounded_dependency_conflict_revision"
+}
