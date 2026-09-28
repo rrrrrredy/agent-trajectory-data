@@ -2,6 +2,7 @@
 from __future__ import annotations
 import argparse,copy,importlib.util,json,shutil,sys,time,zipfile
 from pathlib import Path
+from datetime import datetime,timezone
 HERE=Path(__file__).resolve().parent
 BASE=HERE/"model_rollout.py"
 if not BASE.exists():BASE=HERE/"prior/verify_runtime.py"
@@ -117,19 +118,81 @@ def prepare(parent,config_path,evidence,output,ledger_root):
                         "request":request_for(initial,env.events,len(prefix["events"]),config["max_new_calls"],config["max_batch_seconds"],config)})
     rd.put_json(output/"request-preview.json",previews)
     return parent,output,ledger_root,config,tasks,indices,current
-def execute(parent,config_path,evidence,output,ledger_root):
-    parent,output,ledger_root,config,tasks,indices,current=prepare(parent,config_path,evidence,output,ledger_root)
+def saved_calls(root,folder,env,initial,prefix_steps,config,count):
+    refs=[];reason=None
+    folders=sorted((folder/"calls").glob("*")) if (folder/"calls").exists() else []
+    check([p.name for p in folders]==[str(i+1).zfill(3) for i in range(len(folders))],"resume_call_sequence_changed")
+    for path in folders:
+        check(not env.finished and reason is None,"capture_after_terminal")
+        cap=c.read(path/"capture.json");request=c.read(path/"request.json")
+        seconds=request["runtime_budget"]["batch_seconds_remaining"]
+        check(request==request_for(initial,env.events,prefix_steps,config["max_new_calls"]-count,seconds,config),"resume_request_changed")
+        check(cap["request_sha256"]==rd.sha((path/"request.json").read_bytes())
+          and cap["visible_events_sha256"]==rd.sha((path/"visible-events.jsonl").read_bytes()),"resume_capture_changed")
+        if cap["status"]=="completed":
+            action,summary,thread,usage=v.parsed_action(c.lines(path/"visible-events.jsonl"))
+            check((action,summary,thread,usage)==(cap["action"],cap["decision_summary"],cap["thread_id"],cap["usage"]),"resume_action_not_model_sourced")
+            env.step(action)
+        else:
+            check(cap["status"]=="failed" and cap["action"] is None and cap["error"],"resume_invalid_failure")
+            reason=cap["error"]
+        refs.append({"path":path.relative_to(root).as_posix(),"capture_sha256":rd.sha((path/"capture.json").read_bytes())})
+        count+=1
+    return refs,reason,count
+
+def prepare_resume(parent,config_path,evidence,output,ledger_root):
+    parent=Path(parent).resolve();output=Path(output).resolve();ledger_root=Path(ledger_root).resolve()
+    check(output.exists() and not (output/"manifest.json").exists(),"resume_requires_unfinished_collection")
+    v.verify_bundle(parent);config=c.read(config_path);tasks,indices=validate_config(config,parent)
+    check(config==c.read(output/"config.json"),"resume_config_changed")
+    require_recovery_approval(config,output/"execution-evidence")
+    check(c.read(output/"input-freeze.json")=={"parent_manifest_sha256":rd.sha((parent/"manifest.json").read_bytes()),
+      "collector_sha256":rd.sha((output/"collector.py").read_bytes()),"contract_sha256":b.digest(CONTRACT)},"resume_input_changed")
+    check(ledger_root==HERE.parent/"data/production-current","must_use_existing_ledger")
+    before=c.read(output/"execution-evidence/ledger-before.json")
+    current=ledger_root/"budgets"/(before["month_utc"]+".json");after=c.read(current)
+    check(after["reservations"][:44]==before["reservations"] and before["calls_reserved"]==44,"prior_reservations_changed")
+    count=0;reservations=[];incomplete=False
+    for row in indices:
+        env,initial=restore(c.read(parent/"curriculum"/tasks[row["task_id"]]["environment"]),c.read(parent/"rollouts"/row["path"]))
+        refs,reason,count=saved_calls(output,output/"episodes"/row["task_id"],env,initial,12,config,count)
+        check(not (incomplete and refs),"resume_out_of_order_calls")
+        incomplete=incomplete or (not env.finished and reason is None)
+        reservations.extend(["runtime-v07-"+row["task_id"]]*len(refs))
+    check(count>0 and after["calls_reserved"]==44+count<=98 and len(after["reservations"])==44+count,"resume_accounting_changed")
+    check([x["run_id"] for x in after["reservations"][44:]]==reservations,"resume_reservations_changed")
+    # Charge the repair pause against the original wall-clock ceiling as well.
+    first=after["reservations"][44]
+    deadline=datetime.fromisoformat(first["reserved_at"]).timestamp()+config["max_batch_seconds"]-1
+    sequence=len(list((output/"resumptions").glob("*")))+1
+    folder=output/"resumptions"/str(sequence).zfill(3)
+    snapshot=c.hashes(output);collector=Path(__file__).read_bytes()
+    rd.put(folder/"collector.py",collector)
+    rd.put_json(folder/"record.json",{"reason":"immutable checkpoint path collided on the second saved decision",
+      "preserved_files":snapshot,"existing_model_calls":count,"monthly_calls_before_resume":44+count,
+      "collector_sha256":rd.sha(collector),"deadline_utc":datetime.fromtimestamp(deadline,timezone.utc).isoformat(),
+      "resumed_at_utc":datetime.now(timezone.utc).isoformat(),"call_budget_reset":False,"clock_reset":False})
+    return (parent,output,ledger_root,config,tasks,indices,current),deadline
+
+def execute(parent,config_path,evidence,output,ledger_root,resume=False):
+    if resume:
+        prepared,deadline=prepare_resume(parent,config_path,evidence,output,ledger_root)
+        parent,output,ledger_root,config,tasks,indices,current=prepared
+    else:
+        parent,output,ledger_root,config,tasks,indices,current=prepare(parent,config_path,evidence,output,ledger_root)
+        deadline=time.time()+config["max_batch_seconds"]
     sys.path.insert(0,str(HERE.parent))
     from agentdata.pipeline import reserve_monthly
     from agentdata.providers import BudgetExceeded
-    started=time.monotonic();calls=0;rows=[]
+    calls=0;rows=[]
     for row in indices:
         task=tasks[row["task_id"]];scenario=c.read(parent/"curriculum"/task["environment"])
         prefix=c.read(parent/"rollouts"/row["path"]);env,initial=restore(scenario,prefix)
-        folder=output/"episodes"/row["task_id"];folder.mkdir(parents=True)
-        refs=[];reason=None;prefix_steps=len(prefix["events"])
-        while not env.finished:
-            seconds=max(0,int(config["max_batch_seconds"]-(time.monotonic()-started)))
+        folder=output/"episodes"/row["task_id"];folder.mkdir(parents=True,exist_ok=True)
+        prefix_steps=len(prefix["events"])
+        refs,reason,calls=saved_calls(output,folder,env,initial,prefix_steps,config,calls)
+        while not env.finished and reason is None:
+            seconds=max(0,int(deadline-time.time()))
             if calls>=config["max_new_calls"] or seconds<=0:reason="batch_budget_exhausted";break
             request=request_for(initial,env.events,prefix_steps,config["max_new_calls"]-calls,seconds,config)
             try:reserve_monthly(ledger_root,config["monthly_model_calls"],"runtime-v07-"+row["task_id"])
@@ -139,7 +202,7 @@ def execute(parent,config_path,evidence,output,ledger_root):
             refs.append({"path":path,"capture_sha256":rd.sha((output/path/"capture.json").read_bytes())})
             if capture["status"]!="completed":reason=capture["error"];break
             obs,reward,terminated,truncated,_=env.step(capture["action"])
-            rd.put_json(folder/"checkpoint.json",{"run":b.record(env,"isolated_model_cli"),"capture_refs":refs})
+            rd.put_json(folder/"checkpoints"/(str(len(refs)).zfill(3)+".json"),{"run":b.record(env,"isolated_model_cli"),"capture_refs":refs})
             print(json.dumps({"task":row["task_id"],"new_call":calls,"total_step":len(env.events),
                 "tool":capture["action"]["tool"],"status":obs.get("status"),"terminal":terminated or truncated,"reward":reward}),flush=True)
         run=b.record(env,"isolated_model_cli")
@@ -152,7 +215,8 @@ def execute(parent,config_path,evidence,output,ledger_root):
                 "complete":run["complete"],"reward":grade["reward"] if run["complete"] else None,
                 "new_model_calls":len(refs),"total_steps":len(env.events),"stop_reason":reason,
                 "origin_kind":"repair_continuation","evaluation_mode":config["evaluation_mode"]}
-        rows.append(result);rd.put_lines(output/"episodes.jsonl",rows)
+        rows.append(result)
+    rd.put_lines(output/"episodes.jsonl",rows)
     rd.put(output/"execution-evidence/ledger-after.json",current.read_bytes())
     rd.put_json(output/"manifest.json",{"version":"runtime-recovery-1","files":c.hashes(output),"calls":calls})
     return verify_recoveries(parent,output)
@@ -163,6 +227,12 @@ def verify_recoveries(parent,root):
     freeze=c.read(root/"input-freeze.json")
     check(freeze=={"parent_manifest_sha256":rd.sha((parent/"manifest.json").read_bytes()),
        "collector_sha256":rd.sha((root/"collector.py").read_bytes()),"contract_sha256":b.digest(CONTRACT)},"recovery_freeze_changed")
+    for folder in sorted((root/"resumptions").glob("*")):
+        receipt=c.read(folder/"record.json")
+        check(receipt["collector_sha256"]==rd.sha((folder/"collector.py").read_bytes()),"resumption_collector_changed")
+        check(receipt["call_budget_reset"] is False and receipt["clock_reset"] is False,"resumption_budget_reset")
+        for path,digest in receipt["preserved_files"].items():
+            check(rd.sha(rd.local_file(root,path).read_bytes())==digest,"pre_crash_evidence_changed")
     evidence=root/"execution-evidence";require_recovery_approval(config,evidence)
     auth=c.read(evidence/"authorization.json")
     check(config["authorization_record"]["sha256"]==rd.sha((evidence/"authorization.json").read_bytes())
@@ -296,7 +366,7 @@ All scripted examples retain their separate origin labels in prior/curriculum/tr
 """
 def main():
     p=argparse.ArgumentParser();sub=p.add_subparsers(dest="cmd",required=True)
-    x=sub.add_parser("run")
+    x=sub.add_parser("run");x.add_argument("--resume",action="store_true")
     for name in ("parent","config","evidence","output","ledger-root"):x.add_argument("--"+name,required=True)
     x=sub.add_parser("verify-runs");x.add_argument("parent");x.add_argument("recovery")
     x=sub.add_parser("assemble")
@@ -304,7 +374,7 @@ def main():
     x=sub.add_parser("verify");x.add_argument("root")
     x=sub.add_parser("pack");x.add_argument("root");x.add_argument("output")
     a=p.parse_args()
-    if a.cmd=="run":result=execute(a.parent,a.config,a.evidence,a.output,a.ledger_root)
+    if a.cmd=="run":result=execute(a.parent,a.config,a.evidence,a.output,a.ledger_root,a.resume)
     elif a.cmd=="verify-runs":result=verify_recoveries(a.parent,a.recovery)
     elif a.cmd=="assemble":result=assemble(a.parent,a.recovery,a.output)
     elif a.cmd=="verify":result=verify(a.root)

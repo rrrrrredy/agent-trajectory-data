@@ -1,6 +1,6 @@
 # 从研究记录到可执行的 Agent 环境
 
-交付单位是任务、可观察轨迹、可运行环境、结果、评分依据与参考解法。v0.6 用四组来源构建 20 个研究交接场景：两组新虚构来源用于训练，两组真实归档用于评测。组织背景、任务单和故障事件均明确标为合成；真实来源不等于真实企业运行记录。
+交付单位是任务、可观察轨迹、可运行环境、结果、评分依据与参考解法。v0.7 原样包含 v0.6 用四组来源构建的 20 个研究交接场景：两组新虚构来源用于训练，两组真实归档用于评测。组织背景、任务单和故障事件均明确标为合成；真实来源不等于真实企业运行记录。
 
 ## 环境契约
 
@@ -36,10 +36,10 @@ BusinessEnv.reset(seed) 返回初始观察与任务身份；step(action) 返回 
 
 ## 运行入口
 
-在 v0.6 独立解压目录：
+在 v0.7 独立解压目录：
 
-    py -3 -X utf8 -B verify_runtime.py verify .
-    py -3 -X utf8 -B curriculum/business_env_v2.py curriculum/tasks/business-synthetic-capacity-tool_retry-v2/environment/scenario.json --output ../episode-v6.json
+    py -3 -X utf8 -B verify_recovery.py verify .
+    py -3 -X utf8 -B prior/curriculum/business_env_v2.py prior/curriculum/tasks/business-synthetic-capacity-tool_retry-v2/environment/scenario.json --output ../episode-v7.json
 
 第二条命令输出初始观察后接受逐行 JSON，例如：
 
@@ -48,16 +48,18 @@ BusinessEnv.reset(seed) 返回初始观察与任务身份；step(action) 返回 
 
 参考解法与评分：
 
-    py -3 -X utf8 -B curriculum/tasks/business-synthetic-capacity-tool_retry-v2/solution/reference.py --output ../reference-v6.json
-    py -3 -X utf8 -B curriculum/tasks/business-synthetic-capacity-tool_retry-v2/tests/verify.py ../reference-v6.json
+    py -3 -X utf8 -B prior/curriculum/tasks/business-synthetic-capacity-tool_retry-v2/solution/reference.py --output ../reference-v7.json
+    py -3 -X utf8 -B prior/curriculum/tasks/business-synthetic-capacity-tool_retry-v2/tests/verify.py ../reference-v7.json
 
 运行文件写到包外，已有路径不会被覆盖。无效输入、执行中重置、提前结束及失败均有记录。完整包含评价侧资料，策略只能接收公开观察；让模型读取整包会破坏评测条件。
 
 ## 采集过程与环境过程分别记录
 
-本批采集上限是每条 12 次决策，而环境上限是 30 步。实际请求未显示较小的外部上限，三条模型首次尝试都被采集器提前停止，不能由 reward=0 推出其完整任务终局能力。execution-evidence/execution-limits.json 和每条 stop_reason 保存了这种区别。
+原 v0.6 的外部采集器每条最多 12 次决策，但请求只显示环境 30 步，三条首次尝试均提前停止。这些原始请求与停止位置继续保留。
 
-新的客户端应把实际调用上限与剩余额度明确提供给策略。本版原始模型请求维持冻结；来源分离、参考可解和重放通过不改变这三条未完成的事实。成功模型示范导出为 0，合成示范与偏好对分别标记。
+v0.7 从各自的 12 步状态续跑，每次请求显示真实剩余环境步数、整批剩余调用与时间，并公开字面检索、文档编号和终止动作。新增 11 次模型调用后，三条累计轨迹在第 17、17、13 步完成并通过原评分器。原来的评分与故障规则没有变化。
+
+成功训练来源导出一条完整轨迹及五个新增恢复决策，两个测试家族仍排除训练。模型身份以请求配置记录。此次是已观察任务的修复验证，不能计成新的未见首次评测。采集中的保存失败、修复与不重复调用恢复也有单独记录。
 
 ## 从材料生成环境
 
@@ -67,4 +69,4 @@ BusinessEnv.reset(seed) 返回初始观察与任务身份；step(action) 返回 
 
 同源报告、修订和全部派生故障场景一起切分。当前训练与评测来源不重合，但共享模板；可迁移的候选能力是查证、权限与时间判断、有限重试、冲突恢复和证据不足时给出有限结论，其跨组织效果尚无充分证据。
 
-旧 v0.4 另外保留七个 Python 排错任务及完整研究历史。其执行器运行可信候选程序，进程隔离不等于操作系统安全沙箱。环境结构、具体样本和适用边界见 [v0.6 数据说明](DATASET-v0.6.zh-CN.md)。
+旧 v0.4 另外保留七个 Python 排错任务及完整研究历史。其执行器运行可信候选程序，进程隔离不等于操作系统安全沙箱。环境结构、具体样本和适用边界见 [v0.7 数据说明](DATASET-v0.7.zh-CN.md)。

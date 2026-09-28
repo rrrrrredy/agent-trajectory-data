@@ -1,6 +1,6 @@
 # Validation
 
-The bounded v0.6 dataset build, model collection and package acceptance are complete: 149 implementation tests passed, followed by independent package verification. All three model attempts were externally truncated; no complete model success is claimed. See [current acceptance](ACCEPTANCE.zh-CN.md). The sections below retain historical engineering evidence and do not describe current counts or scope.
+The v0.7 recovery collection completed all three previously interrupted tasks in 11 additional model calls. The unchanged graders passed; one complete train-family trajectory and five recovery SFT decisions were exported. 160 implementation tests and independent extraction with 12 rehashed negative controls passed. These are previously observed repair continuations, not new unseen first attempts. See [current acceptance](ACCEPTANCE.zh-CN.md). The sections below retain historical evidence.
 
 ## Operational delivery — 2026-09-24
 

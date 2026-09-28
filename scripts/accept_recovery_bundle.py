@@ -33,6 +33,12 @@ def accept(archive,work,report):
             p=rr/row["path"];episode=load(p)
             for ref in episode["capture_refs"]:ref["capture_sha256"]=sha(rr/ref["path"]/"capture.json")
             save(p,episode)
+        # Rehash the preserved crash snapshot too, so semantic tampering checks
+        # cannot pass merely by noticing an unchanged wrapper checksum.
+        for folder in sorted((rr/"resumptions").glob("*")):
+            p=folder/"record.json";receipt=load(p)
+            receipt["preserved_files"]={name:sha(rr/name) for name in receipt["preserved_files"]}
+            save(p,receipt)
         m=load(rr/"manifest.json");m["files"]=r.c.hashes(rr);save(rr/"manifest.json",m)
         m=load(target/"manifest.json");m["files"]=r.c.hashes(target);save(target/"manifest.json",m)
         try:r.verify(target)

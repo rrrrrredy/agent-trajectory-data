@@ -1,5 +1,14 @@
 # Changelog
 
+## dataset-v0.7 — Successful model continuations
+
+- Resume all three original 12-step checkpoints; complete and pass the unchanged graders in 11 additional calls.
+- Expose actual remaining budgets and clarify public search, evidence identifiers and terminal submission semantics.
+- Export one complete 17-decision train-family trajectory and five new recovery SFT decisions; retain both test-family exclusions.
+- Preserve the first attempts and the actual checkpoint-save failure; resume captured calls without reissuing them or resetting the ledger or deadline.
+- Pass 160 tests and independent extraction of 490 content files with 12 rejected rehashed mutations.
+- Deliver the immutable archive, test receipt, acceptance and observable processing evidence privately.
+
 ## dataset-v0.1 — Research review and registry slices
 
 - Align two existing research reports, 42 source registrations and 54 claim records with four archived review calls, preserving one truncated response.

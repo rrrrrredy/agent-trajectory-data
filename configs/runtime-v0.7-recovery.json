@@ -1,10 +1,14 @@
 {
+  "approval_record": {
+    "path": "artifacts/runtime-v0.7-execution-request/approval.json",
+    "sha256": "3ae5ed49f8505f43ad6512217e9629d58fc06973f164e393a3fb5bfc67982cae"
+  },
   "authorization_record": {
     "path": "artifacts/runtime-v0.7-execution-request/authorization.json",
     "sha256": "084d0c5bf438c1f23ffa166ecb87e3dc9cec6213abd61250edd686e663edcfad"
   },
   "evaluation_mode": "repair_validation_previously_observed_tasks",
-  "execution_authorization": "pending_new_batch_approval",
+  "execution_authorization": "approved_by_user",
   "max_batch_seconds": 1200,
   "max_call_seconds": 90,
   "max_new_calls": 54,

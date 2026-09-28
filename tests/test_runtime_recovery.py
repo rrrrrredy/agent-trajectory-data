@@ -1,4 +1,5 @@
-import copy,importlib.util,json,unittest
+import copy,importlib.util,json,tempfile,time,unittest
+from unittest.mock import patch
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location("recovery",ROOT/"scripts/runtime_recovery.py")
@@ -79,4 +80,56 @@ class RuntimeRecoveryTests(unittest.TestCase):
         config={"execution_authorization":"pending_new_batch_approval","authorization_record":{"sha256":"request-only"}}
         with self.assertRaisesRegex(ValueError,"new_recovery_batch_approval_required"):
             r.require_recovery_approval(config,Path("unused"))
+    def test_crash_resume_preserves_calls_and_writes_all_episode_indices(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);parent=root/"parent";out=root/"out";ledger=root/"ledger.json"
+            r.rd.put_json(ledger,{"fixture":True})
+            config={"max_new_calls":54,"max_call_seconds":90,"max_batch_seconds":1200,
+                    "monthly_model_calls":98,"model":"gpt-6-astra","evaluation_mode":"repair_validation_previously_observed_tasks"}
+            tasks={};indices=[]
+            for n in range(3):
+                env,_=self.env()
+                for _ in range(12):env.step({"tool":"read_ticket","args":{}})
+                tid="fixture-"+str(n);path=tid+".json"
+                r.rd.put_json(parent/"curriculum"/path,env.scenario)
+                r.rd.put_json(parent/"rollouts"/path,r.b.record(env,"isolated_model_cli"))
+                tasks[tid]={"environment":path,"family_id":tid,"split":"train"}
+                indices.append({"task_id":tid,"path":path})
+            prepared=(parent,out,root,config,tasks,indices,ledger)
+            reservations=[];invocations=[]
+            def reserve(*args):reservations.append(args[-1])
+            def invoke(request,folder,config,timeout):
+                invocations.append(folder.as_posix());action={"tool":"read_ticket","args":{}}
+                response={"tool":"read_ticket","arguments_json":"{}","decision_summary":"Test fixture"}
+                thread="fixture-thread-"+str(len(invocations));usage={"input_tokens":1,"output_tokens":1}
+                events=[{"type":"thread.started","thread_id":thread},
+                        {"type":"item.completed","item":{"type":"agent_message","text":json.dumps(response)}},
+                        {"type":"turn.completed","usage":usage}]
+                r.rd.put_json(folder/"request.json",request);r.rd.put_lines(folder/"visible-events.jsonl",events)
+                cap={"action":action,"status":"completed","error":None,"decision_summary":"Test fixture","thread_id":thread,"usage":usage,
+                     "request_sha256":r.rd.sha((folder/"request.json").read_bytes()),
+                     "visible_events_sha256":r.rd.sha((folder/"visible-events.jsonl").read_bytes())}
+                r.rd.put_json(folder/"capture.json",cap);return cap
+            original_put=r.rd.put_json
+            def crash(path,value):
+                if Path(path).name=="002.json" and Path(path).parent.name=="checkpoints":raise OSError("simulated save failure")
+                original_put(path,value)
+            with patch.object(r,"prepare",return_value=prepared),patch.object(r.v,"invoke",side_effect=invoke),patch("agentdata.pipeline.reserve_monthly",side_effect=reserve),patch.object(r.rd,"put_json",side_effect=crash):
+                with self.assertRaisesRegex(OSError,"simulated save failure"):r.execute(parent,"config","evidence",out,root)
+            self.assertEqual(len(invocations),2)
+            first=out/"episodes/fixture-0/checkpoints/001.json";before=first.read_bytes()
+            with patch.object(r,"prepare_resume",return_value=(prepared,time.time()+1200)),patch.object(r.v,"invoke",side_effect=invoke),patch("agentdata.pipeline.reserve_monthly",side_effect=reserve),patch.object(r,"verify_recoveries",return_value={"fixture":True}):
+                r.execute(parent,"config","evidence",out,root,resume=True)
+            self.assertEqual(len(invocations),54)
+            self.assertEqual(len(reservations),54)
+            self.assertEqual(len(set(invocations)),54)
+            self.assertEqual(first.read_bytes(),before)
+            rows=r.c.lines(out/"episodes.jsonl")
+            self.assertEqual(len(rows),3)
+            self.assertTrue(all(row["total_steps"]==30 and row["new_model_calls"]==18 for row in rows))
+            for row in rows:
+                record=r.c.read(out/row["path"])
+                self.assertEqual(len(record["capture_refs"]),18)
+                self.assertEqual(record["events"][:12],r.c.read(parent/"rollouts"/(row["task_id"]+".json"))["events"])
+
 if __name__=="__main__":unittest.main()
