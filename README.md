@@ -2,6 +2,8 @@
 
 Private task data, observable agent trajectories, executable environments and reproducible evaluation.
 
+**Current local stage: v0.11 synthetic collection verified.** Eight actual model attempts pass in 117 calls; four eligible positive demonstrations and 57 training transitions are exported. Four archived-report attempts await explicit external-processing authorization, so the full v0.11 release remains pending. [Stage results](docs/DATASET-v0.11.zh-CN.md) · [Reference review](docs/REFERENCE-REVIEW-2026-09-28.zh-CN.md).
+
 **Latest package: v0.10.** Three archived real incident chains provide nine derived repair tasks. Six selected model first attempts all succeed in 62 calls (10, 10, 10, 12, 10, 10 steps), preserving baseline failures, code edits, a version conflict, retries and terminal verification. These new trajectories retain inherited development-only use; seven eligible recovery pairs from earlier train sources are exported separately.
 
 [数据说明](docs/DATASET-v0.10.zh-CN.md) · [扩充批次](docs/BUILDING-BATCHES.zh-CN.md) · [RL 环境](docs/RL-ENVIRONMENT.zh-CN.md) · [当前结论](docs/CONCLUSION.zh-CN.md) · [验收](docs/ACCEPTANCE.zh-CN.md)

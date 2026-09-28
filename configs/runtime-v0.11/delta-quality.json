@@ -1,0 +1,97 @@
+{
+  "decision_rule": {
+    "no": "additional_sample_needed",
+    "operator": ">=",
+    "output": "eligible_items",
+    "threshold": 65,
+    "yes": "sample_target_met"
+  },
+  "evidence_documents": {
+    "exclusions": {
+      "provenance": "Authored synthetic study; no real organization or measured deployment is represented.",
+      "rows": [
+        {
+          "meaning": "Accepted duplicates to subtract.",
+          "row_id": "X",
+          "unit": "items",
+          "value": 17
+        }
+      ],
+      "title": "Deduplication audit"
+    },
+    "review-log": {
+      "provenance": "Authored synthetic study; no real organization or measured deployment is represented.",
+      "rows": [
+        {
+          "meaning": "Accepted cohort A.",
+          "row_id": "A",
+          "unit": "items",
+          "value": 47
+        },
+        {
+          "meaning": "Accepted cohort B.",
+          "row_id": "B",
+          "unit": "items",
+          "value": 36
+        }
+      ],
+      "title": "Annotation quality sample"
+    }
+  },
+  "family_id": "delta-quality",
+  "missingness": [],
+  "origin": "authored_synthetic",
+  "outputs": {
+    "eligible_items": {
+      "expression": {
+        "args": [
+          {
+            "args": [
+              {
+                "ref": [
+                  "review-log",
+                  "A"
+                ]
+              },
+              {
+                "ref": [
+                  "review-log",
+                  "B"
+                ]
+              }
+            ],
+            "op": "sum"
+          },
+          {
+            "ref": [
+              "exclusions",
+              "X"
+            ]
+          }
+        ],
+        "op": "subtract"
+      },
+      "unit": "items"
+    }
+  },
+  "result_scope": "supplied_synthetic_study",
+  "rights": {
+    "allowed_uses": [
+      "diagnostic",
+      "evaluation",
+      "training"
+    ],
+    "distribution": "private_internal",
+    "training_eligible": true
+  },
+  "source_group_id": "delta-quality",
+  "source_updates": [
+    {
+      "document_id": "exclusions",
+      "row_id": "X",
+      "value": 21
+    }
+  ],
+  "template_group": "workspace-reconciliation-1",
+  "topic": "Reconcile an annotation study after a deduplication correction."
+}

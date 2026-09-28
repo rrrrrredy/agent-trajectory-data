@@ -45,13 +45,14 @@ def metrics(root):
             cap=b.read(root/"model"/ref["path"]/"capture.json")
             usage.update({key:value for key,value in (cap["usage"] or {}).items() if type(value) is int})
     repair=b.read(root/"batch/config.json")["version"]=="runtime-repair-batch-1"
+    workspace=b.read(root/"batch/config.json")["version"]=="runtime-workspace-batch-1"
     prior=b.read(root/"model/started.json")["prior_ledger_entries"];final=b.read(root/"model/ledger-final.json")["entries"]
     return {"curriculum":batch,"model_collection":models,"mechanisms":sorted({t["mechanism"] for t in tasks}),
-            "effective_counterfactual_pairs":contrasts,"source_families_by_split":{split:sorted({t["family_id"] for t in tasks if t["split"]==split}) for split in (("train","test","development") if repair else ("train","test"))},
+            "effective_counterfactual_pairs":contrasts,"source_families_by_split":{split:sorted({t["family_id"] for t in tasks if t["split"]==split}) for split in (("train","test","development") if repair or workspace else ("train","test"))},
             "observed_tool_status_counts":dict(status),"stop_reason_counts":dict(stops),"usage_tokens":dict(usage),
             "previous_ledger_reservations":len(prior),"final_ledger_reservations":len(final),"provider_cost":None,
-            "evaluation_boundary":("Fresh model attempts on minimal reproductions of observed incidents, with synthetic layout/concurrency variants. One inherited development source group; no blind-generalization or toolkit-effect claim." if repair else "Fresh model contexts on authored synthetic development tasks. Source families are disjoint; mechanisms are shared. No broad generalization or toolkit-effect estimate."),
-            "grading_boundary":("Baseline failure, current code, public and private behavioral tests, evidence timing and terminal state. Restricted pure-function Python; not general shell or repository execution." if repair else "Exact structured facts, arithmetic, citations and observed state transitions; no freeform research truth judgment.")}
+            "evaluation_boundary":("Fresh model attempts on two archived report sources and four new synthetic sources. Historical source assertions are not independently reverified. Shared runtime template; source-based splits; no broad blind-generalization claim." if workspace else "Fresh model attempts on minimal reproductions of observed incidents, with synthetic layout/concurrency variants. One inherited development source group; no blind-generalization or toolkit-effect claim." if repair else "Fresh model contexts on authored synthetic development tasks. Source families are disjoint; mechanisms are shared. No broad generalization or toolkit-effect estimate."),
+            "grading_boundary":("Recomputed bounded results, current citations at write time, two consistent deliverables, protected content, final reads and validation, and duplicate effects. The bounded structured report is graded; freeform research quality and external truth are not." if workspace else "Baseline failure, current code, public and private behavioral tests, evidence timing and terminal state. Restricted pure-function Python; not general shell or repository execution." if repair else "Exact structured facts, arithmetic, citations and observed state transitions; no freeform research truth judgment.")}
 
 def verify(root):
     root=Path(root).resolve();manifest=b.read(root/"manifest.json")
@@ -69,30 +70,36 @@ def verify(root):
         for relation in ("failure_events","diagnosis_events","patch_events","verification_events"):
             e.check(incident[relation] and all(ref in by_id for ref in incident[relation]),"incident_evidence_missing")
     extra={}
-    if b.read(root/"batch/config.json")["version"]=="runtime-repair-batch-1":
+    if b.read(root/"batch/config.json")["version"] in {"runtime-repair-batch-1","runtime-workspace-batch-1"}:
         import source_catalog,failure_exports
         extra={"source_catalog":source_catalog.verify(root/"catalog"),"failure_exports":failure_exports.verify(root/"failures")}
+    if b.read(root/"batch/config.json")["version"]=="runtime-workspace-batch-1":
+        import workspace_exports
+        extra["workspace_exports"]=workspace_exports.verify(root/"exports",root/"batch",root/"model")
     return {"passed":True,"files":len(manifest["files"]),"processing_events":len(events),**result,**extra}
 
-def build(batch,model,processing,checks,output,catalog=None,failures=None):
+def build(batch,model,processing,checks,output,catalog=None,failures=None,exports=None):
     root=Path(output).resolve();e.check(not root.exists(),"output_exists")
     b.verify(batch);c.verify(batch,model)
     root.mkdir();shutil.copytree(batch,root/"batch");shutil.copytree(model,root/"model");shutil.copytree(processing,root/"processing");shutil.copytree(checks,root/"checks")
     repair=b.read(root/"batch/config.json")["version"]=="runtime-repair-batch-1"
+    workspace=b.read(root/"batch/config.json")["version"]=="runtime-workspace-batch-1"
     extra=[]
-    if repair:
-        e.check(catalog is not None and failures is not None,"repair_release_addons_required")
+    if repair or workspace:
+        e.check(catalog is not None and failures is not None,"runtime_release_addons_required")
         shutil.copytree(catalog,root/"catalog");shutil.copytree(failures,root/"failures");extra=["source_catalog.py","failure_exports.py"]
+    if workspace:
+        e.check(exports is not None,"workspace_exports_required");shutil.copytree(exports,root/"exports");extra.append("workspace_exports.py")
     for name in b.runtime_files(b.read(root/"batch/config.json"))+["runtime_collect.py","runtime_release.py"]+extra:
         b.write(root/name,(Path(__file__).parent/name).read_bytes())
     for name,data in task_entrypoints(root):b.write(root/name,data)
     config=b.read(root/"batch/config.json")
     b.put(root/"lineage.json",{"dataset_version":config["dataset_version"],"incremental":True,"prior_release":config["prior_release"],"toolkit_commit":config["toolkit_commit"],
         "prior_artifacts_modified":False,"source_and_grader_identity":"batch/tasks.jsonl and per-task scenario; model/input-freeze.json",
-        "rights":("Inherited real-incident data stays development-only. Earlier eligible train-source recovery pairs are exported separately; source restrictions never change." if repair else "Synthetic train families may enter training; test families and processing diagnostics remain excluded.")})
+        "rights":("Archived reports retain diagnostic-only development restrictions. New authored synthetic train families can supply eligible demonstrations and RL transitions. Synthetic development and test trajectories remain excluded from training." if workspace else "Inherited real-incident data stays development-only. Earlier eligible train-source recovery pairs are exported separately; source restrictions never change." if repair else "Synthetic train families may enter training; test families and processing diagnostics remain excluded.")})
     b.put(root/"metrics.json",metrics(root))
     version=config["dataset_version"];environment_name=b.environment_module(b.read(root/"batch"/b.lines(root/"batch/tasks.jsonl")[0]["scenario"])).__name__
-    material_note=("This increment reconstructs three retained real failure chains into bounded pure-function repair tasks. Original evidence stays evaluator-side; layout and conflict variants are synthetic. New trajectories inherit development-only rights. catalog/ links prior versions; failures/ separates failure causes and observed recovery, with eligible earlier train-source pairs under failures/training/." if repair else "Earlier real report material remains in its original private releases. This increment adds authored synthetic material, not new company records.")
+    material_note=("This increment derives four diagnostic tasks from two retained reports and adds eight tasks from four authored synthetic families. Both report.md and analysis.json are saved for every actual episode. exports/ provides public-observation RL transitions and fixed evaluation selection; catalog/ preserves cross-version lineage, and failures/ retains recovery evidence. Original reports are immutable and missing historical steps are never reconstructed as observed." if workspace else "This increment reconstructs three retained real failure chains into bounded pure-function repair tasks. Original evidence stays evaluator-side; layout and conflict variants are synthetic. New trajectories inherit development-only rights. catalog/ links prior versions; failures/ separates failure causes and observed recovery, with eligible earlier train-source pairs under failures/training/." if repair else "Earlier real report material remains in its original private releases. This increment adds authored synthetic material, not new company records.")
     b.write(root/"README.md",(f"# Agent Runtime Dataset v{version}\n\nIncremental private release. Verify with Python 3.10+:\n\n    python -B runtime_release.py verify .\n\n"
        "Each batch/tasks/<id>/ contains the scenario, reference trajectory and negative controls. Evaluator-only files must stay outside policy context.\n\n"
        f"Start a fresh policy session with `python -B {environment_name}.py batch/tasks/<id>/scenario.json --output ../episode.json`. Send one {{tool,args}} JSON action per line. The host exposes reset/step observations, reward, terminated and truncated.\n\n"
@@ -116,10 +123,10 @@ def main():
     parser=argparse.ArgumentParser();sub=parser.add_subparsers(dest="command",required=True)
     p=sub.add_parser("build")
     for name in ("batch","model","processing","checks","output"):p.add_argument(name)
-    p.add_argument("--catalog");p.add_argument("--failures")
+    p.add_argument("--catalog");p.add_argument("--failures");p.add_argument("--exports")
     p=sub.add_parser("verify");p.add_argument("root")
     p=sub.add_parser("pack");p.add_argument("root");p.add_argument("archive")
     args=parser.parse_args()
-    result=build(args.batch,args.model,args.processing,args.checks,args.output,args.catalog,args.failures) if args.command=="build" else pack(args.root,args.archive) if args.command=="pack" else verify(args.root)
+    result=build(args.batch,args.model,args.processing,args.checks,args.output,args.catalog,args.failures,args.exports) if args.command=="build" else pack(args.root,args.archive) if args.command=="pack" else verify(args.root)
     print(json.dumps(result,ensure_ascii=False,indent=2))
 if __name__=="__main__":main()

@@ -10,6 +10,10 @@ def classify(event):
     observation=event["observation"];status=observation.get("status")
     if event["action"]["tool"]=="test" and status==200 and not observation["test"]["passed"]:
         return "expected_reproduction_failure" if observation["test"]["version"]==1 else "candidate_test_failure"
+    if status==409 and observation.get("error")=="evidence_revision_conflict":return "evidence_revision_conflict"
+    if status==409 and observation.get("error")=="operation_key_payload_conflict":return "idempotency_key_conflict"
+    if status==504 and observation.get("error")=="unknown_write_outcome":return "uncertain_write_outcome"
+    if event["action"]["tool"]=="validate" and status==200 and not observation["validation"]["passed"]:return "public_validation_failure"
     if status in (403,404) and event["action"]["tool"] not in ("read","search"):return "policy_action_contract_error"
     return {429:"transient_tool_failure",409:"concurrent_version_conflict",403:"evidence_unavailable",404:"evidence_unavailable",400:"policy_action_contract_error",412:"policy_action_contract_error",422:"policy_action_contract_error"}.get(status)
 def target(action):return (action["tool"],{k:v for k,v in action["args"].items() if k in ("document_id","doc_id","claim_id","note_id")})
@@ -26,12 +30,18 @@ def project(component,index,run,initial,rights):
             for j in range(i+1,len(events)):
                 candidate=events[j]
                 if candidate["observation"].get("status")!=200:continue
-                if category in {"expected_reproduction_failure","candidate_test_failure"}:
+                if category=="uncertain_write_outcome":
+                    oid=event["action"]["args"]["operation_id"]
+                    if candidate["action"]["tool"]=="operation_status" and candidate["action"]["args"].get("operation_id")==oid and candidate["observation"].get("state")=="committed":later=j;break
+                    if candidate["action"]["tool"]=="revise_artifact" and equal(candidate["action"]["args"],event["action"]["args"]):later=j;break
+                elif category=="public_validation_failure":
+                    if candidate["action"]["tool"]=="validate" and candidate["observation"]["validation"]["passed"] and not equal(candidate["observation"]["validation"]["artifact_state"],event["observation"]["validation"]["artifact_state"]):later=j;break
+                elif category in {"expected_reproduction_failure","candidate_test_failure"}:
                     test=candidate["observation"].get("test",{})
                     if candidate["action"]["tool"]=="test" and test.get("passed") and test.get("code_sha256")!=event["observation"]["test"]["code_sha256"]:later=j;break
                 elif target(candidate["action"])==target(event["action"]):later=j;break
         if later is not None:
-            row["resolution"]={"step":events[later]["step"],"kind":"public_tests_passed" if event["action"]["tool"]=="test" else "tool_action_accepted","observation":events[later]["observation"],"goal_verified_separately":goal}
+            row["resolution"]={"step":events[later]["step"],"kind":"write_effect_verified" if category=="uncertain_write_outcome" else "public_validation_passed" if category=="public_validation_failure" else "public_tests_passed" if event["action"]["tool"]=="test" else "tool_action_accepted","observation":events[later]["observation"],"goal_verified_separately":goal}
             pairs.append({"failure_id":row["failure_id"],"event_fingerprint":fingerprint,"task_id":index["task_id"],"split":index["split"],"rights":rights,"category":category,"context_kind":"derived_from_recorded_public_observations","context":{"initial_observation":initial,"history":[{"action":x["action"],"observation":x["observation"]} for x in events[:i+1]]},"recovery":[{"action":x["action"],"observation":x["observation"]} for x in events[i+1:later+1]],"verification":row["resolution"],"training_eligible":index["split"]=="train" and rights.get("training_eligible") is True and goal and initial is not None})
         elif category=="evidence_unavailable" and goal and run["final_state"]["ticket"]["status"]=="blocked":row["resolution"]={"kind":"legitimate_blocked","goal_verified_separately":True}
         episodes.append(row)

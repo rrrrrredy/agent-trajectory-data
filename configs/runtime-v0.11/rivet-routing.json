@@ -1,0 +1,108 @@
+{
+  "decision_rule": {
+    "no": "carry_unrouted_documents_forward",
+    "operator": ">=",
+    "output": "routable_documents",
+    "threshold": 70,
+    "yes": "triage_window_target_met"
+  },
+  "evidence_documents": {
+    "incoming-log": {
+      "provenance": "Authored synthetic study; no real organization or measured deployment is represented.",
+      "rows": [
+        {
+          "meaning": "Documents arriving this window.",
+          "row_id": "INCOMING",
+          "unit": "documents",
+          "value": 94
+        },
+        {
+          "meaning": "Documents held for incomplete provenance.",
+          "row_id": "QUARANTINE",
+          "unit": "documents",
+          "value": 22
+        }
+      ],
+      "title": "Document triage intake"
+    },
+    "route-sheet": {
+      "provenance": "Authored synthetic study; no real organization or measured deployment is represented.",
+      "rows": [
+        {
+          "meaning": "Review team capacity.",
+          "row_id": "REVIEW",
+          "unit": "documents",
+          "value": 61
+        },
+        {
+          "meaning": "Automation channel capacity.",
+          "row_id": "AUTOMATION",
+          "unit": "documents",
+          "value": 68
+        }
+      ],
+      "title": "Routing channel limits"
+    }
+  },
+  "family_id": "rivet-routing",
+  "missingness": [],
+  "origin": "authored_synthetic",
+  "outputs": {
+    "routable_documents": {
+      "expression": {
+        "args": [
+          {
+            "args": [
+              {
+                "ref": [
+                  "incoming-log",
+                  "INCOMING"
+                ]
+              },
+              {
+                "ref": [
+                  "incoming-log",
+                  "QUARANTINE"
+                ]
+              }
+            ],
+            "op": "subtract"
+          },
+          {
+            "args": [
+              {
+                "ref": [
+                  "route-sheet",
+                  "REVIEW"
+                ]
+              },
+              {
+                "ref": [
+                  "route-sheet",
+                  "AUTOMATION"
+                ]
+              }
+            ],
+            "op": "maximum"
+          }
+        ],
+        "op": "minimum"
+      },
+      "unit": "documents"
+    }
+  },
+  "result_scope": "supplied_synthetic_study",
+  "rights": {
+    "allowed_uses": [
+      "diagnostic",
+      "evaluation",
+      "training"
+    ],
+    "distribution": "private_internal",
+    "training_eligible": true
+  },
+  "source_group_id": "rivet-routing",
+  "source_updates": [],
+  "template_group": "workspace-reconciliation-1",
+  "topic": "Reconcile a routing decision after an uncertain write with no committed effect."
+}

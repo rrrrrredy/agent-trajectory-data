@@ -54,13 +54,21 @@ def environment_module(scenario):
     if scenario["version"]=="research-repair-1":
         import repair_env
         return repair_env
+    if scenario["version"]=="research-workspace-1":
+        import workspace_env
+        return workspace_env
     raise ValueError("unsupported_environment_version")
 
 def new_env(scenario):return environment_module(scenario).ResearchEnv(scenario)
 def record_env(env,actor_kind):return environment_module(env.scenario).record(env,actor_kind)
 def verify_episode(scenario,run):return environment_module(scenario).verify_record(scenario,run)
-def expected_outcome(scenario):return environment_module(scenario).expected(scenario,scenario["documents"])[0]
+def expected_outcome(scenario):
+    module=environment_module(scenario)
+    return module.expected_content(scenario["documents"]) if scenario["version"]=="research-workspace-1" else module.expected(scenario,scenario["documents"])[0]
 def runtime_files(config):
+    if config["version"]=="runtime-workspace-batch-1":
+        import workspace_batch
+        return workspace_batch.RUNTIME_FILES
     if config["version"]=="runtime-repair-batch-1":
         import repair_batch
         return repair_batch.RUNTIME_FILES
@@ -139,6 +147,9 @@ def public_report(initial,observations):
     return report
 
 def reference_action(initial,history):
+    if initial["mechanism"]=="research_workspace":
+        import workspace_tasks
+        return workspace_tasks.reference_action(initial,history)
     if initial["mechanism"]=="bounded_program_repair":
         import repair_batch
         return repair_batch.reference_action(initial,history)
@@ -167,6 +178,9 @@ def reference_action(initial,history):
     return act("submit",note_id=notes[-1],ticket_version=ticket["version"])
 
 def run_reference(scenario,mutation=None):
+    if scenario["version"]=="research-workspace-1":
+        import workspace_tasks
+        return workspace_tasks.run_reference(scenario,mutation)
     if scenario["version"]=="research-repair-1":
         import repair_batch
         return repair_batch.run_reference(scenario,mutation)
@@ -209,6 +223,9 @@ def validate_config(config,base):
 
 def build(config_path,output):
     config_path=Path(config_path).resolve();root=Path(output).resolve();config=read(config_path)
+    if config["version"]=="runtime-workspace-batch-1":
+        import workspace_batch
+        return workspace_batch.build(config_path,root)
     if config["version"]=="runtime-repair-batch-1":
         import repair_batch
         return repair_batch.build(config_path,root)
@@ -244,6 +261,9 @@ def build(config_path,output):
 def verify(root):
     root=Path(root).resolve();manifest=read(root/"manifest.json");e.check(manifest["files"]==hashes(root),"batch_files_changed")
     config=read(root/"config.json")
+    if config["version"]=="runtime-workspace-batch-1":
+        import workspace_batch
+        return workspace_batch.verify(root)
     if config["version"]=="runtime-repair-batch-1":
         import repair_batch
         return repair_batch.verify(root)

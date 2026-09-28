@@ -1,0 +1,41 @@
+{
+  "approval_record": {
+    "model_inherited_from_previous_approved_batch": "gpt-6-astra",
+    "payload": "Public frozen task observations and histories only; private grader, future updates, original provenance and reference solutions remain outside policy context.",
+    "scope": "Implement the approved v0.11 plan, validate four development pilot tasks, then collect remaining tasks once; freeze and privately release the verified dataset.",
+    "staging": "Collect the first eight authored-synthetic tasks only while explicit archived-excerpt processing authorization is pending. Four archived tasks remain deferred.",
+    "user_instruction": "推进"
+  },
+  "dataset_version": "0.11",
+  "deferred_archive_pilot_task_ids": [
+    "archive-support-clean-w1",
+    "archive-video-clean-w1"
+  ],
+  "environment_profile": "research_workspace",
+  "evaluation_mode": "first_attempt_mixed_development",
+  "execution_authorization": "approved_by_user",
+  "max_batch_seconds": 7200,
+  "max_call_seconds": 90,
+  "max_new_calls": 576,
+  "model": "gpt-6-astra",
+  "monthly_model_calls": 815,
+  "pilot_task_ids": [
+    "summit-capacity-clean-w1",
+    "summit-capacity-source_refresh-w1"
+  ],
+  "task_ids": [
+    "summit-capacity-clean-w1",
+    "summit-capacity-source_refresh-w1",
+    "delta-quality-clean-w1",
+    "delta-quality-source_refresh-w1",
+    "mosaic-coverage-clean-w1",
+    "mosaic-coverage-uncertain_applied-w1",
+    "rivet-routing-clean-w1",
+    "rivet-routing-uncertain_not_applied-w1",
+    "archive-support-clean-w1",
+    "archive-video-clean-w1",
+    "archive-support-withheld_evidence-w1",
+    "archive-video-stale_artifact-w1"
+  ],
+  "version": "runtime-collection-1"
+}

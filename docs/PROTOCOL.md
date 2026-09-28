@@ -1,3 +1,17 @@
+# Runtime dataset protocol
+
+Current implementation: v0.11 research workspace tasks, pending full model collection and release acceptance. The latest fully published package remains v0.10. See [current plan](PLAN.zh-CN.md) and [batch construction](BUILDING-BATCHES.zh-CN.md).
+
+The current workspace protocol exposes reset/step public observations. report.md and analysis.json have separate versions and are updated with an idempotency key. A 409 requires refreshed evidence or artifact state; a 504 leaves the write outcome unknown. Public validation checks consistency and freshness. Terminal grading independently recomputes the assigned bounded result and verifies evidence timing, protected content, final reads, current validation and duplicate effects. A legitimate missing-evidence response preserves the initial files and ends blocked.
+
+Model input contains only the initial public observation, preceding public actions and observations, and remaining budgets. Scenarios, future source changes, original provenance snapshots, reference trajectories and terminal grader state stay evaluator-side. Visible decision summaries are retained; private reasoning is omitted. Raw snapshots belong to evaluation and replay, while exported RL transitions contain only public observations, actions, rewards and terminal flags.
+
+Source permission and split are separate constraints. Archived report derivatives retain diagnostic-only development use. Only eligible authored synthetic train families may enter positive SFT or RL training exports. Failed eligible train trajectories can supply RL transitions, but are never labeled successful demonstrations. Model identity is the requested configuration; no provider-signed model attestation is claimed.
+
+The following sections preserve the original v0.2 interface and historical boundaries; they do not override a later version's explicit task configuration.
+
+---
+
 # Local protocol, quality gates, and limitations
 
 Version 0.2 adds finite production batches and the Codex CLI adapter. The original trusted-command interface below remains available for controls. See [running batches](RUN.zh-CN.md) for executable commands and current live results.

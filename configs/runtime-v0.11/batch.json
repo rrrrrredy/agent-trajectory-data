@@ -1,0 +1,92 @@
+{
+  "archive_manifest_sha256": "ffa5207eb2f99e3fbe925ca663e8fd8236a04d04ab72e1a1e4632642b58e418d",
+  "as_of": "2026-09-28",
+  "dataset_version": "0.11",
+  "max_steps": 48,
+  "prior_release": {
+    "sha256": "6c7c9c143ee9084adec1e523aedaff1c69e28d9260094b20545ce5ab709908b2",
+    "tag": "dataset-v0.10"
+  },
+  "sources": [
+    {
+      "claim_id": "C04",
+      "excerpt_anchor": "采用证据中，Synthesia 的案例",
+      "family_id": "archive-support",
+      "kind": "archive",
+      "mechanism": "research_reconciliation",
+      "original_task_line": 1,
+      "parent_task_id": "research-305eb2740c55206778f2e061-review",
+      "report_name": "customer-service",
+      "split": "development",
+      "variants": [
+        "clean",
+        "withheld_evidence"
+      ]
+    },
+    {
+      "claim_id": "C02",
+      "excerpt_anchor": "语言能力也要跟着入口确认。",
+      "family_id": "archive-video",
+      "kind": "archive",
+      "mechanism": "research_reconciliation",
+      "original_task_line": 6,
+      "parent_task_id": "research-4530f8e230abe2a0af4f7ab0-review",
+      "report_name": "video-production",
+      "split": "development",
+      "variants": [
+        "clean",
+        "stale_artifact"
+      ]
+    },
+    {
+      "family_id": "delta-quality",
+      "kind": "synthetic",
+      "material": "delta-quality.json",
+      "material_sha256": "1512cfde6e6dac7e2bd084eb61c535398219c138a2dec534d11f15db3f008371",
+      "mechanism": "research_reconciliation",
+      "split": "train",
+      "variants": [
+        "clean",
+        "source_refresh"
+      ]
+    },
+    {
+      "family_id": "mosaic-coverage",
+      "kind": "synthetic",
+      "material": "mosaic-coverage.json",
+      "material_sha256": "53d15b5050bc3088b9c2c73d4f664dfd8176bea6b5a108d51f556e913f59ba30",
+      "mechanism": "research_reconciliation",
+      "split": "train",
+      "variants": [
+        "clean",
+        "uncertain_applied"
+      ]
+    },
+    {
+      "family_id": "summit-capacity",
+      "kind": "synthetic",
+      "material": "summit-capacity.json",
+      "material_sha256": "714a9bc649dad36622296a7b7746b62f8a4912e267be232dfc3f46480f2bcf9e",
+      "mechanism": "research_reconciliation",
+      "split": "development",
+      "variants": [
+        "clean",
+        "source_refresh"
+      ]
+    },
+    {
+      "family_id": "rivet-routing",
+      "kind": "synthetic",
+      "material": "rivet-routing.json",
+      "material_sha256": "5882b36f68876676e2b1869c44c7996c0e6f459a4d4d73415ee176160e48549a",
+      "mechanism": "research_reconciliation",
+      "split": "test",
+      "variants": [
+        "clean",
+        "uncertain_not_applied"
+      ]
+    }
+  ],
+  "toolkit_commit": "28524448eaf6534125a24dd1ea26e986016c8aea",
+  "version": "runtime-workspace-batch-1"
+}

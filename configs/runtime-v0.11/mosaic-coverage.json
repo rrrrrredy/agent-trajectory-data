@@ -1,0 +1,85 @@
+{
+  "decision_rule": {
+    "no": "extend_compatibility_checks",
+    "operator": ">=",
+    "output": "coverage_percent",
+    "threshold": 80,
+    "yes": "declared_coverage_target_met"
+  },
+  "evidence_documents": {
+    "test-matrix": {
+      "provenance": "Authored synthetic study; no real organization or measured deployment is represented.",
+      "rows": [
+        {
+          "meaning": "Successfully tested paths.",
+          "row_id": "COVERED",
+          "unit": "paths",
+          "value": 73
+        },
+        {
+          "meaning": "All paths in scope.",
+          "row_id": "TOTAL",
+          "unit": "paths",
+          "value": 90
+        },
+        {
+          "meaning": "Integer percentage scale.",
+          "row_id": "SCALE",
+          "unit": "percent_scale",
+          "value": 100
+        }
+      ],
+      "title": "Compatibility matrix"
+    }
+  },
+  "family_id": "mosaic-coverage",
+  "missingness": [],
+  "origin": "authored_synthetic",
+  "outputs": {
+    "coverage_percent": {
+      "expression": {
+        "args": [
+          {
+            "args": [
+              {
+                "ref": [
+                  "test-matrix",
+                  "COVERED"
+                ]
+              },
+              {
+                "ref": [
+                  "test-matrix",
+                  "SCALE"
+                ]
+              }
+            ],
+            "op": "multiply"
+          },
+          {
+            "ref": [
+              "test-matrix",
+              "TOTAL"
+            ]
+          }
+        ],
+        "op": "floor_divide"
+      },
+      "unit": "percent"
+    }
+  },
+  "result_scope": "supplied_synthetic_study",
+  "rights": {
+    "allowed_uses": [
+      "diagnostic",
+      "evaluation",
+      "training"
+    ],
+    "distribution": "private_internal",
+    "training_eligible": true
+  },
+  "source_group_id": "mosaic-coverage",
+  "source_updates": [],
+  "template_group": "workspace-reconciliation-1",
+  "topic": "Align a compatibility summary and analysis while recovering an uncertain write."
+}

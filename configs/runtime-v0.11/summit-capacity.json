@@ -1,0 +1,97 @@
+{
+  "decision_rule": {
+    "no": "reschedule_uncovered_records",
+    "operator": ">=",
+    "output": "capacity_margin",
+    "threshold": 0,
+    "yes": "window_capacity_sufficient"
+  },
+  "evidence_documents": {
+    "request-sheet": {
+      "provenance": "Authored synthetic study; no real organization or measured deployment is represented.",
+      "rows": [
+        {
+          "meaning": "Records needing migration this window.",
+          "row_id": "NEED",
+          "unit": "records",
+          "value": 120
+        }
+      ],
+      "title": "Archive migration demand"
+    },
+    "worker-log": {
+      "provenance": "Authored synthetic study; no real organization or measured deployment is represented.",
+      "rows": [
+        {
+          "meaning": "Available local throughput.",
+          "row_id": "LOCAL",
+          "unit": "records",
+          "value": 65
+        },
+        {
+          "meaning": "Available remote throughput.",
+          "row_id": "REMOTE",
+          "unit": "records",
+          "value": 60
+        }
+      ],
+      "title": "Migration capacity"
+    }
+  },
+  "family_id": "summit-capacity",
+  "missingness": [],
+  "origin": "authored_synthetic",
+  "outputs": {
+    "capacity_margin": {
+      "expression": {
+        "args": [
+          {
+            "args": [
+              {
+                "ref": [
+                  "worker-log",
+                  "LOCAL"
+                ]
+              },
+              {
+                "ref": [
+                  "worker-log",
+                  "REMOTE"
+                ]
+              }
+            ],
+            "op": "sum"
+          },
+          {
+            "ref": [
+              "request-sheet",
+              "NEED"
+            ]
+          }
+        ],
+        "op": "subtract"
+      },
+      "unit": "records"
+    }
+  },
+  "result_scope": "supplied_synthetic_study",
+  "rights": {
+    "allowed_uses": [
+      "diagnostic",
+      "evaluation",
+      "training"
+    ],
+    "distribution": "private_internal",
+    "training_eligible": true
+  },
+  "source_group_id": "summit-capacity",
+  "source_updates": [
+    {
+      "document_id": "worker-log",
+      "row_id": "REMOTE",
+      "value": 42
+    }
+  ],
+  "template_group": "workspace-reconciliation-1",
+  "topic": "Reconcile a migration-window estimate after a worker availability correction."
+}

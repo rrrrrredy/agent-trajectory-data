@@ -26,6 +26,9 @@ def schema_for(config):
     if config.get("environment_profile")=="bounded_program_repair":
         import repair_env
         schema["properties"]["tool"]["enum"]=list(repair_env.TOOLS)
+    if config.get("environment_profile")=="research_workspace":
+        import workspace_env
+        schema["properties"]["tool"]["enum"]=list(workspace_env.TOOLS)
     return schema
 
 def training_eligible(row,scenario):
@@ -33,7 +36,7 @@ def training_eligible(row,scenario):
 
 def exclusion_reason(row,scenario):
     if row["split"]=="test":return "test_family"
-    if row["split"]=="development":return "source_restricted_development"
+    if row["split"]=="development":return "development_family" if scenario["rights"].get("training_eligible") is True else "source_restricted_development"
     if scenario["rights"].get("training_eligible") is not True:return "source_not_training_eligible"
     return "unsuccessful_or_incomplete"
 
@@ -117,11 +120,12 @@ def verify_capture(folder,env,config):
     return cap
 
 def config_validate(config,tasks):
-    e.check(config["version"]=="runtime-collection-1" and config["evaluation_mode"] in {"first_attempt_synthetic_development","first_attempt_derived_development"},"collection_mode_changed")
+    e.check(config["version"]=="runtime-collection-1" and config["evaluation_mode"] in {"first_attempt_synthetic_development","first_attempt_derived_development","first_attempt_mixed_development"},"collection_mode_changed")
     e.check(config["execution_authorization"]=="approved_by_user" and bool(config["approval_record"]),"execution_not_authorized")
     e.check(config["task_ids"] and len(set(config["task_ids"]))==len(config["task_ids"]) and all(t in tasks for t in config["task_ids"]),"invalid_task_selection")
-    e.check(config.get("environment_profile") in {None,"bounded_program_repair"},"invalid_environment_profile")
-    e.check(all((tasks[t]["version"]=="research-repair-1")==bool(config.get("environment_profile")) for t in config["task_ids"]),"environment_profile_mismatch")
+    e.check(config.get("environment_profile") in {None,"bounded_program_repair","research_workspace"},"invalid_environment_profile")
+    profiles={"research-repair-1":"bounded_program_repair","research-workspace-1":"research_workspace"}
+    e.check(all(profiles.get(tasks[t]["version"])==config.get("environment_profile") for t in config["task_ids"]),"environment_profile_mismatch")
     for key in ("max_new_calls","monthly_model_calls","max_call_seconds","max_batch_seconds"):
         e.check(type(config[key]) is int and config[key]>0,"invalid_budget")
     e.check(config["max_new_calls"]<=sum(tasks[t]["max_steps"] for t in config["task_ids"]),"budget_exceeds_environment_steps")
@@ -129,13 +133,13 @@ def config_validate(config,tasks):
 def ledger_entries(root):
     return [r for path in sorted((Path(root)/"budgets").glob("*.json")) for r in b.read(path)["reservations"]]
 
-def execute(batch,config_path,output,ledger_root,provider=None,after_capture=None):
+def execute(batch,config_path,output,ledger_root,provider=None,after_capture=None,pause_after=None):
     sys.path.insert(0,str(HERE.parent));from agentdata.pipeline import batch_lock
     output=Path(output).resolve();output.parent.mkdir(parents=True,exist_ok=True)
     with batch_lock(output.parent/(output.name+".lock")):
-        return _execute(Path(batch).resolve(),Path(config_path),output,Path(ledger_root).resolve(),provider or invoke,after_capture)
+        return _execute(Path(batch).resolve(),Path(config_path),output,Path(ledger_root).resolve(),provider or invoke,after_capture,pause_after)
 
-def _execute(batch,config_path,output,ledger_root,provider,after_capture):
+def _execute(batch,config_path,output,ledger_root,provider,after_capture,pause_after):
     from agentdata.pipeline import reserve_monthly
     from agentdata.providers import BudgetExceeded
     b.verify(batch);rows=b.lines(batch/"tasks.jsonl");tasks={r["task_id"]:b.read(batch/r["scenario"]) for r in rows};row_map={r["task_id"]:r for r in rows}
@@ -151,6 +155,8 @@ def _execute(batch,config_path,output,ledger_root,provider,after_capture):
         b.put(output/"started.json",{"started_epoch":time.time(),"deadline_epoch":time.time()+config["max_batch_seconds"],"prior_ledger_entries":ledger_entries(ledger_root)})
     start=b.read(output/"started.json");deadline=start["deadline_epoch"];indices=[]
     for tid in config["task_ids"]:
+        if pause_after is not None and len(indices)>=pause_after:
+            return {"paused_after_episodes":len(indices),"successes":sum(x["reward"] for x in indices),"calls":sum(x["model_calls"] for x in indices),"input_freeze":freeze}
         scenario=tasks[tid];env=b.new_env(scenario);folder=output/"episodes"/tid
         if (folder/"episode.json").exists():
             run=b.read(folder/"episode.json");b.verify_episode(scenario,run);indices.append(b.read(folder/"index.json"));continue
@@ -184,6 +190,8 @@ def _execute(batch,config_path,output,ledger_root,provider,after_capture):
         run=b.record_env(env,"isolated_model_cli");run.update(capture_refs=refs,stop_reason=stop,evaluation_mode=config["evaluation_mode"],model_identity="requested:"+config["model"])
         index={"task_id":tid,"family_id":scenario["family_id"],"split":scenario["split"],"path":"episodes/"+tid+"/episode.json",
                "reward":run["grade"]["reward"],"complete":run["complete"],"model_calls":len(refs),"stop_reason":stop,"actor_kind":"isolated_model_cli"}
+        if scenario["version"]=="research-workspace-1":
+            for name,content in env.deliverables().items():b.write(folder/"deliverables"/name,content.encode())
         # Index first: a crash after the episode file can never lose the corresponding index.
         b.put(folder/"index.json",index);b.put(folder/"episode.json",run);indices.append(index)
     b.put_lines(output/"episodes.jsonl",indices)
@@ -236,6 +244,8 @@ def verify(batch,output):
                 e.check(e.equal(b.read(checkpoint),b.record_env(env,"isolated_model_cli")),"checkpoint_changed")
                 pairs.append({"request":b.read(folder/"request.json"),"action":cap["action"],"decision_summary":cap["decision_summary"],"capture_path":ref["path"]})
         e.check(e.equal(env.events,run["events"]),"model_action_replay_changed")
+        if scenario["version"]=="research-workspace-1":
+            for name,content in env.deliverables().items():e.check((output/"episodes"/row["task_id"]/"deliverables"/name).read_bytes()==content.encode(),"delivered_artifact_changed")
         if env.terminated:e.check(run["stop_reason"] is None,"submitted_stop_reason_changed")
         elif env.truncated:e.check(run["stop_reason"]=="environment_step_budget_exhausted","truncation_stop_reason_changed")
         elif run["capture_refs"] and b.read(output/run["capture_refs"][-1]["path"]/"capture.json")["status"]=="failed":
@@ -257,11 +267,11 @@ def verify(batch,output):
     return {"passed":True,"episodes":len(rows),"calls":calls,"first_attempt_successes":sum(r["reward"] for r in rows),"model_train_trajectories":len(exports),"sft_decisions":len(decisions),"source_family_overlap":0}
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument("command",choices=("execute","verify"));parser.add_argument("batch");parser.add_argument("output");parser.add_argument("--config");parser.add_argument("--ledger")
+    parser=argparse.ArgumentParser();parser.add_argument("command",choices=("execute","verify"));parser.add_argument("batch");parser.add_argument("output");parser.add_argument("--config");parser.add_argument("--ledger");parser.add_argument("--pause-after",type=int)
     args=parser.parse_args()
     if args.command=="execute":
         e.check(Path(args.ledger).resolve()==HERE.parent/"data/production-current","must_use_existing_ledger")
-        result=execute(args.batch,args.config,args.output,args.ledger)
+        result=execute(args.batch,args.config,args.output,args.ledger,pause_after=args.pause_after)
     else:result=verify(args.batch,args.output)
     print(json.dumps(result,indent=2))
 if __name__=="__main__":main()

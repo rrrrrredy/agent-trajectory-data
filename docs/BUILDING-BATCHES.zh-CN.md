@@ -73,3 +73,19 @@ collection.json 固定 task_ids、model、max_new_calls、monthly_model_calls、
 下一批优先补当前没有的能力边界：依赖深度变化、文档布局变化、合法操作顺序差异、非暂时工具故障以及多项约束之间的取舍。先定义可验证末态和失败反例，再扩充数据量。当前 train/test 虽按来源分离，但机制共享且开发者已见素材；不能作为外部盲测或跨企业迁移的证明。
 
 新增材料、环境变更、评分变更和模型变更分别版本化。只有发现可复现的通用 toolkit 缺陷，才向 toolkit 仓库提交修复；数据和企业场景实现留在私有数据集仓库。
+
+
+## v0.11 研究交付任务
+
+在 configs/runtime-v0.11/batch.json 登记来源、用途、切分、机制和变体。归档报告用原任务行号、报告与登记表哈希、原文行和 claim_id 绑定；合成材料有单独的 material_sha256。新增材料先注册再构建，不自动扩大任务范围。
+
+```powershell
+py -3 -B scripts/runtime_batch.py build configs/runtime-v0.11/batch.json data/runtime-batch-v0.11
+py -3 -B scripts/runtime_batch.py verify data/runtime-batch-v0.11
+```
+
+构建输出包含 intake 候选记录、同源分组、字面相似度筛查、十二个 scenario、两种操作顺序的参考执行和九十三条错误控制。构建命令拒绝覆盖已有输出；修复环境时保留失败候选，在新目录重建并说明版本变化。
+
+参考执行只使用公开观察和 brief 中的计算规则。实际模型执行保存两个独立交付文件；模型采集开始后冻结 runtime 和配置。重新开始进程复用已完成的捕获，未知在途调用隔离，截止时间与账本不会重置。
+
+workspace_exports.py 从原始模型执行重建 transitions、可训练 transitions 和固定评测选择；failure_exports.py 从实际错误事件派生恢复片段。缺失或失败不能用脚本参考补成模型成功。每批成功数量与可训练数量依据真实执行填写。
