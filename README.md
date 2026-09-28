@@ -6,6 +6,8 @@ Private data for agent tasks, observable execution trajectories, runnable enviro
 
 [数据说明](docs/DATASET-v0.5.zh-CN.md) · [RL 环境](docs/RL-ENVIRONMENT.zh-CN.md) · [当前结论](docs/CONCLUSION.zh-CN.md) · [构建范围](docs/PLAN.zh-CN.md) · [验收](docs/ACCEPTANCE.zh-CN.md)
 
+The next source-separated curriculum is locally verified: [v0.6 progress](docs/PROGRESS-v0.6.zh-CN.md). Its additional model execution is pending explicit approval; it is not a completed model evaluation.
+
 ## Run v0.5
 
 From this repository:

@@ -1,0 +1,18 @@
+{
+  "policy": "isolated_json_decision",
+  "model": "gpt-6-astra",
+  "max_new_calls": 36,
+  "monthly_model_calls": 44,
+  "max_decisions_per_episode": 12,
+  "max_call_seconds": 90,
+  "max_batch_seconds": 1200,
+  "task_ids": [
+    "business-synthetic-capacity-tool_retry-v2",
+    "business-archived-muse-concurrent_edit-v2",
+    "business-archived-looped-access_revoked-v2"
+  ],
+  "authorization_basis": "Dataset work is authorized. Additional external model calls await explicit approval after automatic review rejection.",
+  "accounting": "Append to original data/production-current monthly ledger; retain eight prior reservations.",
+  "attempt_policy": "One first attempt per selected task; no automatic rerun or policy tuning on test results.",
+  "execution_authorization": "pending"
+}
