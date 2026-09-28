@@ -1,5 +1,14 @@
 # Changelog
 
+## dataset-v0.8 — Structured research environments and first attempts
+
+- Add six synthetic source families and 24 versioned scenarios across temporal evidence, numeric consistency and verified review revision.
+- Bind structured conclusions, citations and delivered notes to actual reads and final state; retain valid blocked outcomes.
+- Collect six successful first model attempts in 52 calls; export three train-family trajectories and 26 decisions, excluding test families.
+- Configure sources, time, faults, splits and budgets; preserve failed tool actions and durable call admission without duplicate unknown calls.
+- Deliver per-task environment declarations, graders, reference entrypoints, controls and observable development evidence.
+- Preserve prior releases and link the generic Unicode JSONL fix in the separate public research-toolkit repository.
+
 ## dataset-v0.7 — Successful model continuations
 
 - Resume all three original 12-step checkpoints; complete and pass the unchanged graders in 11 additional calls.

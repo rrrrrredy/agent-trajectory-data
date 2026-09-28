@@ -1,0 +1,41 @@
+{
+  "family_id": "canal-staffing",
+  "origin": "authored_synthetic",
+  "rights": {
+    "distribution": "private",
+    "training_eligible": true
+  },
+  "context": "Fictional internal operations snapshot for canal-staffing. Only supplied records support the task.",
+  "source_rows": [
+    {
+      "row_id": "S-old",
+      "metric": "active_seats",
+      "value": 37,
+      "unit": "seats",
+      "effective_at": "2026-09-01",
+      "revision": 1
+    },
+    {
+      "row_id": "S-current",
+      "metric": "active_seats",
+      "value": 41,
+      "unit": "seats",
+      "effective_at": "2026-09-20",
+      "revision": 2
+    },
+    {
+      "row_id": "S-future",
+      "metric": "active_seats",
+      "value": 141,
+      "unit": "seats",
+      "effective_at": "2026-10-01",
+      "revision": 3
+    }
+  ],
+  "claim": {
+    "row_id": "C1",
+    "metric": "active_seats",
+    "value": 37,
+    "unit": "seats"
+  }
+}

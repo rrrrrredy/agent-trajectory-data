@@ -1,0 +1,111 @@
+"""Assemble and independently verify the incremental v0.8 data release."""
+from __future__ import annotations
+import argparse,json,shutil,zipfile
+from collections import Counter
+from pathlib import Path
+import runtime_batch as b
+import runtime_collect as c
+import research_env_v3 as e
+
+def all_hashes(root):
+    root=Path(root)
+    return {p.relative_to(root).as_posix():b.sha(p.read_bytes()) for p in sorted(root.rglob("*")) if p.is_file() and p!=root/"manifest.json" and "__pycache__" not in p.parts}
+
+def task_entrypoints(root):
+    for task in b.lines(Path(root)/"batch/tasks.jsonl"):
+        tid=task["task_id"]
+        base="from pathlib import Path\nimport json,sys\nROOT=Path(__file__).resolve().parents[3]\nsys.path.insert(0,str(ROOT))\nimport research_env_v3 as e\nimport runtime_batch as b\nSCENARIO=b.read(ROOT/"+repr("batch/"+task["scenario"])+")\n"
+        verify=base+"run=b.read(sys.argv[1])\ngrade=e.verify_record(SCENARIO,run)\nprint(json.dumps(grade,indent=2))\nsys.exit(0 if grade['reward'] else 1)\n"
+        solution=base+"run=b.run_reference(SCENARIO)\nb.put(sys.argv[1],run)\nprint(json.dumps(e.verify_record(SCENARIO,run),indent=2))\n"
+        yield "task-entrypoints/"+tid+"/tests/verify.py",verify.encode()
+        yield "task-entrypoints/"+tid+"/solution/reference.py",solution.encode()
+        yield "task-entrypoints/"+tid+"/environment.json",b.encoded({"runtime":"CPython >= 3.10","dependencies":[],"environment_version":e.VERSION,
+              "api":"research_env_v3.ResearchEnv.reset / step","stdio":"research_env_v3.py","scenario":"batch/"+task["scenario"],
+              "network_required":False,"max_steps":b.read(Path(root)/"batch"/task["scenario"])["max_steps"]})
+
+def metrics(root):
+    root=Path(root);batch=b.verify(root/"batch");models=c.verify(root/"batch",root/"model")
+    tasks=b.lines(root/"batch/tasks.jsonl");episodes=b.lines(root/"model/episodes.jsonl")
+    families={}
+    for task in tasks:families.setdefault(task["family_id"],{})[task["variant"]]=task
+    contrasts=0
+    for family,variants in families.items():
+        if "counterfactual" not in variants:continue
+        e.check("clean" in variants,"counterfactual_without_baseline")
+        original=b.read(root/"batch"/variants["clean"]["scenario"]);changed=b.read(root/"batch"/variants["counterfactual"]["scenario"])
+        e.check(not e.equal(e.expected(original,original["documents"])[0],e.expected(changed,changed["documents"])[0]),"ineffective_counterfactual:"+family)
+        contrasts+=1
+    status=Counter();usage=Counter();stops=Counter()
+    for row in episodes:
+        run=b.read(root/"model"/row["path"])
+        status.update(str(event["observation"]["status"]) for event in run["events"])
+        stops.update([run["stop_reason"] or "submitted"])
+        for ref in run["capture_refs"]:
+            cap=b.read(root/"model"/ref["path"]/"capture.json")
+            usage.update({key:value for key,value in (cap["usage"] or {}).items() if type(value) is int})
+    prior=b.read(root/"model/started.json")["prior_ledger_entries"];final=b.read(root/"model/ledger-final.json")["entries"]
+    return {"curriculum":batch,"model_collection":models,"mechanisms":sorted({t["mechanism"] for t in tasks}),
+            "effective_counterfactual_pairs":contrasts,"source_families_by_split":{split:sorted({t["family_id"] for t in tasks if t["split"]==split}) for split in ("train","test")},
+            "observed_tool_status_counts":dict(status),"stop_reason_counts":dict(stops),"usage_tokens":dict(usage),
+            "previous_ledger_reservations":len(prior),"final_ledger_reservations":len(final),"provider_cost":None,
+            "evaluation_boundary":"Fresh model contexts on authored synthetic development tasks. Source families are disjoint; mechanisms are shared. No broad generalization or toolkit-effect estimate.",
+            "grading_boundary":"Exact structured facts, arithmetic, citations and observed state transitions; no freeform research truth judgment."}
+
+def verify(root):
+    root=Path(root).resolve();manifest=b.read(root/"manifest.json")
+    e.check(manifest["files"]==all_hashes(root),"release_files_changed")
+    for name,expected in task_entrypoints(root):e.check(b.local(root,name).read_bytes()==expected,"task_entrypoint_changed")
+    result=metrics(root);e.check(e.equal(result,b.read(root/"metrics.json")),"release_metrics_changed")
+    prior=b.read(root/"lineage.json")["prior_release"]
+    e.check(prior==b.read(root/"batch/config.json")["prior_release"],"prior_lineage_changed")
+    events=b.lines(root/"processing/events.jsonl");calls={r["call_id"] for r in events if r["kind"]=="tool_call"};results={r["call_id"] for r in events if r["kind"]=="tool_result"}
+    e.check(calls==results,"processing_calls_unpaired")
+    e.check(all(r["kind"] in {"tool_call","tool_result","assistant_message","user_message"} for r in events),"unexpected_processing_kind")
+    by_id={r["event_id"]:r for r in events};source=b.read(root/"processing/source.json")
+    e.check(source["projection_sha256"]==b.sha((root/"processing/events.jsonl").read_bytes()) and source["events"]==len(events),"processing_projection_changed")
+    for incident in b.read(root/"processing/incidents.json"):
+        for relation in ("failure_events","diagnosis_events","patch_events","verification_events"):
+            e.check(incident[relation] and all(ref in by_id for ref in incident[relation]),"incident_evidence_missing")
+    return {"passed":True,"files":len(manifest["files"]),"processing_events":len(events),**result}
+
+def build(batch,model,processing,checks,output):
+    root=Path(output).resolve();e.check(not root.exists(),"output_exists")
+    b.verify(batch);c.verify(batch,model)
+    root.mkdir();shutil.copytree(batch,root/"batch");shutil.copytree(model,root/"model");shutil.copytree(processing,root/"processing");shutil.copytree(checks,root/"checks")
+    for name in ("research_env_v3.py","runtime_batch.py","runtime_collect.py","runtime_release.py"):
+        b.write(root/name,(Path(__file__).parent/name).read_bytes())
+    for name,data in task_entrypoints(root):b.write(root/name,data)
+    config=b.read(root/"batch/config.json")
+    b.put(root/"lineage.json",{"dataset_version":"0.8","incremental":True,"prior_release":config["prior_release"],"toolkit_commit":config["toolkit_commit"],
+        "prior_artifacts_modified":False,"source_and_grader_identity":"batch/tasks.jsonl and per-task scenario; model/input-freeze.json",
+        "rights":"Synthetic train families may enter training; test families and processing diagnostics remain excluded."})
+    b.put(root/"metrics.json",metrics(root))
+    b.write(root/"README.md",("# Agent Runtime Dataset v0.8\n\nIncremental private release. Verify with Python 3.10+:\n\n    python -B runtime_release.py verify .\n\n"
+       "Each batch/tasks/<id>/ contains the scenario, reference trajectory and negative controls. Evaluator-only files must stay outside policy context.\n\n"
+       "Start a fresh policy session with `python -B research_env_v3.py batch/tasks/<id>/scenario.json --output ../episode.json`. Send one {tool,args} JSON action per line. The host exposes reset/step observations, reward, terminated and truncated.\n\n"
+       "The episode output is a complete observable trajectory. To grade it independently: import research_env_v3, load the task scenario and episode JSON, and call verify_record(scenario, episode).\n\n"
+       "Actual model requests, visible replies, actions, tool failures and checkpoints are under model/. Only model/training/ contains actual model training exports. Scripted references are separately identified in batch/training/.\n\n"
+       "The original v0.7 release is retained by tag and SHA-256 in lineage.json. Earlier real report material remains in its original private releases. This increment adds authored synthetic material, not new company records.\n\n"
+       "See metrics.json and processing/ for quality boundaries and the actual diagnosis-to-verification evidence. Archived commands are inert evidence and must not be executed.\n").encode())
+    b.put(root/"manifest.json",{"version":"agent-runtime-v0.8","files":all_hashes(root)})
+    return verify(root)
+
+def pack(root,archive):
+    root=Path(root).resolve();verify(root);archive=Path(archive);e.check(not archive.exists(),"archive_exists")
+    archive.parent.mkdir(parents=True,exist_ok=True)
+    with zipfile.ZipFile(archive,"w",zipfile.ZIP_DEFLATED) as z:
+        for path in sorted(root.rglob("*")):
+            if path.is_file() and "__pycache__" not in path.parts:
+                info=zipfile.ZipInfo(path.relative_to(root).as_posix(),date_time=(2026,9,28,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED;z.writestr(info,path.read_bytes())
+    return {"sha256":b.sha(archive.read_bytes()),"bytes":archive.stat().st_size}
+
+def main():
+    parser=argparse.ArgumentParser();sub=parser.add_subparsers(dest="command",required=True)
+    p=sub.add_parser("build")
+    for name in ("batch","model","processing","checks","output"):p.add_argument(name)
+    p=sub.add_parser("verify");p.add_argument("root")
+    p=sub.add_parser("pack");p.add_argument("root");p.add_argument("archive")
+    args=parser.parse_args()
+    result=build(args.batch,args.model,args.processing,args.checks,args.output) if args.command=="build" else pack(args.root,args.archive) if args.command=="pack" else verify(args.root)
+    print(json.dumps(result,ensure_ascii=False,indent=2))
+if __name__=="__main__":main()

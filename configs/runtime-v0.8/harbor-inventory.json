@@ -1,0 +1,46 @@
+{
+  "family_id": "harbor-inventory",
+  "origin": "authored_synthetic",
+  "rights": {
+    "distribution": "private",
+    "training_eligible": false
+  },
+  "context": "Fictional internal operations snapshot for harbor-inventory. Only supplied records support the task.",
+  "source_rows": [
+    {
+      "row_id": "S-a",
+      "metric": "inspected_items",
+      "value": 25,
+      "unit": "thousand_units",
+      "period": "2026-08"
+    },
+    {
+      "row_id": "S-b",
+      "metric": "inspected_items",
+      "value": 2300,
+      "unit": "units",
+      "period": "2026-08"
+    },
+    {
+      "row_id": "S-other-period",
+      "metric": "inspected_items",
+      "value": 40000,
+      "unit": "units",
+      "period": "2026-07"
+    },
+    {
+      "row_id": "S-other-metric",
+      "metric": "invoice_count",
+      "value": 999,
+      "unit": "units",
+      "period": "2026-08"
+    }
+  ],
+  "claim": {
+    "row_id": "C1",
+    "metric": "inspected_items",
+    "period": "2026-08",
+    "value": 26300,
+    "unit": "units"
+  }
+}

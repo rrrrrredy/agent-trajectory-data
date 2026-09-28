@@ -1,61 +1,54 @@
 # Agent Trajectory Data
 
-Private data for agent tasks, observable execution trajectories, runnable environments and evaluation.
+Private task data, observable agent trajectories, executable environments and reproducible evaluation.
 
-**Latest package: v0.7.** The three interrupted v0.6 attempts now have successful, actual model continuations. Original attempts and the unchanged environment and grader are preserved. All local verification uses Python's standard library.
+**Latest package: v0.8.** Six new synthetic source families produce 24 runnable scenarios across evidence updates, numeric consistency and review-driven revision. All six selected model first attempts completed: 52 actual calls, with 9, 7, 7, 9, 10 and 10 steps. Three train-family trajectories and 26 decisions are exported; three test families remain excluded.
 
-[数据说明](docs/DATASET-v0.7.zh-CN.md) · [修复经过](docs/RECOVERY-v0.7.zh-CN.md) · [RL 环境](docs/RL-ENVIRONMENT.zh-CN.md) · [当前结论](docs/CONCLUSION.zh-CN.md) · [验收](docs/ACCEPTANCE.zh-CN.md)
+[数据说明](docs/DATASET-v0.8.zh-CN.md) · [扩充批次](docs/BUILDING-BATCHES.zh-CN.md) · [RL 环境](docs/RL-ENVIRONMENT.zh-CN.md) · [当前结论](docs/CONCLUSION.zh-CN.md) · [验收](docs/ACCEPTANCE.zh-CN.md)
 
-## Actual results
+## What is delivered
 
-| Content | Result |
-|---|---|
-| Curriculum | 20 runnable scenarios, two fictional train families and two archived test families |
-| Scripted supervision | 60 controls, ten scripted demonstrations and ten counterfactual preference pairs |
-| Original model attempts | Three interrupted 12-step attempts, preserved unchanged |
-| Actual continuations | 11 new calls in distinct contexts; all three completed and passed the original grader |
-| Total steps after recovery | 17, 17 and 13, including the original 12 steps in each |
-| Model training export | One successful 17-decision trajectory, including its failed prefix; five new recovery decisions for SFT |
-| Test-family export | Both archived families remain excluded from training |
-| Ledger | Original 44 reservations retained; 55 total; approved ceiling 98 |
-| Verification | 160 tests; independent extraction of 490 content files; 12 rejected rehashed mutations |
+- Frozen material, task context, public tools, deterministic state transitions, graders and per-task test/reference entrypoints.
+- 24 scripted positive references, 120 negative controls and 12 explicitly scripted train trajectories.
+- Six actual model trajectories with requests, visible replies, actions, read receipts, state checkpoints, token usage and terminal grading.
+- Successful recovery from two tool rate limits and one concurrent-edit conflict, without deleting those failures.
+- Structured result, scope and citation grading tied to the delivered note and actual final state.
+- Durable call admission, crash-safe capture replay and quarantine of unknown in-flight calls.
+- Source-family separation, explicit export exclusions, original ledger history and development-process evidence.
 
-The original collector stopped after 12 decisions while the model saw only a 30-step environment budget. Every recovery request now exposes the actual remaining steps and batch limits. Public tool help explains literal search, document IDs versus read receipt IDs, and the terminal submit action. The grader was not relaxed.
+The new material is synthetic; the model executions are real. Earlier real reports, observed research runs and original failed attempts remain in the unchanged prior releases. Six successful development tasks do not establish broad research quality, cross-company generalization or a causal toolkit improvement.
 
-These are repair-validation continuations of previously observed tasks, not new unseen first attempts. Success means a correct registry-integrity handoff, including a properly supported blocked result when access is denied. It does not establish factual correctness of the reports.
+## Run the standalone package
 
-## Run the package
+Download and extract the [private v0.8 release](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.8), then verify:
 
-Verify the [private v0.7 archive](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.7) after extraction:
+    py -3 -X utf8 -B runtime_release.py verify .
 
-    py -3 -X utf8 -B verify_recovery.py verify .
+Grade an actual model trajectory:
 
-Grade the completed capacity trajectory using the unchanged task grader:
+    py -3 -X utf8 -B task-entrypoints/orchid-quota-counterfactual-v3/tests/verify.py model/episodes/orchid-quota-counterfactual-v3/episode.json
 
-    py -3 -X utf8 -B prior/curriculum/tasks/business-synthetic-capacity-tool_retry-v2/tests/verify.py recovery/episodes/business-synthetic-capacity-tool_retry-v2/episode.json
+Run the reference solution:
 
-Start a fresh interactive environment, writing outside the archive:
+    py -3 -X utf8 -B task-entrypoints/orchid-quota-counterfactual-v3/solution/reference.py ../reference-v8.json
 
-    py -3 -X utf8 -B prior/curriculum/business_env_v2.py prior/curriculum/tasks/business-synthetic-capacity-tool_retry-v2/environment/scenario.json --output ../episode-v7.json
+Start a fresh environment:
 
-The process emits an initial observation and accepts one JSON action per line:
+    py -3 -X utf8 -B research_env_v3.py batch/tasks/orchid-quota-counterfactual-v3/scenario.json --output ../episode-v8.json
 
-    {"tool":"search","args":{"query":""}}
+Send one JSON action per line, beginning with:
+
     {"tool":"read","args":{"document_id":"policy"}}
 
-Give a policy only public observations through the host. The full archive also contains evaluator-only state and reference solutions.
+The policy receives reset/step observations. Evaluator state, reference solutions and grading checks must remain outside its context. The runtime needs only Python's standard library. The model collector is a separate optional component with explicit per-batch limits.
 
-## Files and lineage
+## Build another batch
 
-- prior/: exact v0.6 contents, including frozen sources, tasks, environments, graders, references, scripted controls and the three original model attempts.
-- recovery/: actual requests, visible replies, actions, failures, grading, approval and ledger evidence.
-- recovery/resumptions/: original crash evidence, the corrected collector and preserved-file bindings. Two captured calls were replayed locally without reissuing them; the original call and time limits were retained.
-- training/model-trajectories.jsonl: one complete successful train-family trajectory with all 17 actual request/reply pairs.
-- training/model-sft-recovery.jsonl: five newly observed recovery decisions from that trajectory.
-- training/selection.json: explicit exclusions for both test families.
+    py -3 -X utf8 -B scripts/runtime_batch.py build configs/<batch>/batch.json data/<new-batch>
+    py -3 -X utf8 -B scripts/runtime_batch.py verify data/<new-batch>
 
-The release includes acceptance, test and processing-evidence assets. The processing supplement preserves diagnosis, approval rejection and resolution, the checkpoint failure, repair, retry and final verification.
+The example configuration is in configs/runtime-v0.8/. Source material, as-of time, mechanism, faults, split and step limits are explicit. Output directories are immutable; repeated or ineffective variants must not be counted as new independent sources.
 
-Model identity records the requested configuration, gpt-6-astra; the provider did not independently attest the served version. Requests exclude report prose, claim prose, source titles and URLs. Source-family overlap between train and test is zero; the workflow template is shared. No broad generalization claim is made.
+Model identity is recorded as requested configuration (gpt-6-astra), not independently provider-attested. These are authored development tasks with shared mechanisms and disjoint source families. The new grader verifies structured facts and state, not arbitrary prose truth.
 
-Historical corpus and seven coding repair tasks remain in [v0.4](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.4), with prior grading fixes in [v0.5](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.5). Data stays outside Git and is delivered through private release assets.
+Raw data stays outside Git and is delivered through private release assets. The public [research-toolkit fix](https://github.com/rrrrrredy/research-toolkit/commit/28524448eaf6534125a24dd1ea26e986016c8aea) contains only generic parsing code and synthetic regression tests.

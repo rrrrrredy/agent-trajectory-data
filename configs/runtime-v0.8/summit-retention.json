@@ -1,0 +1,38 @@
+{
+  "family_id": "summit-retention",
+  "origin": "authored_synthetic",
+  "rights": {
+    "distribution": "private",
+    "training_eligible": false
+  },
+  "context": "Fictional internal operations snapshot for summit-retention. Only supplied records support the task.",
+  "source_rows": [
+    {
+      "row_id": "S-fact",
+      "metric": "retention_days",
+      "value": 45,
+      "unit": "days"
+    },
+    {
+      "row_id": "S-unrelated",
+      "metric": "archived_queue_size",
+      "value": 12,
+      "unit": "items"
+    }
+  ],
+  "claim": {
+    "row_id": "C1",
+    "metric": "retention_days",
+    "value": 30,
+    "unit": "days"
+  },
+  "findings": [
+    {
+      "row_id": "F1",
+      "claim_id": "C1",
+      "proposed_value": 45,
+      "unit": "days",
+      "message": "The report disagrees with the supplied operational record."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "family_id": "ridge-throughput",
+  "origin": "authored_synthetic",
+  "rights": {
+    "distribution": "private",
+    "training_eligible": false
+  },
+  "context": "Fictional internal operations snapshot for ridge-throughput. Only supplied records support the task.",
+  "source_rows": [
+    {
+      "row_id": "S-old",
+      "metric": "daily_capacity",
+      "value": 850,
+      "unit": "orders_per_day",
+      "effective_at": "2026-09-01",
+      "revision": 1
+    },
+    {
+      "row_id": "S-current",
+      "metric": "daily_capacity",
+      "value": 920,
+      "unit": "orders_per_day",
+      "effective_at": "2026-09-20",
+      "revision": 2
+    },
+    {
+      "row_id": "S-future",
+      "metric": "daily_capacity",
+      "value": 1020,
+      "unit": "orders_per_day",
+      "effective_at": "2026-10-01",
+      "revision": 3
+    }
+  ],
+  "claim": {
+    "row_id": "C1",
+    "metric": "daily_capacity",
+    "value": 850,
+    "unit": "orders_per_day"
+  }
+}

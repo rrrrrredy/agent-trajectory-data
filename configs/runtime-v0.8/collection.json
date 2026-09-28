@@ -1,0 +1,24 @@
+{
+  "version": "runtime-collection-1",
+  "model": "gpt-6-astra",
+  "task_ids": [
+    "canal-staffing-tool_retry-v3",
+    "ridge-throughput-counterfactual-v3",
+    "birch-fulfilment-clean-v3",
+    "harbor-inventory-concurrent_edit-v3",
+    "orchid-quota-counterfactual-v3",
+    "summit-retention-clean-v3"
+  ],
+  "max_new_calls": 144,
+  "monthly_model_calls": 199,
+  "max_call_seconds": 90,
+  "max_batch_seconds": 1800,
+  "evaluation_mode": "first_attempt_synthetic_development",
+  "execution_authorization": "approved_by_user",
+  "approval_record": {
+    "user_instruction": "按你的建议推进。注意，你面对的是两个仓库，toolkit和本次任务的数据集仓库，相关推送不要搞混了",
+    "scope": "Follow the saved next-batch recommendations: six new synthetic source families, frozen first-attempt collection and separate repository pushes.",
+    "model_inherited_from_previous_approved_batch": "gpt-6-astra",
+    "payload": "Only newly authored synthetic documents, public tool observations and task policy; no archived report prose or hidden answers."
+  }
+}

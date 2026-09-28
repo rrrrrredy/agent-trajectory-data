@@ -1,0 +1,87 @@
+{
+  "version": "runtime-batch-1",
+  "dataset_version": "0.8",
+  "as_of": "2026-09-25",
+  "max_steps": 24,
+  "toolkit_commit": "28524448eaf6534125a24dd1ea26e986016c8aea",
+  "prior_release": {
+    "tag": "dataset-v0.7",
+    "sha256": "843d424d4553d00e6d510eaad0dd7fe66df56a849f70be00e6188b79cde9fa05"
+  },
+  "sources": [
+    {
+      "family_id": "canal-staffing",
+      "split": "train",
+      "mechanism": "evidence_update",
+      "material": "canal-staffing.json",
+      "variants": [
+        "clean",
+        "counterfactual",
+        "tool_retry",
+        "access_revoked"
+      ]
+    },
+    {
+      "family_id": "ridge-throughput",
+      "split": "test",
+      "mechanism": "evidence_update",
+      "material": "ridge-throughput.json",
+      "variants": [
+        "clean",
+        "counterfactual",
+        "tool_retry",
+        "concurrent_edit"
+      ]
+    },
+    {
+      "family_id": "birch-fulfilment",
+      "split": "train",
+      "mechanism": "numeric_consistency",
+      "material": "birch-fulfilment.json",
+      "variants": [
+        "clean",
+        "counterfactual",
+        "tool_retry",
+        "access_revoked"
+      ]
+    },
+    {
+      "family_id": "harbor-inventory",
+      "split": "test",
+      "mechanism": "numeric_consistency",
+      "material": "harbor-inventory.json",
+      "variants": [
+        "clean",
+        "counterfactual",
+        "tool_retry",
+        "concurrent_edit"
+      ]
+    },
+    {
+      "family_id": "orchid-quota",
+      "split": "train",
+      "mechanism": "review_revision",
+      "material": "orchid-quota.json",
+      "variants": [
+        "clean",
+        "counterfactual",
+        "tool_retry",
+        "access_revoked"
+      ]
+    },
+    {
+      "family_id": "summit-retention",
+      "split": "test",
+      "mechanism": "review_revision",
+      "material": "summit-retention.json",
+      "variants": [
+        "clean",
+        "counterfactual",
+        "tool_retry",
+        "concurrent_edit"
+      ]
+    }
+  ],
+  "split_policy": "source_family_disjoint_shared_mechanisms_author_seen_development",
+  "grading_scope": "bounded_structured_evidence_tasks"
+}

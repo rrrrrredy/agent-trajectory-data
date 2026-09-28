@@ -1,0 +1,38 @@
+{
+  "family_id": "orchid-quota",
+  "origin": "authored_synthetic",
+  "rights": {
+    "distribution": "private",
+    "training_eligible": true
+  },
+  "context": "Fictional internal operations snapshot for orchid-quota. Only supplied records support the task.",
+  "source_rows": [
+    {
+      "row_id": "S-fact",
+      "metric": "daily_quota",
+      "value": 187,
+      "unit": "requests_per_day"
+    },
+    {
+      "row_id": "S-unrelated",
+      "metric": "archived_queue_size",
+      "value": 12,
+      "unit": "items"
+    }
+  ],
+  "claim": {
+    "row_id": "C1",
+    "metric": "daily_quota",
+    "value": 170,
+    "unit": "requests_per_day"
+  },
+  "findings": [
+    {
+      "row_id": "F1",
+      "claim_id": "C1",
+      "proposed_value": 187,
+      "unit": "requests_per_day",
+      "message": "The report disagrees with the supplied operational record."
+    }
+  ]
+}

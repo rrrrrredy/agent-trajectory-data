@@ -1,0 +1,46 @@
+{
+  "family_id": "birch-fulfilment",
+  "origin": "authored_synthetic",
+  "rights": {
+    "distribution": "private",
+    "training_eligible": true
+  },
+  "context": "Fictional internal operations snapshot for birch-fulfilment. Only supplied records support the task.",
+  "source_rows": [
+    {
+      "row_id": "S-a",
+      "metric": "dispatched_items",
+      "value": 6,
+      "unit": "thousand_units",
+      "period": "2026-08"
+    },
+    {
+      "row_id": "S-b",
+      "metric": "dispatched_items",
+      "value": 2200,
+      "unit": "units",
+      "period": "2026-08"
+    },
+    {
+      "row_id": "S-other-period",
+      "metric": "dispatched_items",
+      "value": 40000,
+      "unit": "units",
+      "period": "2026-07"
+    },
+    {
+      "row_id": "S-other-metric",
+      "metric": "invoice_count",
+      "value": 999,
+      "unit": "units",
+      "period": "2026-08"
+    }
+  ],
+  "claim": {
+    "row_id": "C1",
+    "metric": "dispatched_items",
+    "period": "2026-08",
+    "value": 7200,
+    "unit": "units"
+  }
+}
