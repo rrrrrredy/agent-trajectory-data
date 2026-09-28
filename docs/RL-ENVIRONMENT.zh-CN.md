@@ -1,6 +1,6 @@
 # 从研究记录到可执行的 Agent 环境
 
-本项目的交付单位是任务、可观察的操作轨迹、可运行环境、结果与评分依据。现有历史材料形成可溯源的诊断语料；能确定性验证的部分另外形成可执行任务。v0.4 提供两类环境：Python 排错任务，以及包含文档、权限、任务单和状态冲突的研究交接环境。
+本项目的交付单位是任务、可观察的操作轨迹、可运行环境、结果与评分依据。现有历史材料形成可溯源的诊断语料；能确定性验证的部分另外形成可执行任务。v0.4 保留 Python 排错任务和完整历史语料；v0.5 单独更新包含文档、权限、任务单和状态冲突的研究交接环境。
 
 这里采用用户举例中“还原任务背景与业务问题”的思路，材料来源不限平台。没有接入钉钉、飞书，没有新增员工访谈、标注或人工审核流程。组织背景和业务事件为显式合成，嵌入的研究登记表来自既有档案。
 
@@ -17,7 +17,7 @@
 | 评价 | 对照冻结表格和实际末态检查决策、证据、范围、说明、任务单与重试预算 |
 | 终止 | submit 结束；30 步仍未提交则截断并得 0；结束后需新建 episode |
 | 参考解法 | 自动脚本只通过公开工具获取内容、处理错误和提交；动作不要求唯一顺序 |
-| 过程记录 | 每一步的动作、返回、状态前后哈希、奖励与终止标记 |
+| 过程记录 | 每一步动作、返回、读取回执、状态前后哈希、奖励、终止标记及原始 JSONL 输入 |
 
 这只是一个研究交接业务片段。它没有重建一整家公司，也不能度量开放式报告的洞察或实际经营收益。
 
@@ -29,9 +29,9 @@ BusinessEnv.reset(seed) 返回初始观察与任务身份；step(action) 返回 
 
 1. 结论与当前可访问登记表一致：ready、needs_revision 或 blocked。
 2. 输出范围为 registry_integrity_only；“登记完整”不能变成“事实正确”。
-3. 引用的是本次实际观察过的必要材料；权限拒绝可以支持 blocked。
+3. 必要材料有当前版本的成功读取回执；真实权限拒绝或缺失可以支持 blocked，429 不代表读到了证据。
 4. 任务单状态、版本与提交一致，不能跳过并发冲突。
-5. 更新任务单前已经写入说明，并关联观察到的证据。
+5. 更新任务单前已经写入说明，关联的是写入说明前已得到的有效回执；后续补读不能追溯支持旧说明。
 6. 临时来源请求总数不超过三次，即最多重试两次。
 
 说明文字只验证存在与证据关联，没有自动评定其写作质量。排错任务每个行为测试都通过才得 1，测试通过比例只供诊断。模型的自述、操作次数和输出字数不产生额外奖励。
@@ -40,10 +40,10 @@ BusinessEnv.reset(seed) 返回初始观察与任务身份；step(action) 返回 
 
 ## 直接运行
 
-从独立解压目录运行：
+从 v0.5 独立解压目录运行：
 
     py -3 -X utf8 -B verify_dataset.py verify .
-    py -3 -X utf8 -B business_env.py tasks/business-customer-service-tool_retry/environment/scenario.json --output episode.json
+    py -3 -X utf8 -B business_env_v2.py tasks/business-customer-service-tool_retry-v2/environment/scenario.json --output ../episode.json
 
 第二条命令先输出初始观察，之后逐行接收 JSON。例如：
 
@@ -54,8 +54,12 @@ BusinessEnv.reset(seed) 返回初始观察与任务身份；step(action) 返回 
 
 参考运行：
 
-    py -3 -X utf8 -B business_env.py tasks/business-customer-service-tool_retry/environment/scenario.json --policy reference --output reference-run.json
-    py -3 -X utf8 -B tasks/business-customer-service-tool_retry/tests/verify.py reference-run.json
+    py -3 -X utf8 -B business_env_v2.py tasks/business-customer-service-tool_retry-v2/environment/scenario.json --policy reference --output ../reference-v5.json
+    py -3 -X utf8 -B tasks/business-customer-service-tool_retry-v2/tests/verify.py ../reference-v5.json
+
+v0.4 的上述参考命令存在缺少 task_id 的缺陷，失败产物保存在 v0.5 的 sources/audit/ 中。本文命令已改为修复后的 v0.5 接口。
+
+新接口会记录无效 JSON、非对象输入和执行中重置的请求，并计入 30 步上限。初始 reset 允许设置 seed，发生动作后无法靠 reset 抹去失败。运行结果写入数据包外，保留包内文件不变。
 
 评分入口会重放全部动作并比对每一次观察、状态哈希和末态。无效轨迹拒绝；正确失败轨迹仍得到 0。
 
@@ -75,7 +79,7 @@ BusinessEnv.reset(seed) 返回初始观察与任务身份；step(action) 返回 
 
 泛化需要以后用来源独立的组织、任务家族、时间段和规则验证，不能把同一份资料换名字、换数字后分到测试集。同源报告、原稿修订、错误重试和所有派生场景必须一起切分。现有材料已经在开发中使用，所以全部保留为 development；这里没有宣称模型已学会跨企业迁移。
 
-环境构建、rollout 和训练是三个步骤。本版实际完成环境与自动控制运行，并提供外部 Agent 接口；没有新增付费模型调用或执行模型训练。原调用预算不变，归档材料的用途仍是私有诊断，不能因为“支持 RL 接口”自动获得训练许可。
+环境构建、rollout 和训练是三个步骤。当前已完成环境、自动控制运行和两条作者助手的实际工具交互。后两条已知题目及评分器，属于开发集接口验证；没有新增独立模型评测或执行模型训练。原调用预算不变，归档材料的用途仍是私有诊断，不能因为“支持 RL 接口”自动获得训练许可。
 
 ## 参考依据
 
