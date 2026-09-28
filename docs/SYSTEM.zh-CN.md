@@ -1,6 +1,6 @@
 # 数据构建的现有运行入口
 
-当前业务环境入口为 [v0.5](DATASET-v0.5.zh-CN.md)：scripts/runtime_revision.py 构建、验证和导出；scripts/business_env_v2.py 提供 JSONL 与 reset/step 接口。完整历史包及七个排错任务保留在 v0.4，继续由 scripts/runtime_dataset.py 验证。环境设计和使用见 [RL 环境说明](RL-ENVIRONMENT.zh-CN.md)。本文以下保留旧管线记录，不作为当前任务数或完成证据。
+当前交付为 [v0.6](DATASET-v0.6.zh-CN.md)：scripts/model_rollout.py 验证整体包，scripts/runtime_curriculum.py 验证冻结课程，scripts/business_env_v2.py 提供 JSONL 与 reset/step 接口。完整历史及排错任务在 v0.4。本文以下保留早期管线记录，不能用于读取当前数量或结果。
 
 当前建设顺序以[构建计划](PLAN.zh-CN.md)为准。下面说明已经可用的本地工具；工具存在不代表数据集内容已完成。
 

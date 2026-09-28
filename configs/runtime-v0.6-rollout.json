@@ -11,8 +11,12 @@
     "business-archived-muse-concurrent_edit-v2",
     "business-archived-looped-access_revoked-v2"
   ],
-  "authorization_basis": "Dataset work is authorized. Additional external model calls await explicit approval after automatic review rejection.",
+  "authorization_basis": "Explicit user approval in this conversation on 2026-09-28: 批准. Scope is bound by the approval receipt and frozen authorization request.",
   "accounting": "Append to original data/production-current monthly ledger; retain eight prior reservations.",
   "attempt_policy": "One first attempt per selected task; no automatic rerun or policy tuning on test results.",
-  "execution_authorization": "pending"
+  "execution_authorization": "approved_by_user",
+  "approval_record": {
+    "path": "artifacts/runtime-v0.6-model-request/approval.json",
+    "sha256": "b2798b5695769553059a388bb0640b894b0e540b6d6e1865e77175c7149d5f60"
+  }
 }

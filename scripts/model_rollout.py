@@ -174,6 +174,7 @@ def verify_rollouts(curriculum,rollouts):
     root=Path(curriculum).resolve();output=Path(rollouts).resolve()
     manifest=c.read(output/"manifest.json");tasks={t["task_id"]:t for t in c.lines(root/"tasks.jsonl")}
     config=config_validate(c.read(output/"config.json"),tasks)
+    require_execution_approval(config)
     check(manifest["files"]==c.hashes(output),"rollout_file_changed")
     check(manifest["curriculum_manifest_sha256"]==rd.sha((root/"manifest.json").read_bytes()),"curriculum_binding_changed")
     freeze=c.read(output/"input-freeze.json")
@@ -200,9 +201,16 @@ def verify_rollouts(curriculum,rollouts):
             check(request==request_for(initial,env.events),"model_observation_boundary_changed")
             check(cap["request_sha256"]==rd.sha((folder/"request.json").read_bytes())
                   and cap["visible_events_sha256"]==rd.sha((folder/"visible-events.jsonl").read_bytes()),"provider_source_changed")
+            check(c.read(folder/"action.schema.json")==SCHEMA,"model_schema_changed")
+            check(cap["model_requested"]==config["model"] and cap["model_reported"] is None
+                  and cap["model_identity_basis"]=="requested_configuration","capture_model_identity_changed")
+            check(cap["isolation"]=={"empty_working_directory":True,"built_in_tools_disabled":list(DISABLED),
+                  "user_config_ignored":True,"project_instructions_disabled":True},"isolation_record_changed")
+            check(cap["status"] in {"completed","failed"},"invalid_capture_status")
             events=c.lines(folder/"visible-events.jsonl")
             check(not any(e.get("item",{}).get("type")=="reasoning" for e in events),"hidden_reasoning_present")
             if cap["status"]=="completed":
+                check(cap["exit_code"]==0 and cap["error"] is None,"successful_capture_has_error")
                 action,reason,thread,usage=parsed_action(events)
                 check(action==cap["action"] and reason==cap["decision_summary"] and thread==cap["thread_id"]
                       and usage==cap["usage"],"model_action_not_source_bound")
@@ -210,8 +218,14 @@ def verify_rollouts(curriculum,rollouts):
                 env.step(action);captured_actions.append(action)
             else:
                 check(n==len(run["capture_refs"])-1 and not run["complete"],"failed_capture_hidden")
+                check(cap["error"] and cap["action"] is None and run["stop_reason"]==cap["error"],"failed_capture_reason_changed")
         check(captured_actions==[e["action"] for e in run["events"]],"actions_not_from_model")
-        check(row["model_calls"]==len(run["capture_refs"]),"call_count_changed")
+        check(row["model_calls"]==len(run["capture_refs"])<=config["max_decisions_per_episode"],"call_count_changed")
+        check(row["stop_reason"]==run["stop_reason"],"stop_reason_changed")
+        check(run["complete"] or bool(run["stop_reason"]),"incomplete_stop_reason_missing")
+        if run["complete"]:check(run["stop_reason"] is None,"completed_run_stop_reason")
+        elif run["stop_reason"]=="episode_decision_budget_exhausted":
+            check(len(run["capture_refs"])==config["max_decisions_per_episode"],"false_budget_stop")
     check(calls==manifest["calls"]<=config["max_new_calls"],"budget_accounting_changed")
     return {"verified":True,"model_episodes":len(indices),"model_calls":calls,
             "completed":sum(r["complete"] for r in indices),"passed":sum(r["reward"] for r in indices),
@@ -250,10 +264,56 @@ def prepare_request(curriculum,config_path,output):
         "config":config,"maximum_additional_calls":36,"monthly_limit_before":8,"monthly_limit_after":44,
         "old_reservations_retained":True,"first_attempts_only":True})
     return {"prepared":True,"preview_sha256":rd.sha((output/"payload-preview.json").read_bytes())}
-def assemble(curriculum,rollouts,output):
+def selection_metadata(tasks,indices,accepted):
+    excluded=[]
+    for row in indices:
+        task=tasks[row["task_id"]];reasons=[]
+        if row["split"]!="train":reasons.append("test_split")
+        if not task["rights"]["training_eligible"]:reasons.append("diagnostic_use_only")
+        if not row["complete"] or row["reward"]!=1:reasons.append("not_successful_complete_trajectory")
+        if reasons:excluded.append({"task_id":row["task_id"],"reasons":reasons})
+    return {"accepted":accepted,"excluded":excluded,
+        "scripted_sft_path":"curriculum/training/scripted-sft.jsonl",
+        "scripted_preference_path":"curriculum/training/scripted-preferences.jsonl",
+        "different_origins_separate":True,"test_family_training_records":0}
+
+def verify_execution_evidence(root):
+    evidence=root/"execution-evidence";runs=root/"rollouts"
+    approval=c.read(evidence/"approval.json");request=c.read(evidence/"authorization-request.json")
+    config=c.read(runs/"config.json");manifest=c.read(runs/"manifest.json")
+    check(approval["status"]=="approved_by_user" and approval["user_message"]=="批准","approval_record_changed")
+    check(approval["authorization_request_sha256"]==rd.sha((evidence/"authorization-request.json").read_bytes())
+          and approval["payload_preview_sha256"]==rd.sha((evidence/"payload-preview.json").read_bytes()),"approval_scope_changed")
+    check(config["approval_record"]["sha256"]==rd.sha((evidence/"approval.json").read_bytes()),"approval_binding_changed")
+    check(approval["curriculum_manifest_sha256"]==manifest["curriculum_manifest_sha256"]
+          ==request["curriculum_manifest_sha256"],"approved_curriculum_changed")
+    check(approval["maximum_additional_calls"]==request["maximum_additional_calls"]==config["max_new_calls"]==36
+          and approval["monthly_limit_after"]==request["monthly_limit_after"]==config["monthly_model_calls"]==44,
+          "approved_budget_changed")
+    check(approval["task_ids"]==config["task_ids"]==request["config"]["task_ids"]
+          and approval["first_attempts_only"] is True and approval["destination"]==request["destination"],"approved_selection_changed")
+    before=c.read(evidence/"ledger-before.json");after=c.read(evidence/"ledger-after.json")
+    check(before["month_utc"]==after["month_utc"],"ledger_month_changed")
+    month=before["month_utc"]+".json";freeze=c.read(runs/"input-freeze.json")
+    check(freeze["old_ledger_files"][month]==rd.sha((evidence/"ledger-before.json").read_bytes()),"old_ledger_binding_changed")
+    check(before["calls_reserved"]==len(before["reservations"])==approval["monthly_limit_before"]==8,"old_reservations_changed")
+    check(after["reservations"][:8]==before["reservations"],"old_reservations_removed")
+    check(after["calls_reserved"]==len(after["reservations"])==8+manifest["calls"]<=44,"ledger_call_count_changed")
+    expected=[]
+    for row in c.lines(runs/"episodes.jsonl"):expected.extend(["runtime-v06-"+row["task_id"]]*row["model_calls"])
+    check([v["run_id"] for v in after["reservations"][8:]]==expected,"new_reservations_changed")
+    limits=c.read(evidence/"execution-limits.json")
+    check(limits=={"environment_step_limit":30,"collector_decisions_per_episode":12,
+                  "collector_limit_disclosed_in_model_request":False,
+                  "interpretation":"External collector truncation must not be treated as an environment terminal verdict."},
+          "execution_limit_disclosure_changed")
+    return {"additional_calls":manifest["calls"],"monthly_reserved_calls":after["calls_reserved"],"old_reservations_preserved":8}
+
+def assemble(curriculum,rollouts,output,execution_evidence):
     root=Path(curriculum).resolve();runs=Path(rollouts).resolve();output=Path(output).resolve()
     c.verify(root);result=verify_rollouts(root,runs);check(not output.exists(),"output_exists")
     output.mkdir(parents=True);shutil.copytree(root,output/"curriculum");shutil.copytree(runs,output/"rollouts")
+    shutil.copytree(Path(execution_evidence).resolve(),output/"execution-evidence")
     rd.put(output/"verify_runtime.py",Path(__file__).read_bytes())
     rd.put(output/"LICENSE",(root/"LICENSE").read_bytes())
     tasks={t["task_id"]:t for t in c.lines(root/"tasks.jsonl")}
@@ -271,10 +331,7 @@ def assemble(curriculum,rollouts,output):
             "model_identity_basis":"requested_configuration","rights":task["rights"],
             "messages":model_messages(scenario,run),"source_path":"rollouts/"+row["path"]})
     rd.put_lines(output/"training/model-sft.jsonl",selected)
-    rd.put_json(output/"training/selection.json",{"accepted":len(selected),"excluded":excluded,
-        "scripted_sft_path":"curriculum/training/scripted-sft.jsonl",
-        "scripted_preference_path":"curriculum/training/scripted-preferences.jsonl",
-        "different_origins_separate":True,"test_family_training_records":0})
+    rd.put_json(output/"training/selection.json",selection_metadata(tasks,c.lines(runs/"episodes.jsonl"),len(selected)))
     rd.put(output/"README.md",README.encode())
     rd.put_json(output/"manifest.json",{"version":"agent-runtime-v6","files":all_hashes(output),
         "summary":{**c.summary(root),**result,"model_sft_records":len(selected)}})
@@ -297,6 +354,9 @@ def verify_bundle(root):
                 "model_identity_basis":"requested_configuration","rights":t["rights"],
                 "messages":model_messages(scenario,run),"source_path":"rollouts/"+row["path"]})
     check(c.lines(root/"training/model-sft.jsonl")==expected,"model_training_selection_changed")
+    check(c.read(root/"training/selection.json")==selection_metadata(tasks,c.lines(root/"rollouts/episodes.jsonl"),len(expected)),
+          "selection_exclusions_changed")
+    verify_execution_evidence(root)
     expected_summary={**c.summary(root/"curriculum"),**result,"model_sft_records":len(expected)}
     check(m["summary"]==expected_summary,"bundle_summary_changed")
     return {"verified":True,"files":len(m["files"]),**m["summary"]}
@@ -317,6 +377,10 @@ rollouts/ preserves fresh isolated model decisions and their exact public reques
 responses, failures, usage, and environment steps. Policy tools and file access were disabled.
 The host executes actions. Each model decision uses a fresh process; previous observations
 are supplied explicitly. Model identity is requested configuration, not provider attestation.
+execution-evidence/ binds the approval, frozen payload preview, original ledger prefix
+and post-execution ledger. A collector cap of 12 decisions was not disclosed in requests,
+which exposed the environment limit of 30 steps. Incomplete attempts are externally capped;
+they are not full-horizon task failures. First attempts remain unchanged.
 training/model-sft.jsonl contains only successful complete train-family model trajectories.
 Test families never enter any training export. The two archived test sources are held out from
 the new fictional train sources; the workflow template is shared. This small first evaluation
@@ -331,14 +395,14 @@ def main():
     for k in ("curriculum","config","output"):x.add_argument("--"+k,required=True)
     x=sub.add_parser("verify-rollouts");x.add_argument("curriculum");x.add_argument("rollouts")
     x=sub.add_parser("assemble")
-    for k in ("curriculum","rollouts","output"):x.add_argument("--"+k,required=True)
+    for k in ("curriculum","rollouts","output","execution-evidence"):x.add_argument("--"+k,required=True)
     x=sub.add_parser("verify");x.add_argument("root")
     x=sub.add_parser("pack");x.add_argument("root");x.add_argument("output")
     a=p.parse_args()
     if a.cmd=="run":result=execute(a.curriculum,a.config,a.output,a.ledger_root)
     elif a.cmd=="prepare-request":result=prepare_request(a.curriculum,a.config,a.output)
     elif a.cmd=="verify-rollouts":result=verify_rollouts(a.curriculum,a.rollouts)
-    elif a.cmd=="assemble":result=assemble(a.curriculum,a.rollouts,a.output)
+    elif a.cmd=="assemble":result=assemble(a.curriculum,a.rollouts,a.output,a.execution_evidence)
     elif a.cmd=="verify":result=verify_bundle(a.root)
     else:result=pack(a.root,a.output)
     print(json.dumps(result,ensure_ascii=False,indent=2))

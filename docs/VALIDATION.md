@@ -1,6 +1,6 @@
 # Validation
 
-Current dataset construction remains incomplete. The scope is limited to research-task provenance, observed events, meaningful synthetic variants and reproducible evaluation. The 82-test implementation suite passed again after removal of unrelated local development; the following sections retain earlier engineering evidence. See [the current construction plan](PLAN.zh-CN.md).
+The bounded v0.6 dataset build, model collection and package acceptance are complete: 149 implementation tests passed, followed by independent package verification. All three model attempts were externally truncated; no complete model success is claimed. See [current acceptance](ACCEPTANCE.zh-CN.md). The sections below retain historical engineering evidence and do not describe current counts or scope.
 
 ## Operational delivery — 2026-09-24
 
