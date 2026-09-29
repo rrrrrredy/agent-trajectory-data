@@ -56,7 +56,11 @@ def stats(rows):
     return {"records":len(rows),"components":len({x["component"] for x in rows}),"lineage_groups":len({x["lineage_group_id"] for x in rows}),"records_by_component":dict(Counter(x["component"] for x in rows)),"new_task_variants":len(newest),"new_independent_source_groups":len({x["lineage_group_id"] for x in newest if not x["reuses_prior_component"]}),"train_test_conflicts":0,"rights_promotions":0,"boundary":"Recorded family, parent-task and exact content fingerprints only. Near-duplicate semantics and unrecorded relationships are not certified."}
 def build(repo,batch,output):
     repo,batch,root=map(Path,(repo,batch,output));check(not root.exists(),"output_exists");sources=[];config=b.read(batch/"config.json");component="v"+config["dataset_version"]
-    tag=config["prior_release"]["tag"];check(tag.startswith("dataset-v"),"unknown_prior_release")
+    prior=config.get("catalog_prior_release",config["prior_release"])
+    tag=prior["tag"];check(tag.startswith("dataset-v"),"unknown_prior_release")
+    if "catalog_prior_release" in config:
+        archive=b.local(repo/"artifacts","agent-runtime-v"+tag.removeprefix("dataset-v")+".zip")
+        check(b.sha(archive.read_bytes())==prior["sha256"],"prior_catalog_archive_changed")
     previous=b.local(repo/"data","runtime-catalog-v"+tag.removeprefix("dataset-v"))
     if previous.exists():
         verify(previous);sources=b.read(previous/"sources.json")

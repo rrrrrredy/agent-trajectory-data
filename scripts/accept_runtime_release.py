@@ -8,6 +8,42 @@ def rows(path):return [json.loads(x) for x in Path(path).read_bytes().split(b"\n
 def row_save(path,values):Path(path).write_text("".join(json.dumps(x,ensure_ascii=False)+"\n" for x in values),encoding="utf-8")
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
+def verify_probe_pairs(scenario,run,module):
+    """Check actual regression evidence independently of the aggregate reward."""
+    state=run["final_state"];pairs=run["grade"]["validated_regression_pairs"]
+    probes=state["probes"];by_id={probe["probe_id"]:probe for probe in probes}
+    assert len(by_id)==len(probes)
+    visible=[event for event in run["events"] if event["action"]["tool"]=="probe" and event["observation"].get("status")==200]
+    assert module.equal([event["observation"]["probe"] for event in visible],probes)
+    for event in visible:
+        probe=event["observation"]["probe"]
+        assert module.equal(event["action"]["args"],{"input":probe["input"],"expected":probe["expected"]})
+        assert event["step"]==probe["step"]
+    patches=[event["step"] for event in run["events"] if event["action"]["tool"]=="patch" and event["observation"].get("status")==200]
+    seen=set()
+    for pair in pairs:
+        identity=(pair["baseline_probe_id"],pair["fixed_probe_id"])
+        assert identity not in seen;seen.add(identity)
+        before,after=(by_id[identifier] for identifier in identity)
+        assert before["version"]==1 and before["code_sha256"]==module.code_hash(scenario["initial_code"])
+        assert before["matches_claim"] is False and patches and before["step"]<min(patches)
+        assert after["version"]==state["version"] and after["code_sha256"]==module.code_hash(state["code"])
+        assert after["matches_claim"] is True and after["step"]>before["step"]
+        assert module.equal([before["input"],before["expected"]],[after["input"],after["expected"]])
+        assert module.valid_input(before["input"])
+        expected=module.oracle(before["input"])
+        assert module.equal(expected,before["expected"])
+        assert not module.equal(before["actual"],expected) and module.equal(after["actual"],expected)
+        assert module.equal(module.runner.execute(scenario["initial_code"],before["input"]),before["actual"])
+        assert module.equal(module.runner.execute(state["code"],after["input"]),after["actual"])
+    assert bool(pairs)==run["grade"]["checks"]["current_regression_pass"]
+    if run["grade"]["reward"]:
+        assert pairs and run["complete"]
+        note=state["notes"][state["submission"]["note_id"]]
+        selected=note["report"]["regression_probe_id"]
+        assert selected in {pair["fixed_probe_id"] for pair in pairs} and by_id[selected]["step"]<note["step"]
+    return len(pairs)
+
 def accept(archive,work,report):
     archive,work,report=map(lambda p:Path(p).resolve(),(archive,work,report))
     if work.exists() or report.exists():raise ValueError("output_exists")
@@ -28,6 +64,7 @@ def accept(archive,work,report):
     config=read(base/"batch/config.json");version=config["version"]
     repair=version=="runtime-repair-batch-1"
     authored=repair and config.get("source_mode")=="authored_synthetic"
+    probe_repair=authored and config.get("environment_version")=="research-repair-2"
     tasks=([row["task_id"] for row in rows(base/"batch/tasks.jsonl")] if authored else ["repair-jsonl-unicode-layout-v1","repair-manifest-hashes-stale_patch-v1","repair-stable-observations-clean-v1"] if repair else ["willow-dispatch-tool_retry-v4","cedar-access-clean-v4","aster-routing-stale_revision-v4"]
            if version=="runtime-batch-2" else ["orchid-quota-counterfactual-v3"])
     for task in tasks:
@@ -57,6 +94,7 @@ def accept(archive,work,report):
         checks.append({"name":"partial_public_pass_rejected_by_private_behavior","exit_code":0,"stdout":"Public tests alone do not certify completion; private cases remain unavailable.","stderr":""})
         if authored:
             forbidden={"private_cases","reference_code","partial_code","control_codes"}
+            if probe_repair:forbidden.update({"reference_probe","oracle_id"})
             def keys(value):
                 if isinstance(value,dict):return set(value).union(*(keys(v) for v in value.values()))
                 if isinstance(value,list):return set().union(*(keys(v) for v in value))
@@ -68,6 +106,13 @@ def accept(archive,work,report):
                     assert not forbidden & keys(request)
                     inspected+=1
             checks.append({"name":"policy_context_excludes_evaluator_material","exit_code":0,"stdout":str(inspected)+" recorded public requests checked; private test, reference and control fields absent.","stderr":""})
+    if probe_repair:
+        validated_pairs=0
+        for row in index:
+            scenario=read(base/"batch/tasks"/row["task_id"]/"scenario.json")
+            run=read(base/"model"/row["path"])
+            validated_pairs+=verify_probe_pairs(scenario,run,r.b.environment_module(scenario))
+        checks.append({"name":"actual_model_regression_evidence","exit_code":0,"stdout":str(validated_pairs)+" declared regression pairs checked against initial/final code, identical cases, visible actions and an independent oracle; zero pairs do not imply demonstrated recovery.","stderr":""})
     first=index[0];episode_rel=Path("model")/first["path"];call=episode_rel.parent/"calls/001"
     def mutate(name,change,expected):
         target=work/("mutation-"+name);shutil.copytree(base,target);change(target)
@@ -99,17 +144,22 @@ def accept(archive,work,report):
         else:value["final_state"]["notes"]["note-1"]["text"]="All facts externally verified."
         save(p,value)
     mutate("unsupported_delivered_text",note,"final_state_changed")
+    def baseline_failed(event):
+        if probe_repair:
+            probe=event["observation"].get("probe",{})
+            return event["action"]["tool"]=="probe" and probe.get("version")==1 and probe.get("matches_claim") is False
+        return event["action"]["tool"]=="test" and not event["observation"].get("test",{}).get("passed",True)
     def missing_failure(root):
-        p=root/episode_rel;value=read(p);value["events"]=[event for event in value["events"] if not (event["action"]["tool"]=="test" and not event["observation"].get("test",{}).get("passed",True))] if repair else [event for event in value["events"] if event["observation"]["status"]!=429];save(p,value)
-    baseline_observed=any(event["action"]["tool"]=="test" and not event["observation"].get("test",{}).get("passed",True) for event in read(base/episode_rel)["events"])
+        p=root/episode_rel;value=read(p);value["events"]=[event for event in value["events"] if not baseline_failed(event)] if repair else [event for event in value["events"] if event["observation"]["status"]!=429];save(p,value)
+    baseline_observed=any(baseline_failed(event) for event in read(base/episode_rel)["events"])
     if not authored or baseline_observed:mutate("baseline_failure_removed" if repair else "rate_limit_history_removed",missing_failure,"event_replay_changed")
-    else:not_applicable.append({"case":"baseline_failure_removed","reason":"The actual first attempt contains no failing public-test event; no such coverage is claimed."})
+    else:not_applicable.append({"case":"baseline_failure_removed","reason":"The actual first attempt contains no failing "+("version-1 probe" if probe_repair else "public-test")+" event; no such coverage is claimed."})
     def model_origin(root):
         p=root/episode_rel;value=read(p);value["evaluation_mode"]="independent_blind_benchmark";save(p,value)
     mutate("development_claimed_blind",model_origin,"model_origin_changed")
     def train(root):
         p=root/"model/training/model-sft.jsonl";values=rows(p);values.append({"task_id":index[0 if authored else 1]["task_id"],"split":"train"});row_save(p,values)
-    mutate("development_task_in_training" if authored else "restricted_source_in_training" if repair else "test_family_in_training",train,"model_training_selection_changed")
+    mutate("fake_training_record" if probe_repair else "development_task_in_training" if authored else "restricted_source_in_training" if repair else "test_family_in_training",train,"model_training_selection_changed")
     def ledger(root):
         p=root/"model/ledger-final.json";value=read(p);value["entries"]=value["entries"][1:];save(p,value)
     mutate("prior_reservation_removed",ledger,"prior_ledger_changed")
@@ -143,6 +193,24 @@ def accept(archive,work,report):
             row=next(x for x in index if any(y["observation"]["status"]==409 for y in read(root/"model"/x["path"])["events"]))
             p=root/"model"/row["path"];value=read(p);value["events"]=[x for x in value["events"] if x["observation"]["status"]!=409];save(p,value)
         if not authored:mutate("patch_conflict_history_removed",conflict_removed,"event_replay_changed")
+        if probe_repair:
+            pair_row=next((row for row in index if read(base/"model"/row["path"])["grade"]["validated_regression_pairs"]),None)
+            if pair_row is None:
+                not_applicable.append({"case":"probe_record_semantic_mutations","reason":"No actual validated regression pair exists to mutate; no recovery coverage is claimed."})
+            else:
+                pair_episode=Path("model")/pair_row["path"]
+                def probe_record(root,field):
+                    p=root/pair_episode;value=read(p);pair=value["grade"]["validated_regression_pairs"][0]
+                    probe=next(event["observation"]["probe"] for event in value["events"] if event["action"]["tool"]=="probe" and event["observation"].get("probe",{}).get("probe_id")==pair["baseline_probe_id"])
+                    if field=="matches_claim":probe[field]=not probe[field]
+                    else:probe[field]={"ok":False,"error":"ValueError"} if probe[field].get("ok") else {"ok":True,"value":[]}
+                    save(p,value)
+                for field in ("expected","actual","matches_claim"):
+                    mutate("probe_"+field+"_forged",lambda root,field=field:probe_record(root,field),"event_replay_changed")
+                def pair_binding(root):
+                    p=root/pair_episode;value=read(p);pair=value["grade"]["validated_regression_pairs"][0]
+                    pair["fixed_probe_id"]=pair["baseline_probe_id"];save(p,value)
+                mutate("regression_pair_binding_changed",pair_binding,"grade_changed")
         if authored:
             material_id=config["sources"][0]["task_id"]
             def source_material(root):
@@ -159,7 +227,9 @@ def accept(archive,work,report):
                 p=root/"batch/inputs/jsonl-unicode.json";value=read(p);value["source_events"]=value["source_events"][1:];save(p,value)
             mutate("historical_failure_evidence_removed",source_evidence,"material_derivation_changed")
         def catalog_promotion(root):
-            p=root/"catalog/records.jsonl";values=rows(p);values[-1].update(split="train",training_eligible=True);row_save(p,values)
+            p=root/"catalog/records.jsonl";values=rows(p)
+            selected=next(value for value in values if value["split"]=="development") if probe_repair else values[-1]
+            selected.update(split="train",training_eligible=True);row_save(p,values)
         mutate("catalog_development_promoted_to_train" if authored else "catalog_rights_promoted",catalog_promotion,"catalog_projection_changed")
         def censoring(root):
             p=root/"failures/failures.jsonl";values=rows(p);row=next(x for x in values if x["censored"]);row.update(category="model_error",censored=False);row_save(p,values)

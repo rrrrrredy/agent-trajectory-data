@@ -2,47 +2,48 @@
 
 Private task data, observable agent trajectories, executable environments and reproducible evaluation.
 
-**Latest consumer package: v0.13.** Read 19 existing actual episodes and 242 transitions from the unchanged v0.10-v0.12 packages through one format. It preserves all outcomes and the existing 57 eligible training transitions/four positive demonstrations; it creates no new tasks, sources or model calls. [Private consumer package](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.13) · [Consumer guide](docs/DATASET-v0.13.zh-CN.md) · [Next-stage plan](docs/PLAN.zh-CN.md).
+**Latest: v0.14.** One new original synthetic training task records a model constructing a regression input when the supplied public tests already pass, reproducing the bug, repairing the worker and verifying the same input again. The first attempt succeeds in 12 calls and contributes one eligible positive demonstration and 12 training transitions. [Private release](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.14) · [Data card](docs/DATASET-v0.14.zh-CN.md) · [Next-stage plan](docs/PLAN.zh-CN.md).
 
-From the extracted v0.13 consumer package:
+- The model exposes an event-inbox bug: two tenants using the same event ID must retain distinct events. Its initial probe loses one event; the final-code probe preserves both.
+- Two public and ten private behavioral cases, one passing scripted reference and fourteen rejected erroneous controls accompany this single task. The final model code passes all twelve cases.
+- Probe results compare execution with the model's assertion. Terminal grading separately verifies that assertion against an independent contract oracle and binds initial failure, final code, same-case retest and submission evidence.
+- 264 regression tests, nine independent extracted-package execution checks and twenty-one rejected rehashed semantic mutations passed.
+
+The new source was registered as original synthetic train material before collection. Existing development, test and archived-source restrictions remain intact. This is one observed task success; it does not establish blind generalization or coverage of every failure cause. Model identity is the requested `gpt-6-astra` configuration, without independent provider attestation.
+
+## Read the combined trajectories
+
+Extract `agent-runtime-v0.14-consumer.zip` from the private release:
 
     python -B runtime_exports.py verify .
-    python -B runtime_exports.py history . v0.12/repair-denominator-integrity-clean-v1/0006
-    python -B runtime_exports.py replay . --work ../runtime-v013-replay
+    python -B runtime_exports.py history . v0.14/repair-scoped-event-regression-clean-v2/0005
+    python -B runtime_exports.py replay . --work ../runtime-v014-replay
 
-Six focused regression tests, including eight semantic mutation cases, and independent package checks passed. All three original frozen verifiers replayed the nineteen episodes successfully. Public transition files and full prior public request references are ready to read; original evaluator archives remain separate from policy input.
+The consumer embeds the unchanged v0.10, v0.11, v0.12 and v0.14 source ZIPs. It exposes **20 actual episodes, 254 transitions, 69 eligible training transitions and five positive demonstrations**, including nineteen ready outcomes and one correct blocked outcome. The projection itself makes no model calls; the new v0.14 source used twelve calls.
 
-**Latest new-task package: v0.12.** One original synthetic repair task checks complete task coverage, final usability and accounting for failed attempts. The first model attempt succeeds in 13 calls, preserving a baseline test failure, two edits, a real 412 read-before-write violation, its recovery and final verification. [Private package](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.12) · [Data card](docs/DATASET-v0.12.zh-CN.md).
+Read `transitions.jsonl` for public steps, `training/rl-transitions.jsonl` for eligible training steps, and the original request references for complete public history. Evaluator snapshots stay separate from policy input. Final repair code remains at `final_state.code`; workspace deliverables retain their original artifact references.
 
-- One executable task with two public and sixteen private behavioral cases; these are cases within one development task, not eighteen independent tasks.
-- One passing scripted reference and eleven rejected erroneous controls, including always rejecting, substituting local labels for usability, discarding failed elapsed time, comparing only counts and silently deduplicating records.
-- Actual requests, visible action summaries, tool responses, code edits, test receipts, checkpoints, terminal reward and final code retained. Final code independently passes all eighteen cases.
-- 243 passing regression tests, eight independent extracted-package execution/behavior checks and seventeen rejected rehashed semantic mutations.
-- Cumulative catalog: 218 records and 69 lineage groups. Cumulative failure exports: 33 records, 29 distinct events, 24 recovery pairs and nine eligible historical training recovery pairs.
+## Run the new standalone environment
 
-This task is development-only and adds no training trajectories. The original synthetic material's declared rights do not override its split. Model identity is the requested `gpt-6-astra` configuration, without independent provider attestation. One observed success does not establish generalization.
+Extract `agent-runtime-v0.14.zip`, then run from its root:
 
-## Run the standalone package
-
-Extract the [private v0.12 package](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.12), then run from its root:
-
-    py -3 -X utf8 -B runtime_release.py verify .
-    py -3 -X utf8 -B task-entrypoints/repair-denominator-integrity-clean-v1/tests/verify.py model/episodes/repair-denominator-integrity-clean-v1/episode.json
-    py -3 -X utf8 -B task-entrypoints/repair-denominator-integrity-clean-v1/solution/reference.py ../reference-v12.json
-    py -3 -X utf8 -B repair_env.py batch/tasks/repair-denominator-integrity-clean-v1/scenario.json --output ../episode-v12.json
+    python -B runtime_release.py verify .
+    python -B task-entrypoints/repair-scoped-event-regression-clean-v2/tests/verify.py model/episodes/repair-scoped-event-regression-clean-v2/episode.json
+    python -B task-entrypoints/repair-scoped-event-regression-clean-v2/solution/reference.py ../reference-v14.json
+    python -B repair_probe_env.py batch/tasks/repair-scoped-event-regression-clean-v2/scenario.json --output ../episode-v14.json
 
 Send one JSON action per line, beginning with:
 
     {"tool":"read","args":{"document_id":"policy"}}
 
-The environment exposes reset/step observations, reward, terminated and truncated. Only public observations reach the policy. Private behavioral cases, control implementations and reference code remain evaluator-side. Final code is retained at `final_state.code` in the recorded episode. Python's standard library is sufficient; execution is limited to the documented pure-function subset.
+The environment exposes reset/step observations, reward, terminated and truncated. Python's standard library is sufficient; code execution uses the documented bounded pure-function subset. Hidden cases, reference probes and oracle implementations remain evaluator-side.
 
 ## Preserve and extend the data
 
-Use `configs/runtime-v0.12/` for the original repair material, `runtime-v0.11/` for workspace reconciliation and `runtime-v0.10/` for archived incident repairs. Outputs are immutable. New material carries a contract, source/use declaration, fixed cases, reference and erroneous controls before model collection.
+`configs/runtime-v0.14/` contains the new material, batch, collection and consumer configuration. New material must carry its contract, source/use declaration, fixed cases, reference and erroneous controls before collection. Frozen outputs are immutable.
 
-[Construction guide](docs/BUILDING-BATCHES.zh-CN.md) · [Current conclusions](docs/CONCLUSION.zh-CN.md) · [Acceptance](docs/ACCEPTANCE.zh-CN.md) · [Reference-method decisions](docs/REFERENCE-REVIEW-2026-09-28.zh-CN.md).
+[Construction guide](docs/BUILDING-BATCHES.zh-CN.md) · [Current conclusions](docs/CONCLUSION.zh-CN.md) · [Acceptance](docs/ACCEPTANCE.zh-CN.md) · [Candidate evidence](docs/CANDIDATE-v0.14.zh-CN.md) · [Reference-method decisions](docs/REFERENCE-REVIEW-2026-09-28.zh-CN.md).
 
-Previous releases remain unchanged. [v0.11](docs/DATASET-v0.11.zh-CN.md) retains twelve actual episodes, eleven ready results and one correct blocked outcome, with four eligible positive demonstrations and 57 training transitions. [v0.10](docs/DATASET-v0.10.zh-CN.md) preserves six actual repair attempts derived from retained incident evidence.
+Previous releases remain unchanged. [v0.13](docs/DATASET-v0.13.zh-CN.md) introduced the combined consumer; [v0.12](docs/DATASET-v0.12.zh-CN.md) contains the complete-denominator repair; [v0.11](docs/DATASET-v0.11.zh-CN.md) contains twelve research-workspace episodes; [v0.10](docs/DATASET-v0.10.zh-CN.md) preserves six actual repairs derived from archived incidents.
 
 Raw data stays outside Git and is delivered through private release assets. Public research-toolkit remains unchanged at [2852444](https://github.com/rrrrrredy/research-toolkit/commit/28524448eaf6534125a24dd1ea26e986016c8aea). This repository contains the dataset implementation and artifacts.

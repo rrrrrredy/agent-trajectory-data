@@ -66,6 +66,9 @@ def reference_action(initial,history,reference=None,mutation=None):
     if ticket["note_id"]!=notes[-1]:return action("update_ticket",if_version=ticket["version"],status="ready",note_id=notes[-1])
     return action("submit",note_id=notes[-1],ticket_version=ticket["version"])
 def run_reference(scenario,mutation=None):
+    if scenario["version"]=="research-repair-2":
+        import repair_probe_tasks
+        return repair_probe_tasks.run_reference(scenario,mutation)
     runtime=env.ResearchEnv(scenario)
     while not runtime.finished:
         effective="no_retest" if mutation=="edit_after_test" and sum(x["action"]["tool"]=="patch" and x["observation"]["status"]==200 for x in runtime.events)>1 else mutation
@@ -121,7 +124,7 @@ def verify(root):
     controls=b.lines(root/"controls.jsonl");common.check([(x["task_id"],x["mutation"]) for x in controls]==expected_controls,"control_inventory_changed")
     for row in controls:
         scenario=b.read(root/task_map[row["task_id"]]["scenario"]);run=b.read(b.local(root,row["path"]))
-        common.check(env.verify_record(scenario,run)["reward"]==row["expected_reward"]==0 and common.equal(run,run_reference(scenario,row["mutation"])),"negative_control_changed")
+        common.check(b.verify_episode(scenario,run)["reward"]==row["expected_reward"]==0 and common.equal(run,run_reference(scenario,row["mutation"])),"negative_control_changed")
     common.check(not b.lines(root/"training/scripted-trajectories.jsonl"),"historical_training_promotion")
     return {"passed":True,"tasks":len(rows),"families":len(config["sources"]),"real_incident_chains":len(config["sources"]),"source_groups":1,"new_independent_source_groups":0,"controls":len(controls),"scripted_train_trajectories":0,"model_calls":0,"source_family_overlap":0}
 
@@ -130,13 +133,23 @@ def authored_scenario(config,material,variant):
     """The same repair environment, with original authored inputs rather than archived incidents."""
     common.check(variant=="clean","unsupported_authored_variant")
     m=material;ids={"policy":"policy","contract":"contract","worker":"worker.py","sample":"sample"}
-    return {"version":env.VERSION,"task_id":"repair-"+m["task_id"]+"-clean-v1","family_id":"repair-"+m["task_id"],
+    result={"version":env.VERSION,"task_id":"repair-"+m["task_id"]+"-clean-v1","family_id":"repair-"+m["task_id"],
         "source_group_id":m["source_group_id"],"mechanism":"bounded_program_repair","variant":variant,"fault":"clean",
         "split":m["split"],"rights":copy.deepcopy(m["rights"]),"origin":"authored_synthetic_environment","parent_task_id":None,
         "source_sha256":common.digest(m),"source_incident":None,"max_steps":config["max_steps"],"document_ids":ids,"document_order":list(ids.values()),
         "contract":m["contract"],"initial_code":m["initial"],"reference_code":m["reference"],"partial_code":m["partial"],
         "public_cases":copy.deepcopy(m["public_cases"]),"private_cases":copy.deepcopy(m["private_cases"]),
         "control_codes":copy.deepcopy(m.get("control_codes",{})),"missingness":m["missingness"],"variant_origin":"authored_synthetic"}
+    if config.get("environment_version")=="research-repair-2":
+        result.update(version="research-repair-2",task_id="repair-"+m["task_id"]+"-clean-v2",mechanism="counterexample_driven_program_repair",oracle_id=m["oracle_id"],reference_probe=copy.deepcopy(m["reference_probe"]))
+    return result
+
+def authored_controls(scenario):
+    extra=[]
+    if scenario["version"]=="research-repair-2":
+        import repair_probe_tasks
+        extra=repair_probe_tasks.CONTROLS
+    return CONTROLS+extra+sorted(scenario["control_codes"])
 
 def authored_material(root,config,item):
     raw=(root/"source"/(item["task_id"]+".json")).read_bytes()
@@ -151,7 +164,7 @@ def authored_material(root,config,item):
 def build_authored(config,root):
     common.check(config["version"]==VERSION and config["sources"],"invalid_authored_config")
     repo=Path(__file__).resolve().parents[1];b.put(root/"config.json",config)
-    for name in RUNTIME_FILES:b.write(root/name,(Path(__file__).parent/name).read_bytes())
+    for name in b.runtime_files(config):b.write(root/name,(Path(__file__).parent/name).read_bytes())
     tasks=[];controls=[];training=[]
     for item in config["sources"]:
         raw=b.local(repo,item["path"]).read_bytes();common.check(b.sha(raw)==item["sha256"],"authored_source_changed")
@@ -162,7 +175,7 @@ def build_authored(config,root):
             reference=run_reference(scenario);common.check(reference["grade"]["reward"]==1,"reference_failed:"+tid);b.put(folder/"reference.json",reference)
             tasks.append({k:scenario[k] for k in ("task_id","family_id","source_group_id","mechanism","variant","split","rights","origin","parent_task_id","source_sha256")}|{"scenario":"tasks/"+tid+"/scenario.json","reference":"tasks/"+tid+"/reference.json"})
             if scenario["split"]=="train" and scenario["rights"]["training_eligible"]:training.append(reference)
-            for mutation in CONTROLS+sorted(scenario["control_codes"]):
+            for mutation in authored_controls(scenario):
                 run=run_reference(scenario,mutation);common.check(run["grade"]["reward"]==0,"negative_control_passed:"+mutation)
                 path="tasks/"+tid+"/controls/"+mutation+".json";b.put(root/path,run);controls.append({"task_id":tid,"mutation":mutation,"path":path,"expected_reward":0})
     b.put_lines(root/"tasks.jsonl",tasks);b.put_lines(root/"controls.jsonl",controls);b.put_lines(root/"training/scripted-trajectories.jsonl",training)
@@ -182,14 +195,14 @@ def verify_authored(root,config,manifest):
             for key in ("family_id","source_group_id","mechanism","variant","split","rights","origin","parent_task_id","source_sha256"):
                 common.check(common.equal(row[key],scenario[key]),"task_index_changed")
             reference=b.read(b.local(root,row["reference"]))
-            common.check(env.verify_record(scenario,reference)["reward"]==1 and common.equal(reference,run_reference(scenario)),"reference_changed")
+            common.check(b.verify_episode(scenario,reference)["reward"]==1 and common.equal(reference,run_reference(scenario)),"reference_changed")
             if scenario["split"]=="train" and scenario["rights"]["training_eligible"]:expected_training.append(reference)
-            for mutation in CONTROLS+sorted(scenario["control_codes"]):expected_controls.append((tid,mutation))
+            for mutation in authored_controls(scenario):expected_controls.append((tid,mutation))
     common.check([r["task_id"] for r in rows]==expected_tasks and len(set(expected_tasks))==len(expected_tasks),"task_inventory_changed")
     controls=b.lines(root/"controls.jsonl");common.check([(x["task_id"],x["mutation"]) for x in controls]==expected_controls,"control_inventory_changed")
     for row in controls:
         scenario=b.read(b.local(root,task_map[row["task_id"]]["scenario"]));run=b.read(b.local(root,row["path"]))
-        common.check(env.verify_record(scenario,run)["reward"]==row["expected_reward"]==0 and common.equal(run,run_reference(scenario,row["mutation"])),"negative_control_changed")
+        common.check(b.verify_episode(scenario,run)["reward"]==row["expected_reward"]==0 and common.equal(run,run_reference(scenario,row["mutation"])),"negative_control_changed")
     common.check(common.equal(b.lines(root/"training/scripted-trajectories.jsonl"),expected_training),"authored_training_changed")
     groups=len({r["source_group_id"] for r in rows})
     common.check(manifest["task_count"]==len(rows) and manifest["real_incident_chains"]==0 and manifest["source_groups"]==manifest["new_independent_source_groups"]==groups,"authored_counts_changed")

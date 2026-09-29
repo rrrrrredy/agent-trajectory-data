@@ -1,5 +1,23 @@
 # 扩充数据批次
 
+## v0.14：先证明需要自编测试，再增加环境行为
+
+`configs/runtime-v0.14/scoped-event-regression.json` 在采集前固定公开契约、错误初态、参考程序、错误控制、2 个公开与 10 个私有用例、评价侧 reference_probe，以及原创 train 来源。候选原型证明：六种实现都通过固定公开例，只有参考与独立 oracle 通过私有例；旧环境拒绝自编 test 参数，即使最终正确也因缺少公开基线失败得 0 分。证据见 [候选说明](CANDIDATE-v0.14.zh-CN.md)。
+
+新批次使用 `environment_version: research-repair-2` 和采集 profile `bounded_program_probe_repair`。新增 probe 接受有效 input 与模型声明的 expected，返回实际执行、代码摘要、版本、step 和 matches_claim；不查询 oracle，不暴露隐藏答案。最终评分独立核实初态反例、末态同例复测及说明中的 probe 引用，固定私有用例同时检查修复的其他行为。旧环境和 executor 不变。
+
+```powershell
+python -B scripts/runtime_batch.py build configs/runtime-v0.14/batch.json data/runtime-batch-v0.14
+python -B scripts/runtime_collect.py execute data/runtime-batch-v0.14 data/runtime-model-v0.14 --config configs/runtime-v0.14/collection.json --ledger data/production-current
+python -B scripts/runtime_exports.py build configs/runtime-v0.14/exports.json data/runtime-consumer-v0.14 --source-root artifacts
+```
+
+这些是已执行批次的构建记录，输出目录已存在，不能覆盖或换目录重采后冒充首次执行。新批次必须使用新配置及明确预算；本次 48 步/48 次上限，实际使用 12 次，账本 419→431。消费导出本身不调用模型。
+
+`probe_claim_mismatch` 只表明断言与当前程序结果不同，未必是模型错误。恢复对必须比较同一 input/expected、不同代码版本，并由终局 validated_regression_pairs 确认为真实回归修复，才标记 contract_regression_verified 和训练资格。构造脚本失败另存 processing，不混入模型动作错误。
+
+批次的 prior_release 仍指向 v0.13；由于 v0.13 只含消费投影，来源目录的 catalog_prior_release 明确指向最后含目录的 v0.12，并验证两个上游包摘要。累计目录与失败导出保留历史，消费包仅合并实际 episode 索引，防止重复计数。
+
 当前管线只依赖 Python 标准库、JSON 配置和不可变输出目录。每批先冻结素材、切分、环境规则与预算，离线检验参考轨迹和错误对照，再收集实际模型动作。每次发布保留上一版的地址和摘要。
 
 ## v0.10：历史故障适配、跨版本目录和恢复导出

@@ -19,13 +19,16 @@ SCHEMA={"type":"object","additionalProperties":False,"properties":{
     "required":["tool","arguments_json","decision_summary"]}
 
 def instruction_for(config):
-    return INSTRUCTION.replace("offline research environment", "offline repair environment") if config.get("environment_profile")=="bounded_program_repair" else INSTRUCTION
+    return INSTRUCTION.replace("offline research environment", "offline repair environment") if config.get("environment_profile") in {"bounded_program_repair","bounded_program_probe_repair"} else INSTRUCTION
 
 def schema_for(config):
     schema=copy.deepcopy(SCHEMA)
     if config.get("environment_profile")=="bounded_program_repair":
         import repair_env
         schema["properties"]["tool"]["enum"]=list(repair_env.TOOLS)
+    if config.get("environment_profile")=="bounded_program_probe_repair":
+        import repair_probe_env
+        schema["properties"]["tool"]["enum"]=list(repair_probe_env.TOOLS)
     if config.get("environment_profile")=="research_workspace":
         import workspace_env
         schema["properties"]["tool"]["enum"]=list(workspace_env.TOOLS)
@@ -123,8 +126,8 @@ def config_validate(config,tasks):
     e.check(config["version"]=="runtime-collection-1" and config["evaluation_mode"] in {"first_attempt_synthetic_development","first_attempt_derived_development","first_attempt_mixed_development"},"collection_mode_changed")
     e.check(config["execution_authorization"]=="approved_by_user" and bool(config["approval_record"]),"execution_not_authorized")
     e.check(config["task_ids"] and len(set(config["task_ids"]))==len(config["task_ids"]) and all(t in tasks for t in config["task_ids"]),"invalid_task_selection")
-    e.check(config.get("environment_profile") in {None,"bounded_program_repair","research_workspace"},"invalid_environment_profile")
-    profiles={"research-repair-1":"bounded_program_repair","research-workspace-1":"research_workspace"}
+    e.check(config.get("environment_profile") in {None,"bounded_program_repair","bounded_program_probe_repair","research_workspace"},"invalid_environment_profile")
+    profiles={"research-repair-1":"bounded_program_repair","research-repair-2":"bounded_program_probe_repair","research-workspace-1":"research_workspace"}
     e.check(all(profiles.get(tasks[t]["version"])==config.get("environment_profile") for t in config["task_ids"]),"environment_profile_mismatch")
     for key in ("max_new_calls","monthly_model_calls","max_call_seconds","max_batch_seconds"):
         e.check(type(config[key]) is int and config[key]>0,"invalid_budget")

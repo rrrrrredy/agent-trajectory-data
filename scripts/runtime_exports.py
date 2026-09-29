@@ -14,7 +14,7 @@ import zipfile
 from pathlib import Path, PurePosixPath
 
 VERSION = "runtime-consumer-1"
-ENVIRONMENTS = {"research-repair-1", "research-workspace-1"}
+ENVIRONMENTS = {"research-repair-1", "research-repair-2", "research-workspace-1"}
 
 
 def check(condition, message):
@@ -154,7 +154,7 @@ def project_episode(source_id, archive, row, task, scenario, run):
             "original_episode_sha256": episode_ref["sha256"],
         })
         observed = event["observation"]
-    if scenario["version"] == "research-repair-1":
+    if scenario["version"] in {"research-repair-1", "research-repair-2"}:
         deliverables = [{"kind": "json_pointer", "ref": episode_ref, "json_pointer": "/final_state/code", "sha256": sha(run["final_state"]["code"].encode("utf-8"))}]
     else:
         deliverables = [{"kind": "file", "ref": archive.ref("model/episodes/" + task_id + "/deliverables/" + name)} for name in scenario["documents"]["brief"]["body"]["artifact_ids"]]

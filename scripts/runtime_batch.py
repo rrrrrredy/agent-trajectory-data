@@ -51,6 +51,9 @@ def environment_module(scenario):
     if scenario["version"]=="research-runtime-4":
         import research_env_v4
         return research_env_v4
+    if scenario["version"]=="research-repair-2":
+        import repair_probe_env
+        return repair_probe_env
     if scenario["version"]=="research-repair-1":
         import repair_env
         return repair_env
@@ -71,7 +74,7 @@ def runtime_files(config):
         return workspace_batch.RUNTIME_FILES
     if config["version"]=="runtime-repair-batch-1":
         import repair_batch
-        return repair_batch.RUNTIME_FILES
+        return repair_batch.RUNTIME_FILES + (["repair_probe_env.py","repair_probe_tasks.py"] if config.get("environment_version")=="research-repair-2" else [])
     names=["research_env_v3.py","runtime_batch.py"]
     if config["version"]=="runtime-batch-2":names.extend(["research_env_v4.py","runtime_tasks_v4.py"])
     return names
@@ -181,6 +184,9 @@ def run_reference(scenario,mutation=None):
     if scenario["version"]=="research-workspace-1":
         import workspace_tasks
         return workspace_tasks.run_reference(scenario,mutation)
+    if scenario["version"]=="research-repair-2":
+        import repair_probe_tasks
+        return repair_probe_tasks.run_reference(scenario,mutation)
     if scenario["version"]=="research-repair-1":
         import repair_batch
         return repair_batch.run_reference(scenario,mutation)

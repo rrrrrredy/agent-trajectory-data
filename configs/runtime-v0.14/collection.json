@@ -1,0 +1,23 @@
+{
+  "approval_record": {
+    "budget": "At most 48 new calls and 48 environment steps in 1200 seconds; preserve the existing 815 monthly cap and prior ledger.",
+    "model_inherited_from_previous_approved_batch": "gpt-6-astra",
+    "payload": "Only public task policy, contract, worker, fixed public cases and actual prior observations; no reference probe, oracle, private cases or reference code.",
+    "scope": "Continue the accepted next-stage plan: validate one genuinely new self-authored-regression task, collect its first actual policy attempt, verify and privately release the increment.",
+    "source_use": "One new original synthetic family registered as train before collection; previous source splits and restrictions remain unchanged.",
+    "user_instruction": "继续推进"
+  },
+  "dataset_version": "0.14",
+  "environment_profile": "bounded_program_probe_repair",
+  "evaluation_mode": "first_attempt_synthetic_development",
+  "execution_authorization": "approved_by_user",
+  "max_batch_seconds": 1200,
+  "max_call_seconds": 90,
+  "max_new_calls": 48,
+  "model": "gpt-6-astra",
+  "monthly_model_calls": 815,
+  "task_ids": [
+    "repair-scoped-event-regression-clean-v2"
+  ],
+  "version": "runtime-collection-1"
+}

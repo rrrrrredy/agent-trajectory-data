@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.14 — Model-authored regression probes (2026-09-29)
+
+- Add one original synthetic train task whose supplied public cases initially pass; retain separate development/test and archived-source restrictions.
+- Add the versioned repair-probe environment without changing the prior repair environment or executor. Probe execution does not disclose oracle answers; terminal grading independently checks assertion correctness and same-case initial/final evidence.
+- Record one successful first model attempt in twelve calls, one eligible positive demonstration, twelve SFT decisions and one contract-verified recovery pair. Final code passes two public and ten private cases.
+- Reject fourteen erroneous controls; pass 264 regression tests, nine independent package execution checks and twenty-one rehashed semantic mutation controls.
+- Extend the existing consumer to four unchanged source archives: twenty actual episodes, 254 transitions, 69 eligible training transitions and five positive demonstrations.
+- Preserve visible construction failures, fixes and verification separately from actual model behavior. Cumulative catalog: 219 records and 70 lineage groups; failure exports: 34 records, 30 distinct events, 25 recovery pairs, ten eligible historical/current training pairs.
+
 ## v0.13 — existing trajectory consumer (2026-09-29)
 
 - Added a standard-library consumer for the pinned v0.10-v0.12 ZIPs: build, verify, read original public history, and replay each frozen source runtime independently.

@@ -8,6 +8,7 @@ from research_env_v3 import check,digest,equal
 SOURCES=[("v0.6","runtime-model-v0.6-first","agent-runtime-v0.6/curriculum/tasks.jsonl"),("v0.7","runtime-model-v0.7-recovery","agent-runtime-v0.6/curriculum/tasks.jsonl"),("v0.8","runtime-model-v0.8","runtime-batch-v0.8/tasks.jsonl"),("v0.9","runtime-model-v0.9","runtime-batch-v0.9/tasks.jsonl")]
 def classify(event):
     observation=event["observation"];status=observation.get("status")
+    if event["action"]["tool"]=="probe" and status==200 and observation["probe"]["matches_claim"] is False:return "probe_claim_mismatch"
     if event["action"]["tool"]=="test" and status==200 and not observation["test"]["passed"]:
         return "expected_reproduction_failure" if observation["test"]["version"]==1 else "candidate_test_failure"
     if status==409 and observation.get("error")=="evidence_revision_conflict":return "evidence_revision_conflict"
@@ -34,6 +35,9 @@ def project(component,index,run,initial,rights):
                     oid=event["action"]["args"]["operation_id"]
                     if candidate["action"]["tool"]=="operation_status" and candidate["action"]["args"].get("operation_id")==oid and candidate["observation"].get("state")=="committed":later=j;break
                     if candidate["action"]["tool"]=="revise_artifact" and equal(candidate["action"]["args"],event["action"]["args"]):later=j;break
+                elif category=="probe_claim_mismatch":
+                    original=event["observation"]["probe"];probe=candidate["observation"].get("probe",{})
+                    if candidate["action"]["tool"]=="probe" and probe.get("matches_claim") and probe.get("code_sha256")!=original["code_sha256"] and equal({k:probe.get(k) for k in ("input","expected")},{k:original[k] for k in ("input","expected")}):later=j;break
                 elif category=="public_validation_failure":
                     if candidate["action"]["tool"]=="validate" and candidate["observation"]["validation"]["passed"] and not equal(candidate["observation"]["validation"]["artifact_state"],event["observation"]["validation"]["artifact_state"]):later=j;break
                 elif category in {"expected_reproduction_failure","candidate_test_failure"}:
@@ -42,7 +46,12 @@ def project(component,index,run,initial,rights):
                 elif target(candidate["action"])==target(event["action"]):later=j;break
         if later is not None:
             row["resolution"]={"step":events[later]["step"],"kind":"write_effect_verified" if category=="uncertain_write_outcome" else "public_validation_passed" if category=="public_validation_failure" else "public_tests_passed" if event["action"]["tool"]=="test" else "tool_action_accepted","observation":events[later]["observation"],"goal_verified_separately":goal}
-            pairs.append({"failure_id":row["failure_id"],"event_fingerprint":fingerprint,"task_id":index["task_id"],"split":index["split"],"rights":rights,"category":category,"context_kind":"derived_from_recorded_public_observations","context":{"initial_observation":initial,"history":[{"action":x["action"],"observation":x["observation"]} for x in events[:i+1]]},"recovery":[{"action":x["action"],"observation":x["observation"]} for x in events[i+1:later+1]],"verification":row["resolution"],"training_eligible":index["split"]=="train" and rights.get("training_eligible") is True and goal and initial is not None})
+            validated_probe=True
+            if category=="probe_claim_mismatch":
+                expected_pair={"baseline_probe_id":event["observation"]["probe"]["probe_id"],"fixed_probe_id":events[later]["observation"]["probe"]["probe_id"]}
+                validated_probe=expected_pair in run.get("grade",{}).get("validated_regression_pairs",[])
+                row["resolution"].update(kind="contract_regression_verified" if validated_probe else "agent_claim_matched",oracle_validated=validated_probe)
+            pairs.append({"failure_id":row["failure_id"],"event_fingerprint":fingerprint,"task_id":index["task_id"],"split":index["split"],"rights":rights,"category":category,"context_kind":"derived_from_recorded_public_observations","context":{"initial_observation":initial,"history":[{"action":x["action"],"observation":x["observation"]} for x in events[:i+1]]},"recovery":[{"action":x["action"],"observation":x["observation"]} for x in events[i+1:later+1]],"verification":row["resolution"],"training_eligible":index["split"]=="train" and rights.get("training_eligible") is True and goal and initial is not None and validated_probe})
         elif category=="evidence_unavailable" and goal and run["final_state"]["ticket"]["status"]=="blocked":row["resolution"]={"kind":"legitimate_blocked","goal_verified_separately":True}
         episodes.append(row)
     reason=run.get("stop_reason")
