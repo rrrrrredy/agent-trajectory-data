@@ -1,5 +1,14 @@
 # Changelog
 
+## dataset-v0.12 — Complete-denominator repair task
+
+- Add one original synthetic development task for cohort completeness, final usability, failed elapsed time and a declared improvement policy.
+- Provide two public and sixteen private behavioral cases, one passing reference and eleven rejected erroneous controls. Reuse the existing repair environment and executor.
+- Record one successful model first attempt in 13 calls, including baseline failure, two edits, a 412 read-before-write error, rereading, retry and terminal verification. Final code passes all eighteen cases.
+- Support frozen authored-material input in the existing batch builder; retain archived-incident behavior and earlier releases.
+- Pass 243 regression tests, eight independent package execution/behavior checks and seventeen rehashed mutation controls.
+- Retain development scope: no new training trajectories or independent held-out tasks. Cumulative catalog/failure exports contain 218 records, 69 lineage groups, 33 failure records and 24 recovery pairs.
+
 ## dataset-v0.11 — Verified research workspace trajectories
 
 - Collect twelve actual first attempts in 167 calls: eleven ready deliverables and one correctly blocked outcome when required evidence is unavailable.

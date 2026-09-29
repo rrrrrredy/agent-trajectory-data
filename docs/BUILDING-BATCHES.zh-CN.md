@@ -97,3 +97,16 @@ py -3 -B scripts/runtime_collect.py execute data/runtime-batch-v0.11 data/runtim
 ```
 
 这一入口只接续完整前缀后尚未尝试的任务。原始 started.json、冻结环境、八条轨迹和原月账本保持不变；新增 continuation.json 记录已批准的片段、模型、任务范围、新窗口和上限，另存续跑 collector 代码。新增调用在原总额度以内，还受新窗口上限约束。重复执行复用同一窗口，不能刷新截止时间；改变已冻结环境仍会被拒绝。
+
+## 原创合成修复材料
+
+v0.12 在已有 repair_batch 中支持 `source_mode: authored_synthetic`，环境和执行器复用原实现。材料 JSON 固定 contract、错误初始程序、reference、partial、public_cases、private_cases 和有区分作用的 control_codes；预期结果独立给定，不能调用待验证的参考程序来生成。sources 只登记概念参考，没有导入第三方代码或原始评审记录。
+
+材料的 origin、source_group_id、split、rights 与 missingness 必须明确。batch.json 的 sources 绑定文件路径与 SHA-256，当前仅使用 clean 变体；不为达到数量预设机械生成变体。按下面命令构建，输出存在时会拒绝覆盖：
+
+```powershell
+py -3 -B scripts/runtime_batch.py build configs/runtime-v0.12/batch.json data/runtime-batch-v0.12
+py -3 -B scripts/runtime_batch.py verify data/runtime-batch-v0.12
+```
+
+开发集任务不会进入成功训练导出，材料训练用途许可与任务切分分别判断。题内私有用例只能证明该任务的行为约束，不构成独立任务测试集。参考、错误控制、实际模型执行和处理过程分别保存。

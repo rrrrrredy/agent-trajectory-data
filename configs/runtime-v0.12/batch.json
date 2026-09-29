@@ -1,0 +1,21 @@
+{
+  "dataset_version": "0.12",
+  "max_steps": 48,
+  "prior_release": {
+    "sha256": "cac142bfc1fc7e78c0b6c330421850b235ad43753f08682d0eb4bf183a2dd4d7",
+    "tag": "dataset-v0.11"
+  },
+  "source_mode": "authored_synthetic",
+  "sources": [
+    {
+      "path": "configs/runtime-v0.12/denominator-integrity.json",
+      "sha256": "7172e6a08a1aba5555886c41d1f9d964b4dfaddf3b1fc8dde120a45423b2fae7",
+      "task_id": "denominator-integrity",
+      "variants": [
+        "clean"
+      ]
+    }
+  ],
+  "toolkit_commit": "28524448eaf6534125a24dd1ea26e986016c8aea",
+  "version": "runtime-repair-batch-1"
+}

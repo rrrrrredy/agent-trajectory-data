@@ -1,0 +1,22 @@
+{
+  "approval_record": {
+    "budget": "One task with 48 environment steps; at most 48 new calls; keep the prior monthly ledger and its existing 815-call limit.",
+    "model_inherited_from_previous_approved_batch": "gpt-6-astra",
+    "payload": "New original synthetic task contract, initial worker, public test cases and observed action history only. No third-party code, historical raw reviews, private cases or reference solution enter the policy context.",
+    "scope": "Implement the narrowed complete-denominator task, collect one actual model first attempt, verify and privately release the increment.",
+    "user_instruction": "ok，继续推进任务"
+  },
+  "dataset_version": "0.12",
+  "environment_profile": "bounded_program_repair",
+  "evaluation_mode": "first_attempt_synthetic_development",
+  "execution_authorization": "approved_by_user",
+  "max_batch_seconds": 1200,
+  "max_call_seconds": 90,
+  "max_new_calls": 48,
+  "model": "gpt-6-astra",
+  "monthly_model_calls": 815,
+  "task_ids": [
+    "repair-denominator-integrity-clean-v1"
+  ],
+  "version": "runtime-collection-1"
+}

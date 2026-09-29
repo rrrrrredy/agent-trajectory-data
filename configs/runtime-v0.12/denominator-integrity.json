@@ -1,0 +1,1110 @@
+{
+  "contract": "Repair solve(data), a newly authored synthetic comparison worker. This is not a historical company program, a reconstruction of a real production system, or a task about designing experiments.\n\nThe input has task_ids, baseline, and candidate. task_ids is a list of declared task ID strings. baseline and candidate are lists of records. Each record has task_id (string), status (one of usable, unusable, failed), label_pass (boolean), and elapsed_ms (a nonnegative integer, not a boolean). These basic field types, keys, and status values are guaranteed; validation of arbitrary malformed JSON is outside this task. The declared cohort and its coverage are NOT guaranteed and must be validated.\n\nRequire task_ids to be nonempty and unique. Independently require baseline and candidate each to contain exactly one record for every declared task ID and no other records. Missing, extra, duplicate, or unknown task IDs, including duplicates in task_ids itself, must raise ValueError. Do not silently deduplicate, omit failures, infer a smaller cohort, or return an ordinary reject decision for invalid coverage. One record represents one complete prescribed attempt; this fixture has no multiple-attempt retry aggregation.\n\nFor each side, return attempted (the full record count), usable (the count with status exactly usable), unusable_ids (all task IDs whose status is unusable OR failed, lexicographically sorted), and total_elapsed_ms (the sum over EVERY record, including failed attempts and their elapsed waiting time). status is the final adjudicated delivery outcome. label_pass is a diagnostic result of a local check and must not change final usability, even when it disagrees with status. The input records remain available separately; the summary must not erase their failed membership or timing contribution.\n\nUse this explicit conservative decision policy: accept only if (1) the candidate has at least one usable task, (2) every baseline usable task ID remains usable in the candidate, (3) candidate total_elapsed_ms is at most baseline total_elapsed_ms, and (4) either the candidate has strictly more usable tasks or its total_elapsed_ms is strictly lower. Otherwise return reject. More usable tasks do not compensate for higher total elapsed time under this task's policy. Faster failures with zero usable output and identical unchanged results must be rejected. This is the declared policy of this bounded task, not a universal business rule.\n\nReturn exactly {'decision': 'accept' or 'reject', 'baseline': {'attempted': integer, 'usable': integer, 'unusable_ids': sorted list, 'total_elapsed_ms': integer}, 'candidate': the same summary shape}. The host supplies a copied input and retains the frozen original records. Record order must not affect the result. Repair only solve(data) using the documented execution subset. Read the contract and worker, reproduce a failed baseline test before patching, and rerun tests on the final code before submitting the code-bound note and ticket.\n",
+  "control_codes": {
+    "count_only": "def solve(data):\n    ids = data['task_ids']\n    wanted = set(ids)\n    if not ids or len(wanted) != len(ids):\n        raise ValueError('invalid_task_ids')\n    summaries = {}\n    usable_sets = {}\n    for side in ['baseline', 'candidate']:\n        rows = data[side]\n        observed = [row['task_id'] for row in rows]\n        if len(observed) != len(ids) or set(observed) != wanted:\n            raise ValueError('invalid_coverage')\n        usable = []\n        unusable = []\n        total = 0\n        for row in rows:\n            total = total + row['elapsed_ms']\n            if row['status'] == 'usable':\n                usable.append(row['task_id'])\n            else:\n                unusable.append(row['task_id'])\n        summaries[side] = {'attempted': len(rows), 'usable': len(usable), 'unusable_ids': sorted(unusable), 'total_elapsed_ms': total}\n        usable_sets[side] = set(usable)\n    before = usable_sets['baseline']\n    after = usable_sets['candidate']\n    before_ms = summaries['baseline']['total_elapsed_ms']\n    after_ms = summaries['candidate']['total_elapsed_ms']\n    retained = len(after) >= len(before)\n    accepted = bool(after) and retained and after_ms <= before_ms and (len(after) > len(before) or after_ms < before_ms)\n    return {'decision': 'accept' if accepted else 'reject', 'baseline': summaries['baseline'], 'candidate': summaries['candidate']}\n",
+    "coverage_set_only": "def solve(data):\n    ids = data['task_ids']\n    wanted = set(ids)\n    if not ids or len(wanted) != len(ids):\n        raise ValueError('invalid_task_ids')\n    summaries = {}\n    usable_sets = {}\n    for side in ['baseline', 'candidate']:\n        rows = data[side]\n        observed = [row['task_id'] for row in rows]\n        if set(observed) != wanted:\n            raise ValueError('invalid_coverage')\n        usable = []\n        unusable = []\n        total = 0\n        for row in rows:\n            total = total + row['elapsed_ms']\n            if row['status'] == 'usable':\n                usable.append(row['task_id'])\n            else:\n                unusable.append(row['task_id'])\n        summaries[side] = {'attempted': len(rows), 'usable': len(usable), 'unusable_ids': sorted(unusable), 'total_elapsed_ms': total}\n        usable_sets[side] = set(usable)\n    before = usable_sets['baseline']\n    after = usable_sets['candidate']\n    before_ms = summaries['baseline']['total_elapsed_ms']\n    after_ms = summaries['candidate']['total_elapsed_ms']\n    retained = all(task_id in after for task_id in before)\n    accepted = bool(after) and retained and after_ms <= before_ms and (len(after) > len(before) or after_ms < before_ms)\n    return {'decision': 'accept' if accepted else 'reject', 'baseline': summaries['baseline'], 'candidate': summaries['candidate']}\n",
+    "label_proxy": "def solve(data):\n    ids = data['task_ids']\n    wanted = set(ids)\n    if not ids or len(wanted) != len(ids):\n        raise ValueError('invalid_task_ids')\n    summaries = {}\n    usable_sets = {}\n    for side in ['baseline', 'candidate']:\n        rows = data[side]\n        observed = [row['task_id'] for row in rows]\n        if len(observed) != len(ids) or set(observed) != wanted:\n            raise ValueError('invalid_coverage')\n        usable = []\n        unusable = []\n        total = 0\n        for row in rows:\n            total = total + row['elapsed_ms']\n            if row['label_pass']:\n                usable.append(row['task_id'])\n            else:\n                unusable.append(row['task_id'])\n        summaries[side] = {'attempted': len(rows), 'usable': len(usable), 'unusable_ids': sorted(unusable), 'total_elapsed_ms': total}\n        usable_sets[side] = set(usable)\n    before = usable_sets['baseline']\n    after = usable_sets['candidate']\n    before_ms = summaries['baseline']['total_elapsed_ms']\n    after_ms = summaries['candidate']['total_elapsed_ms']\n    retained = all(task_id in after for task_id in before)\n    accepted = bool(after) and retained and after_ms <= before_ms and (len(after) > len(before) or after_ms < before_ms)\n    return {'decision': 'accept' if accepted else 'reject', 'baseline': summaries['baseline'], 'candidate': summaries['candidate']}\n",
+    "reject_all": "def solve(data):\n    ids = data['task_ids']\n    wanted = set(ids)\n    if not ids or len(wanted) != len(ids):\n        raise ValueError('invalid_task_ids')\n    summaries = {}\n    usable_sets = {}\n    for side in ['baseline', 'candidate']:\n        rows = data[side]\n        observed = [row['task_id'] for row in rows]\n        if len(observed) != len(ids) or set(observed) != wanted:\n            raise ValueError('invalid_coverage')\n        usable = []\n        unusable = []\n        total = 0\n        for row in rows:\n            total = total + row['elapsed_ms']\n            if row['status'] == 'usable':\n                usable.append(row['task_id'])\n            else:\n                unusable.append(row['task_id'])\n        summaries[side] = {'attempted': len(rows), 'usable': len(usable), 'unusable_ids': sorted(unusable), 'total_elapsed_ms': total}\n        usable_sets[side] = set(usable)\n    before = usable_sets['baseline']\n    after = usable_sets['candidate']\n    before_ms = summaries['baseline']['total_elapsed_ms']\n    after_ms = summaries['candidate']['total_elapsed_ms']\n    retained = all(task_id in after for task_id in before)\n    accepted = bool(after) and retained and after_ms <= before_ms and (len(after) > len(before) or after_ms < before_ms)\n    return {'decision': 'reject', 'baseline': summaries['baseline'], 'candidate': summaries['candidate']}\n",
+    "success_only_latency": "def solve(data):\n    ids = data['task_ids']\n    wanted = set(ids)\n    if not ids or len(wanted) != len(ids):\n        raise ValueError('invalid_task_ids')\n    summaries = {}\n    usable_sets = {}\n    for side in ['baseline', 'candidate']:\n        rows = data[side]\n        observed = [row['task_id'] for row in rows]\n        if len(observed) != len(ids) or set(observed) != wanted:\n            raise ValueError('invalid_coverage')\n        usable = []\n        unusable = []\n        total = 0\n        for row in rows:\n            if row['status'] == 'usable':\n                total = total + row['elapsed_ms']\n            if row['status'] == 'usable':\n                usable.append(row['task_id'])\n            else:\n                unusable.append(row['task_id'])\n        summaries[side] = {'attempted': len(rows), 'usable': len(usable), 'unusable_ids': sorted(unusable), 'total_elapsed_ms': total}\n        usable_sets[side] = set(usable)\n    before = usable_sets['baseline']\n    after = usable_sets['candidate']\n    before_ms = summaries['baseline']['total_elapsed_ms']\n    after_ms = summaries['candidate']['total_elapsed_ms']\n    retained = all(task_id in after for task_id in before)\n    accepted = bool(after) and retained and after_ms <= before_ms and (len(after) > len(before) or after_ms < before_ms)\n    return {'decision': 'accept' if accepted else 'reject', 'baseline': summaries['baseline'], 'candidate': summaries['candidate']}\n"
+  },
+  "expected_value_provenance": "Expected totals, task membership, decisions, and exceptions were independently hand-specified per case; no reference execution generated expected values.",
+  "initial": "def solve(data):\n    ids = data['task_ids']\n    wanted = set(ids)\n    summaries = {}\n    usable_sets = {}\n    for side in ['baseline', 'candidate']:\n        rows = data[side]\n        observed = [row['task_id'] for row in rows]\n        usable = []\n        unusable = []\n        total = 0\n        for row in rows:\n            if row['status'] == 'usable':\n                total = total + row['elapsed_ms']\n            if row['label_pass']:\n                usable.append(row['task_id'])\n            else:\n                unusable.append(row['task_id'])\n        summaries[side] = {'attempted': len(rows), 'usable': len(usable), 'unusable_ids': sorted(unusable), 'total_elapsed_ms': total}\n        usable_sets[side] = set(usable)\n    before = usable_sets['baseline']\n    after = usable_sets['candidate']\n    before_ms = summaries['baseline']['total_elapsed_ms']\n    after_ms = summaries['candidate']['total_elapsed_ms']\n    retained = all(task_id in after for task_id in before)\n    accepted = after_ms < before_ms\n    return {'decision': 'accept' if accepted else 'reject', 'baseline': summaries['baseline'], 'candidate': summaries['candidate']}\n",
+  "missingness": [
+    "No real company task records, employee explanations, or historical company execution traces are included.",
+    "No original historical program is reconstructed; this is a newly authored synthetic pure-function fixture.",
+    "No third-party source code, article body, or raw review output is incorporated.",
+    "No real deployment improvement, independent task-family generalization, or model-designed experiment is measured.",
+    "Held-back cases are evaluator-only at submission; the fixed environment does not expose their failures for a subsequent repair cycle."
+  ],
+  "origin": "authored_synthetic",
+  "partial": "def solve(data):\n    ids = data['task_ids']\n    wanted = set(ids)\n    summaries = {}\n    usable_sets = {}\n    for side in ['baseline', 'candidate']:\n        rows = data[side]\n        observed = [row['task_id'] for row in rows]\n        usable = []\n        unusable = []\n        total = 0\n        for row in rows:\n            total = total + row['elapsed_ms']\n            if row['status'] == 'usable':\n                usable.append(row['task_id'])\n            else:\n                unusable.append(row['task_id'])\n        summaries[side] = {'attempted': len(rows), 'usable': len(usable), 'unusable_ids': sorted(unusable), 'total_elapsed_ms': total}\n        usable_sets[side] = set(usable)\n    before = usable_sets['baseline']\n    after = usable_sets['candidate']\n    before_ms = summaries['baseline']['total_elapsed_ms']\n    after_ms = summaries['candidate']['total_elapsed_ms']\n    retained = all(task_id in after for task_id in before)\n    accepted = bool(after) and retained and after_ms <= before_ms and (len(after) > len(before) or after_ms < before_ms)\n    return {'decision': 'accept' if accepted else 'reject', 'baseline': summaries['baseline'], 'candidate': summaries['candidate']}\n",
+  "private_cases": [
+    {
+      "expected": {
+        "ok": true,
+        "value": {
+          "baseline": {
+            "attempted": 2,
+            "total_elapsed_ms": 200,
+            "unusable_ids": [],
+            "usable": 2
+          },
+          "candidate": {
+            "attempted": 2,
+            "total_elapsed_ms": 80,
+            "unusable_ids": [
+              "a",
+              "b"
+            ],
+            "usable": 0
+          },
+          "decision": "reject"
+        }
+      },
+      "input": {
+        "baseline": [
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "b"
+          }
+        ],
+        "candidate": [
+          {
+            "elapsed_ms": 40,
+            "label_pass": true,
+            "status": "unusable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 40,
+            "label_pass": true,
+            "status": "unusable",
+            "task_id": "b"
+          }
+        ],
+        "task_ids": [
+          "a",
+          "b"
+        ]
+      },
+      "name": "labels-pass-but-final-outputs-unusable",
+      "purpose": "Local label acceptance does not establish final usability."
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": {
+          "baseline": {
+            "attempted": 3,
+            "total_elapsed_ms": 300,
+            "unusable_ids": [
+              "c"
+            ],
+            "usable": 2
+          },
+          "candidate": {
+            "attempted": 3,
+            "total_elapsed_ms": 300,
+            "unusable_ids": [],
+            "usable": 3
+          },
+          "decision": "accept"
+        }
+      },
+      "input": {
+        "baseline": [
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "b"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "c"
+          }
+        ],
+        "candidate": [
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "b"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "c"
+          }
+        ],
+        "task_ids": [
+          "a",
+          "b",
+          "c"
+        ]
+      },
+      "name": "more-usable-results-at-equal-total-time",
+      "purpose": "Improvement can be an additional usable task without a speed gain."
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": {
+          "baseline": {
+            "attempted": 3,
+            "total_elapsed_ms": 300,
+            "unusable_ids": [
+              "c"
+            ],
+            "usable": 2
+          },
+          "candidate": {
+            "attempted": 3,
+            "total_elapsed_ms": 160,
+            "unusable_ids": [
+              "b"
+            ],
+            "usable": 2
+          },
+          "decision": "reject"
+        }
+      },
+      "input": {
+        "baseline": [
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "b"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "c"
+          }
+        ],
+        "candidate": [
+          {
+            "elapsed_ms": 70,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 20,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "b"
+          },
+          {
+            "elapsed_ms": 70,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "c"
+          }
+        ],
+        "task_ids": [
+          "a",
+          "b",
+          "c"
+        ]
+      },
+      "name": "equal-usable-count-loses-a-previously-usable-task",
+      "purpose": "Equal usable counts cannot conceal regression on a previously usable task ID."
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": {
+          "baseline": {
+            "attempted": 2,
+            "total_elapsed_ms": 200,
+            "unusable_ids": [
+              "a",
+              "b"
+            ],
+            "usable": 0
+          },
+          "candidate": {
+            "attempted": 2,
+            "total_elapsed_ms": 20,
+            "unusable_ids": [
+              "a",
+              "b"
+            ],
+            "usable": 0
+          },
+          "decision": "reject"
+        }
+      },
+      "input": {
+        "baseline": [
+          {
+            "elapsed_ms": 100,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "b"
+          }
+        ],
+        "candidate": [
+          {
+            "elapsed_ms": 10,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 10,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "b"
+          }
+        ],
+        "task_ids": [
+          "a",
+          "b"
+        ]
+      },
+      "name": "all-attempts-fail-faster",
+      "purpose": "Faster failure with no usable result is not an acceptable delivery improvement."
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": {
+          "baseline": {
+            "attempted": 2,
+            "total_elapsed_ms": 200,
+            "unusable_ids": [],
+            "usable": 2
+          },
+          "candidate": {
+            "attempted": 2,
+            "total_elapsed_ms": 200,
+            "unusable_ids": [],
+            "usable": 2
+          },
+          "decision": "reject"
+        }
+      },
+      "input": {
+        "baseline": [
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "b"
+          }
+        ],
+        "candidate": [
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "b"
+          }
+        ],
+        "task_ids": [
+          "a",
+          "b"
+        ]
+      },
+      "name": "identical-results-have-no-strict-improvement",
+      "purpose": "Non-regression alone does not satisfy the strict improvement requirement."
+    },
+    {
+      "expected": {
+        "error": "ValueError",
+        "ok": false
+      },
+      "input": {
+        "baseline": [
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 200,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "b"
+          }
+        ],
+        "candidate": [
+          {
+            "elapsed_ms": 50,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          }
+        ],
+        "task_ids": [
+          "a",
+          "b"
+        ]
+      },
+      "name": "candidate-deletes-failed-record",
+      "purpose": "A deleted failure is invalid coverage, not a smaller observed denominator."
+    },
+    {
+      "expected": {
+        "error": "ValueError",
+        "ok": false
+      },
+      "input": {
+        "baseline": [
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 200,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "b"
+          }
+        ],
+        "candidate": [
+          {
+            "elapsed_ms": 50,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 50,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          }
+        ],
+        "task_ids": [
+          "a",
+          "b"
+        ]
+      },
+      "name": "duplicate-success-replaces-missing-failure",
+      "purpose": "Equal list lengths do not establish coverage when a success is duplicated."
+    },
+    {
+      "expected": {
+        "error": "ValueError",
+        "ok": false
+      },
+      "input": {
+        "baseline": [
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 200,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "b"
+          }
+        ],
+        "candidate": [
+          {
+            "elapsed_ms": 50,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 40,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "outside"
+          }
+        ],
+        "task_ids": [
+          "a",
+          "b"
+        ]
+      },
+      "name": "unknown-task-replaces-declared-task",
+      "purpose": "Only the declared task cohort may be compared."
+    },
+    {
+      "expected": {
+        "error": "ValueError",
+        "ok": false
+      },
+      "input": {
+        "baseline": [
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "b"
+          }
+        ],
+        "candidate": [
+          {
+            "elapsed_ms": 50,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 50,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "b"
+          },
+          {
+            "elapsed_ms": 50,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          }
+        ],
+        "task_ids": [
+          "a",
+          "b"
+        ]
+      },
+      "name": "duplicate-extra-row-preserves-id-set",
+      "purpose": "Set equality alone cannot detect extra duplicate attempts."
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": {
+          "baseline": {
+            "attempted": 3,
+            "total_elapsed_ms": 240,
+            "unusable_ids": [
+              "a"
+            ],
+            "usable": 2
+          },
+          "candidate": {
+            "attempted": 3,
+            "total_elapsed_ms": 200,
+            "unusable_ids": [
+              "a"
+            ],
+            "usable": 2
+          },
+          "decision": "accept"
+        }
+      },
+      "input": {
+        "baseline": [
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "z"
+          },
+          {
+            "elapsed_ms": 60,
+            "label_pass": false,
+            "status": "unusable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 80,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "m"
+          }
+        ],
+        "candidate": [
+          {
+            "elapsed_ms": 70,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "m"
+          },
+          {
+            "elapsed_ms": 80,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "z"
+          },
+          {
+            "elapsed_ms": 50,
+            "label_pass": false,
+            "status": "unusable",
+            "task_id": "a"
+          }
+        ],
+        "task_ids": [
+          "z",
+          "a",
+          "m"
+        ]
+      },
+      "name": "record-order-does-not-change-comparison",
+      "purpose": "Task IDs, not record order, identify comparable results."
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": {
+          "baseline": {
+            "attempted": 2,
+            "total_elapsed_ms": 110,
+            "unusable_ids": [
+              "b"
+            ],
+            "usable": 1
+          },
+          "candidate": {
+            "attempted": 2,
+            "total_elapsed_ms": 350,
+            "unusable_ids": [
+              "b"
+            ],
+            "usable": 1
+          },
+          "decision": "reject"
+        }
+      },
+      "input": {
+        "baseline": [
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 10,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "b"
+          }
+        ],
+        "candidate": [
+          {
+            "elapsed_ms": 50,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 300,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "b"
+          }
+        ],
+        "task_ids": [
+          "a",
+          "b"
+        ]
+      },
+      "name": "failure-wait-outweighs-faster-success",
+      "purpose": "The retained failure wait contributes to the total even when usable task identities match."
+    },
+    {
+      "expected": {
+        "error": "ValueError",
+        "ok": false
+      },
+      "input": {
+        "baseline": [],
+        "candidate": [],
+        "task_ids": []
+      },
+      "name": "empty-declared-cohort",
+      "purpose": "The declared task cohort must be nonempty."
+    },
+    {
+      "expected": {
+        "error": "ValueError",
+        "ok": false
+      },
+      "input": {
+        "baseline": [
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          }
+        ],
+        "candidate": [
+          {
+            "elapsed_ms": 50,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 50,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          }
+        ],
+        "task_ids": [
+          "a",
+          "a"
+        ]
+      },
+      "name": "duplicate-id-in-declared-cohort",
+      "purpose": "The declared cohort itself must contain unique IDs."
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": {
+          "baseline": {
+            "attempted": 2,
+            "total_elapsed_ms": 200,
+            "unusable_ids": [
+              "b"
+            ],
+            "usable": 1
+          },
+          "candidate": {
+            "attempted": 2,
+            "total_elapsed_ms": 220,
+            "unusable_ids": [],
+            "usable": 2
+          },
+          "decision": "reject"
+        }
+      },
+      "input": {
+        "baseline": [
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "b"
+          }
+        ],
+        "candidate": [
+          {
+            "elapsed_ms": 110,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 110,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "b"
+          }
+        ],
+        "task_ids": [
+          "a",
+          "b"
+        ]
+      },
+      "name": "usability-gain-with-higher-total-time",
+      "purpose": "This task explicitly forbids trading greater total time for greater usability."
+    },
+    {
+      "expected": {
+        "error": "ValueError",
+        "ok": false
+      },
+      "input": {
+        "baseline": [
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          }
+        ],
+        "candidate": [
+          {
+            "elapsed_ms": 50,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 50,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "b"
+          }
+        ],
+        "task_ids": [
+          "a",
+          "b"
+        ]
+      },
+      "name": "baseline-deletes-failed-record",
+      "purpose": "Baseline coverage must be validated just as strictly as candidate coverage."
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": {
+          "baseline": {
+            "attempted": 1,
+            "total_elapsed_ms": 100,
+            "unusable_ids": [],
+            "usable": 1
+          },
+          "candidate": {
+            "attempted": 1,
+            "total_elapsed_ms": 80,
+            "unusable_ids": [],
+            "usable": 1
+          },
+          "decision": "accept"
+        }
+      },
+      "input": {
+        "baseline": [
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          }
+        ],
+        "candidate": [
+          {
+            "elapsed_ms": 80,
+            "label_pass": false,
+            "status": "usable",
+            "task_id": "a"
+          }
+        ],
+        "task_ids": [
+          "a"
+        ]
+      },
+      "name": "final-status-remains-authoritative-over-local-label",
+      "purpose": "The final adjudicated status is authoritative; the diagnostic label is not an additional final gate."
+    }
+  ],
+  "public_cases": [
+    {
+      "expected": {
+        "ok": true,
+        "value": {
+          "baseline": {
+            "attempted": 10,
+            "total_elapsed_ms": 1000,
+            "unusable_ids": [],
+            "usable": 10
+          },
+          "candidate": {
+            "attempted": 10,
+            "total_elapsed_ms": 1700,
+            "unusable_ids": [
+              "c",
+              "d",
+              "e",
+              "f",
+              "g",
+              "h",
+              "i",
+              "j"
+            ],
+            "usable": 2
+          },
+          "decision": "reject"
+        }
+      },
+      "input": {
+        "baseline": [
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "b"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "c"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "d"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "e"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "f"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "g"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "h"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "i"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "j"
+          }
+        ],
+        "candidate": [
+          {
+            "elapsed_ms": 50,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 50,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "b"
+          },
+          {
+            "elapsed_ms": 200,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "c"
+          },
+          {
+            "elapsed_ms": 200,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "d"
+          },
+          {
+            "elapsed_ms": 200,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "e"
+          },
+          {
+            "elapsed_ms": 200,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "f"
+          },
+          {
+            "elapsed_ms": 200,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "g"
+          },
+          {
+            "elapsed_ms": 200,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "h"
+          },
+          {
+            "elapsed_ms": 200,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "i"
+          },
+          {
+            "elapsed_ms": 200,
+            "label_pass": false,
+            "status": "failed",
+            "task_id": "j"
+          }
+        ],
+        "task_ids": [
+          "a",
+          "b",
+          "c",
+          "d",
+          "e",
+          "f",
+          "g",
+          "h",
+          "i",
+          "j"
+        ]
+      },
+      "name": "faster-survivors-lose-eight-deliverables",
+      "purpose": "All ten attempts remain in the denominator and elapsed total; two faster survivors cannot replace ten usable outcomes."
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": {
+          "baseline": {
+            "attempted": 3,
+            "total_elapsed_ms": 300,
+            "unusable_ids": [],
+            "usable": 3
+          },
+          "candidate": {
+            "attempted": 3,
+            "total_elapsed_ms": 240,
+            "unusable_ids": [],
+            "usable": 3
+          },
+          "decision": "accept"
+        }
+      },
+      "input": {
+        "baseline": [
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "b"
+          },
+          {
+            "elapsed_ms": 100,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "c"
+          }
+        ],
+        "candidate": [
+          {
+            "elapsed_ms": 80,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "a"
+          },
+          {
+            "elapsed_ms": 80,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "b"
+          },
+          {
+            "elapsed_ms": 80,
+            "label_pass": true,
+            "status": "usable",
+            "task_id": "c"
+          }
+        ],
+        "task_ids": [
+          "a",
+          "b",
+          "c"
+        ]
+      },
+      "name": "same-completed-tasks-genuinely-faster",
+      "purpose": "A complete valid improvement must be accepted; refusing every candidate is incorrect."
+    }
+  ],
+  "reference": "def solve(data):\n    ids = data['task_ids']\n    wanted = set(ids)\n    if not ids or len(wanted) != len(ids):\n        raise ValueError('invalid_task_ids')\n    summaries = {}\n    usable_sets = {}\n    for side in ['baseline', 'candidate']:\n        rows = data[side]\n        observed = [row['task_id'] for row in rows]\n        if len(observed) != len(ids) or set(observed) != wanted:\n            raise ValueError('invalid_coverage')\n        usable = []\n        unusable = []\n        total = 0\n        for row in rows:\n            total = total + row['elapsed_ms']\n            if row['status'] == 'usable':\n                usable.append(row['task_id'])\n            else:\n                unusable.append(row['task_id'])\n        summaries[side] = {'attempted': len(rows), 'usable': len(usable), 'unusable_ids': sorted(unusable), 'total_elapsed_ms': total}\n        usable_sets[side] = set(usable)\n    before = usable_sets['baseline']\n    after = usable_sets['candidate']\n    before_ms = summaries['baseline']['total_elapsed_ms']\n    after_ms = summaries['candidate']['total_elapsed_ms']\n    retained = all(task_id in after for task_id in before)\n    accepted = bool(after) and retained and after_ms <= before_ms and (len(after) > len(before) or after_ms < before_ms)\n    return {'decision': 'accept' if accepted else 'reject', 'baseline': summaries['baseline'], 'candidate': summaries['candidate']}\n",
+  "rights": {
+    "basis": "New original synthetic fixture; source links motivate the failure class but no third-party code or raw review records are incorporated.",
+    "distribution": "private_internal",
+    "training_eligible": true
+  },
+  "source_group_id": "authored-denominator-integrity-20260929",
+  "sources": [
+    {
+      "relevance": "Motivates matching a measured improvement to completed work. No source code or article text is included.",
+      "role": "concept_reference_only",
+      "url": "https://claude.dev/blog/how-we-made-claude-ai-faster/"
+    },
+    {
+      "relevance": "Motivates checking that a proxy metric represents the intended outcome. No article text is included.",
+      "role": "concept_reference_only",
+      "url": "https://www.163.com/dy/article/L7O1CMKT0556BKW5.html"
+    },
+    {
+      "commit": "94a06d0e954836226ca54b0d67a2f4c41f4ea1d3",
+      "relevance": "The independently reproduced successful-samples-only comparison motivates denominator validation. The task uses new functions and inputs, not copied benchmark or ratchet code.",
+      "role": "concept_reference_only",
+      "url": "https://github.com/alchaincyf/huashu-flash/tree/94a06d0e954836226ca54b0d67a2f4c41f4ea1d3"
+    },
+    {
+      "commit": "28524448eaf6534125a24dd1ea26e986016c8aea",
+      "relevance": "A retained review miss motivates distinguishing local label acceptance from final usable output. No raw review records or original diagnostic fragments are imported.",
+      "role": "concept_reference_only",
+      "url": "https://github.com/rrrrrredy/research-toolkit/blob/28524448eaf6534125a24dd1ea26e986016c8aea/evals/semantic_diagnostics/reviews/2026-09-08/README.md"
+    }
+  ],
+  "split": "development",
+  "task_id": "denominator-integrity"
+}
