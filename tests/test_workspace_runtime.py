@@ -85,6 +85,34 @@ class WorkspaceRuntimeTests(unittest.TestCase):
         material=wb.archived_material(source,files);path=material["source_binding"]["claim_file"]
         files[path]=files[path].replace(b"Not 96 percent labor or cost reduction",b"labor reduction")
         with self.assertRaisesRegex(ValueError,"source_qualification_missing"):wb.archived_material(source,files)
+    def test_expired_prefix_needs_explicit_window_and_preserves_history(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);cfg=b.read(ROOT/"configs/runtime-v0.11/collection.json")
+            ids=["delta-quality-clean-w1","mosaic-coverage-clean-w1"]
+            cfg.update(task_ids=ids,max_new_calls=96,monthly_model_calls=96);b.put(root/"config.json",cfg);calls=[]
+            def fake(argv,**kwargs):
+                request=json.loads(kwargs["input"]);calls.append(request);action=t.reference_action(request["initial_observation"],request["history"])
+                payload={"tool":action["tool"],"arguments_json":json.dumps(action["args"]),"decision_summary":"Observed fixture action."}
+                events=[{"type":"thread.started","thread_id":"fixture-"+str(len(calls))},{"type":"item.completed","item":{"type":"agent_message","text":json.dumps(payload)}},{"type":"turn.completed","usage":{}}]
+                return SimpleNamespace(stdout="\n".join(json.dumps(x) for x in events)+"\n",stderr="",returncode=0)
+            with patch.object(c.subprocess,"run",side_effect=fake),patch.object(c.shutil,"which",return_value="fixture"):
+                with patch.object(c.time,"time",return_value=1000):c.execute(self.batch,root/"config.json",root/"out",root/"ledger",pause_after=1)
+                before=b.hashes(root/"out");first=len(calls)
+                with self.assertRaisesRegex(ValueError,"collection_window_expired"):c.execute(self.batch,root/"config.json",root/"out",root/"ledger")
+                self.assertEqual(b.hashes(root/"out"),before)
+                approval={"status":"approved_by_user","user_instruction":"Continue the remaining task.","payload":"public fixture observations","destination":"test fixture","task_ids":ids[1:],"model":cfg["model"],"max_new_calls":48,"max_seconds":600}
+                b.put(root/"approval.json",approval)
+                result=c.execute(self.batch,root/"config.json",root/"out",root/"ledger",continuation_approval=root/"approval.json")
+                self.assertEqual(result["first_attempt_successes"],2)
+                self.assertEqual(calls[first]["runtime_budget"]["batch_calls_remaining_including_this"],48)
+                for name,h in before.items():self.assertEqual(b.sha((root/"out"/name).read_bytes()),h)
+                receipt=root/"out/continuation.json";original=b.read(receipt);value=copy.deepcopy(original)
+                del value["baseline_files"]["started.json"];receipt.write_bytes(b.encoded(value))
+                with self.assertRaisesRegex(ValueError,"continuation_baseline_incomplete"):c.continuation_window(root/"out",cfg,self.scenarios)
+                receipt.write_bytes(b.encoded(original));value=copy.deepcopy(original);value["approval"]["task_ids"]=ids
+                receipt.write_bytes(b.encoded(value));manifest=b.read(root/"out/manifest.json");manifest["files"]=b.hashes(root/"out");(root/"out/manifest.json").write_bytes(b.encoded(manifest))
+                with self.assertRaisesRegex(ValueError,"continuation_scope_changed"):c.verify(self.batch,root/"out")
+
     def test_pause_resume_and_train_selection_and_deliverables(self):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d);cfg=b.read(ROOT/"configs/runtime-v0.11/collection.json")

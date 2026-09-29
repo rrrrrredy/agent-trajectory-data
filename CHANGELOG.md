@@ -1,5 +1,16 @@
 # Changelog
 
+## dataset-v0.11 — Verified research workspace trajectories
+
+- Collect twelve actual first attempts in 167 calls: eleven ready deliverables and one correctly blocked outcome when required evidence is unavailable.
+- Preserve the original eight episodes and 117 calls; complete the four remaining archived-report tasks in 50 calls after explicit external-processing authorization.
+- Provide twelve bounded structured-report tasks across two archived report sources and four new synthetic sources, with 24 passing references and 93 rejected negative controls.
+- Export four eligible positive demonstrations, 57 SFT decisions and 57 train-eligible RL transitions; retain all 167 public transitions and inherited diagnostic/test restrictions.
+- Save two artifact snapshots per episode, distinguishing the blocked episode's unchanged initial files from completed reports.
+- Retain six new observed fault events and five recovery pairs; carry forward 31 cumulative failure records, 27 distinct events, 22 recovery pairs and nine eligible training recovery pairs.
+- Carry forward 217 provenance records and 68 lineage groups, adding four source groups; preserve 277 processing events, 123 paired calls/results and two construction-failure repair chains.
+- Pass 238 regression tests, 30 independent archive execution/behavior checks and 19 rehashed semantic-mutation controls.
+
 ## dataset-v0.10 — Real-incident repairs, lineage and recovery exports
 
 - Derive nine executable minimal repair tasks from three archived incident chains, retaining their shared diagnostic source and original evidence.

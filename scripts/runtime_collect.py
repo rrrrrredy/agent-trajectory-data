@@ -133,13 +133,58 @@ def config_validate(config,tasks):
 def ledger_entries(root):
     return [r for path in sorted((Path(root)/"budgets").glob("*.json")) for r in b.read(path)["reservations"]]
 
-def execute(batch,config_path,output,ledger_root,provider=None,after_capture=None,pause_after=None):
+def continuation_window(output, config, tasks, approval_path=None):
+    """One explicit window for a paused prefix; original records and budgets stay frozen."""
+    path=output/"continuation.json"
+    if approval_path and not path.exists():
+        approval=b.read(approval_path);ids=config["task_ids"]
+        completed=[tid for tid in ids if (output/"episodes"/tid/"episode.json").exists()]
+        pending=ids[len(completed):]
+        e.check(completed==ids[:len(completed)] and pending,"continuation_requires_completed_prefix")
+        e.check(all(not (output/"episodes"/tid).exists() for tid in pending),"continuation_requires_unattempted_tasks")
+        e.check(not (output/"manifest.json").exists(),"collection_already_complete")
+        e.check(approval.get("status")=="approved_by_user" and approval.get("user_instruction") and approval.get("payload") and approval.get("destination"),"continuation_not_authorized")
+        e.check(approval["task_ids"]==pending and approval["model"]==config["model"],"continuation_scope_changed")
+        calls=len(list(output.glob("episodes/*/calls/*/admission.json")))
+        maximum=sum(tasks[tid]["max_steps"] for tid in pending)
+        e.check(approval["max_new_calls"]==maximum and calls+maximum<=config["max_new_calls"],"continuation_call_budget_changed")
+        e.check(type(approval["max_seconds"]) is int and 0<approval["max_seconds"]<=config["max_batch_seconds"],"continuation_time_budget_changed")
+        baseline=b.hashes(output);now=time.time();code=(HERE/"runtime_collect.py").read_bytes()
+        b.write(output/"continuation-code/runtime_collect.py",code)
+        b.put(path,{"version":"authorized-unattempted-continuation-1","approval":approval,"baseline_files":baseline,
+            "baseline_admissions":calls,"started_epoch":now,"deadline_epoch":now+approval["max_seconds"],"collector_sha256":b.sha(code)})
+    if not path.exists():return None
+    record=b.read(path);approval=record["approval"]
+    e.check(record["version"]=="authorized-unattempted-continuation-1" and approval["status"]=="approved_by_user","continuation_not_authorized")
+    if approval_path:e.check(approval==b.read(approval_path),"continuation_approval_changed")
+    for name,h in record["baseline_files"].items():e.check(b.sha(b.local(output,name).read_bytes())==h,"continuation_baseline_changed")
+    e.check(b.sha((output/"continuation-code/runtime_collect.py").read_bytes())==record["collector_sha256"],"continuation_collector_changed")
+    completed=[tid for tid in config["task_ids"] if "episodes/"+tid+"/episode.json" in record["baseline_files"]]
+    pending=config["task_ids"][len(completed):]
+    required={"config.json","input-freeze.json","started.json"}
+    required.update("code/"+name for name in b.read(output/"input-freeze.json")["source_sha256"])
+    required.update(p.relative_to(output).as_posix() for tid in completed for p in (output/"episodes"/tid).rglob("*") if p.is_file())
+    e.check(set(record["baseline_files"])==required,"continuation_baseline_incomplete")
+    e.check(completed==config["task_ids"][:len(completed)] and pending==approval["task_ids"] and approval["model"]==config["model"],"continuation_scope_changed")
+    e.check(not any(name.startswith("episodes/"+tid+"/") for tid in pending for name in record["baseline_files"]),"continuation_requires_unattempted_tasks")
+    count=sum(name.endswith("/admission.json") for name in record["baseline_files"])
+    e.check(count==record["baseline_admissions"] and approval["max_new_calls"]==sum(tasks[tid]["max_steps"] for tid in pending) and count+approval["max_new_calls"]<=config["max_new_calls"],"continuation_call_budget_changed")
+    e.check(0<approval["max_seconds"]<=config["max_batch_seconds"] and record["deadline_epoch"]==record["started_epoch"]+approval["max_seconds"],"continuation_time_budget_changed")
+    return record
+
+def visible_calls(config,ordinal,window=None):
+    remaining=config["max_new_calls"]-ordinal+1
+    if window and ordinal>window["baseline_admissions"]:
+        remaining=min(remaining,window["approval"]["max_new_calls"]-(ordinal-window["baseline_admissions"])+1)
+    return remaining
+
+def execute(batch,config_path,output,ledger_root,provider=None,after_capture=None,pause_after=None,continuation_approval=None):
     sys.path.insert(0,str(HERE.parent));from agentdata.pipeline import batch_lock
     output=Path(output).resolve();output.parent.mkdir(parents=True,exist_ok=True)
     with batch_lock(output.parent/(output.name+".lock")):
-        return _execute(Path(batch).resolve(),Path(config_path),output,Path(ledger_root).resolve(),provider or invoke,after_capture,pause_after)
+        return _execute(Path(batch).resolve(),Path(config_path),output,Path(ledger_root).resolve(),provider or invoke,after_capture,pause_after,continuation_approval)
 
-def _execute(batch,config_path,output,ledger_root,provider,after_capture,pause_after):
+def _execute(batch,config_path,output,ledger_root,provider,after_capture,pause_after,continuation_approval):
     from agentdata.pipeline import reserve_monthly
     from agentdata.providers import BudgetExceeded
     b.verify(batch);rows=b.lines(batch/"tasks.jsonl");tasks={r["task_id"]:b.read(batch/r["scenario"]) for r in rows};row_map={r["task_id"]:r for r in rows}
@@ -147,13 +192,21 @@ def _execute(batch,config_path,output,ledger_root,provider,after_capture,pause_a
     source_hashes={name:b.sha((HERE/name).read_bytes()) for name in (["runtime_collect.py"]+b.runtime_files(b.read(batch/"config.json")))}
     freeze={"batch_manifest_sha256":b.sha((batch/"manifest.json").read_bytes()),"source_sha256":source_hashes,"instruction_sha256":b.sha(instruction_for(config).encode())}
     if output.exists():
-        e.check(e.equal(b.read(output/"config.json"),config) and e.equal(b.read(output/"input-freeze.json"),freeze),"resume_inputs_changed")
+        e.check(e.equal(b.read(output/"config.json"),config),"resume_inputs_changed")
+        old=b.read(output/"input-freeze.json")
         if (output/"manifest.json").exists():return verify(batch,output)
+        compatible=copy.deepcopy(freeze);compatible["source_sha256"]["runtime_collect.py"]=old["source_sha256"]["runtime_collect.py"]
+        e.check(e.equal(old,compatible),"resume_inputs_changed")
+        window=continuation_window(output,config,tasks,continuation_approval)
+        e.check(e.equal(old,freeze) or (window and window["collector_sha256"]==source_hashes["runtime_collect.py"]),"resume_inputs_changed")
+        freeze=old
     else:
         output.mkdir();b.put(output/"config.json",config);b.put(output/"input-freeze.json",freeze)
         for name in source_hashes:b.write(output/"code"/name,(HERE/name).read_bytes())
         b.put(output/"started.json",{"started_epoch":time.time(),"deadline_epoch":time.time()+config["max_batch_seconds"],"prior_ledger_entries":ledger_entries(ledger_root)})
-    start=b.read(output/"started.json");deadline=start["deadline_epoch"];indices=[]
+    window=continuation_window(output,config,tasks)
+    start=b.read(output/"started.json");deadline=(window or start)["deadline_epoch"];indices=[]
+    e.check(time.time()<deadline,"collection_window_expired_requires_explicit_continuation")
     for tid in config["task_ids"]:
         if pause_after is not None and len(indices)>=pause_after:
             return {"paused_after_episodes":len(indices),"successes":sum(x["reward"] for x in indices),"calls":sum(x["model_calls"] for x in indices),"input_freeze":freeze}
@@ -169,15 +222,15 @@ def _execute(batch,config_path,output,ledger_root,provider,after_capture,pause_a
                 calls=len(list(output.glob("episodes/*/calls/*/admission.json")))
                 remaining=deadline-time.time()
                 if remaining<=0:stop="batch_time_budget_exhausted";break
-                if calls>=config["max_new_calls"] and not (call_folder/"admission.json").exists():stop="batch_call_budget_exhausted";break
+                if visible_calls(config,calls+1,window)<=0 and not (call_folder/"admission.json").exists():stop="batch_call_budget_exhausted";break
                 run_id="runtime-v"+config.get("dataset_version","0.8").replace(".","")+"-"+b.sha(str(output).encode())[:10]+"-"+tid+"-"+str(step)
                 b.put(call_folder/"admission.json",{"run_id":run_id})
                 if not any(x["run_id"]==run_id for x in ledger_entries(ledger_root)):
                     try:reserve_monthly(ledger_root,config["monthly_model_calls"],run_id)
                     except BudgetExceeded:stop="monthly_call_budget_exhausted";break
-                b.put(call_folder/"started.json",{"started_epoch":time.time(),"run_id":run_id})
+                b.put(call_folder/"started.json",{"started_epoch":time.time(),"run_id":run_id,**({"continuation_sha256":b.sha((output/"continuation.json").read_bytes())} if window else {})})
                 calls=len(list(output.glob("episodes/*/calls/*/admission.json")))
-                request=request_for(env,config,config["max_new_calls"]-calls+1,deadline-time.time())
+                request=request_for(env,config,visible_calls(config,calls,window),deadline-time.time())
                 cap=provider(request,call_folder,config,min(config["max_call_seconds"],deadline-time.time()))
                 if after_capture:after_capture(call_folder)
                 cap=verify_capture(call_folder,env,config)
@@ -220,6 +273,7 @@ def verify(batch,output):
     freeze=b.read(output/"input-freeze.json")
     e.check(freeze["batch_manifest_sha256"]==manifest["batch_manifest_sha256"] and freeze["instruction_sha256"]==b.sha(instruction_for(config).encode()),"input_freeze_changed")
     for name,h in freeze["source_sha256"].items():e.check(b.sha(b.local(output/"code",name).read_bytes())==h,"frozen_collector_changed")
+    window=continuation_window(output,config,tasks)
     rows=b.lines(output/"episodes.jsonl");e.check([r["task_id"] for r in rows]==config["task_ids"],"model_selection_changed")
     admission_order={};ordinal=0
     for task_id in config["task_ids"]:
@@ -235,7 +289,11 @@ def verify(batch,output):
         env=b.new_env(scenario);pairs=[]
         for ref in run["capture_refs"]:
             folder=b.local(output,ref["path"]);cap=verify_capture(folder,env,config);calls+=1
-            e.check(b.read(folder/"request.json")["runtime_budget"]["batch_calls_remaining_including_this"]==config["max_new_calls"]-admission_order[ref["path"]]+1,"visible_batch_calls_changed")
+            e.check(b.read(folder/"request.json")["runtime_budget"]["batch_calls_remaining_including_this"]==visible_calls(config,admission_order[ref["path"]],window),"visible_batch_calls_changed")
+            if window and admission_order[ref["path"]]>window["baseline_admissions"]:
+                started=b.read(folder/"started.json");budget=b.read(folder/"request.json")["runtime_budget"]
+                e.check(row["task_id"] in window["approval"]["task_ids"] and started.get("continuation_sha256")==b.sha((output/"continuation.json").read_bytes()),"continuation_call_binding_changed")
+                e.check(window["started_epoch"]<=started["started_epoch"]<window["deadline_epoch"] and 0<budget["batch_seconds_remaining"]<=window["deadline_epoch"]-started["started_epoch"]+0.01,"continuation_call_time_changed")
             e.check(ref["capture_sha256"]==b.sha((folder/"capture.json").read_bytes()),"capture_changed")
             if cap["status"]=="completed":
                 e.check(cap["thread_id"] not in threads,"model_context_reused");threads.add(cap["thread_id"])
@@ -259,19 +317,23 @@ def verify(batch,output):
     entries=b.read(output/"ledger-final.json")["entries"];prior=b.read(output/"started.json")["prior_ledger_entries"]
     e.check(entries[:len(prior)]==prior,"prior_ledger_changed")
     for path in output.glob("episodes/*/calls/*/started.json"):
-        rid=b.read(path)["run_id"];e.check(sum(x["run_id"]==rid for x in entries)==1,"call_reservation_missing_or_duplicate")
+        started=b.read(path);rid=started["run_id"];e.check(sum(x["run_id"]==rid for x in entries)==1,"call_reservation_missing_or_duplicate")
+        if window and path.relative_to(output).as_posix() not in window["baseline_files"]:
+            e.check(path.parents[2].name in window["approval"]["task_ids"] and started.get("continuation_sha256")==b.sha((output/"continuation.json").read_bytes()),"continuation_call_binding_changed")
+            e.check(window["started_epoch"]<=started["started_epoch"]<window["deadline_epoch"],"continuation_call_time_changed")
     admissions=list(output.glob("episodes/*/calls/*/admission.json"))
     e.check(calls==manifest["calls"] and calls<=len(admissions)==manifest["admissions"]<=config["max_new_calls"],"call_budget_changed")
+    if window:e.check(len(admissions)-window["baseline_admissions"]<=window["approval"]["max_new_calls"],"continuation_call_budget_changed")
     e.check(manifest["unknown_inflight_calls"]==sum(r["stop_reason"]=="unknown_inflight_call_quarantined" for r in rows),"unknown_call_count_changed")
     e.check(manifest["episodes"]==len(rows) and manifest["successes"]==sum(r["reward"] for r in rows) and manifest["model_train_trajectories"]==len(exports) and manifest["sft_decisions"]==len(decisions),"collection_counts_changed")
     return {"passed":True,"episodes":len(rows),"calls":calls,"first_attempt_successes":sum(r["reward"] for r in rows),"model_train_trajectories":len(exports),"sft_decisions":len(decisions),"source_family_overlap":0}
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument("command",choices=("execute","verify"));parser.add_argument("batch");parser.add_argument("output");parser.add_argument("--config");parser.add_argument("--ledger");parser.add_argument("--pause-after",type=int)
+    parser=argparse.ArgumentParser();parser.add_argument("command",choices=("execute","verify"));parser.add_argument("batch");parser.add_argument("output");parser.add_argument("--config");parser.add_argument("--ledger");parser.add_argument("--pause-after",type=int);parser.add_argument("--continuation-approval")
     args=parser.parse_args()
     if args.command=="execute":
         e.check(Path(args.ledger).resolve()==HERE.parent/"data/production-current","must_use_existing_ledger")
-        result=execute(args.batch,args.config,args.output,args.ledger,pause_after=args.pause_after)
+        result=execute(args.batch,args.config,args.output,args.ledger,pause_after=args.pause_after,continuation_approval=args.continuation_approval)
     else:result=verify(args.batch,args.output)
     print(json.dumps(result,indent=2))
 if __name__=="__main__":main()

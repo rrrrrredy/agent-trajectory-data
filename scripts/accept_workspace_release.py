@@ -69,6 +69,15 @@ def accept(archive,work,report):
             path=model/row["path"];run=read(path)
             for ref in run["capture_refs"]:ref["capture_sha256"]=sha(model/ref["path"]/"capture.json")
             save(path,run)
+        continuation=model/"continuation.json"
+        if continuation.exists():
+            receipt=read(continuation)
+            # Rehash the declared historical files without repairing omitted baseline keys.
+            receipt["baseline_files"]={name:sha(model/name) for name in receipt["baseline_files"]}
+            save(continuation,receipt)
+            for started in model.glob("episodes/*/calls/*/started.json"):
+                if started.relative_to(model).as_posix() not in receipt["baseline_files"]:
+                    value=read(started);value["continuation_sha256"]=sha(continuation);save(started,value)
         for component in ([target/"batch",model,target/"catalog",target/"failures",target/"exports"] if workspace else [target/"batch",model,target/"catalog",target/"failures"] if repair else [target/"batch",model]):
             manifest=read(component/"manifest.json");manifest["files"]=r.b.hashes(component);save(component/"manifest.json",manifest)
         manifest=read(target/"manifest.json");manifest["files"]=r.all_hashes(target);save(target/"manifest.json",manifest)
@@ -104,6 +113,15 @@ def accept(archive,work,report):
     def ledger(root):
         p=root/"model/ledger-final.json";value=read(p);value["entries"]=value["entries"][1:];save(p,value)
     mutate("prior_reservation_removed",ledger,"prior_ledger_changed")
+    def missing_baseline(root):
+        p=root/"model/continuation.json";value=read(p);del value["baseline_files"]["started.json"];save(p,value)
+    mutate("continuation_original_deadline_unprotected",missing_baseline,"continuation_baseline_incomplete")
+    def late_continuation(root):
+        model=root/"model";receipt=read(model/"continuation.json")
+        p=next(path for path in sorted(model.glob("episodes/*/calls/*/started.json"))
+               if path.relative_to(model).as_posix() not in receipt["baseline_files"])
+        value=read(p);value["started_epoch"]=receipt["deadline_epoch"]+1;save(p,value)
+    mutate("continuation_call_after_deadline",late_continuation,"continuation_call_time_changed")
     def entrypoint(root):
         p=root/"task-entrypoints"/task/"tests/verify.py";p.write_text("raise SystemExit(0)\n",encoding="utf-8")
     mutate("grader_entrypoint_replaced",entrypoint,"task_entrypoint_changed")

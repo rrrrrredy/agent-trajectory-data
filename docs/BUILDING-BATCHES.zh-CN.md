@@ -89,3 +89,11 @@ py -3 -B scripts/runtime_batch.py verify data/runtime-batch-v0.11
 参考执行只使用公开观察和 brief 中的计算规则。实际模型执行保存两个独立交付文件；模型采集开始后冻结 runtime 和配置。重新开始进程复用已完成的捕获，未知在途调用隔离，截止时间与账本不会重置。
 
 workspace_exports.py 从原始模型执行重建 transitions、可训练 transitions 和固定评测选择；failure_exports.py 从实际错误事件派生恢复片段。缺失或失败不能用脚本参考补成模型成功。每批成功数量与可训练数量依据真实执行填写。
+
+跨天等待授权而导致原窗口过期时，默认续跑在写入新 episode 前拒绝执行，不把未尝试任务伪造成超时失败。本次四条归档任务使用显式 continuation 授权：
+
+```powershell
+py -3 -B scripts/runtime_collect.py execute data/runtime-batch-v0.11 data/runtime-model-v0.11 --config configs/runtime-v0.11/collection.json --ledger data/production-current --continuation-approval configs/runtime-v0.11/archive-continuation.json
+```
+
+这一入口只接续完整前缀后尚未尝试的任务。原始 started.json、冻结环境、八条轨迹和原月账本保持不变；新增 continuation.json 记录已批准的片段、模型、任务范围、新窗口和上限，另存续跑 collector 代码。新增调用在原总额度以内，还受新窗口上限约束。重复执行复用同一窗口，不能刷新截止时间；改变已冻结环境仍会被拒绝。

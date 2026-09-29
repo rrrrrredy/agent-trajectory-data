@@ -1,0 +1,17 @@
+{
+  "approval_date": "2026-09-29",
+  "destination": "OpenAI model processing via isolated Codex CLI",
+  "max_new_calls": 192,
+  "max_seconds": 3600,
+  "model": "gpt-6-astra",
+  "payload": "Public observations and action histories for the four listed tasks, including excerpts of the archived customer-service and video-production reports; no full report corpus, private graders, source provenance or reference solutions.",
+  "prior_records": "Keep the original eight episodes, original input freeze, started.json and monthly ledger unchanged. Only unattempted tasks continue.",
+  "status": "approved_by_user",
+  "task_ids": [
+    "archive-support-clean-w1",
+    "archive-video-clean-w1",
+    "archive-support-withheld_evidence-w1",
+    "archive-video-stale_artifact-w1"
+  ],
+  "user_instruction": "批准。同时按你的建议推进。"
+}
