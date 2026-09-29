@@ -1,5 +1,16 @@
 # 扩充数据批次
 
+## v0.16：只增材料时验证数据，并保留验收器自身的故障
+
+本版继续使用 research-repair-1。先冻结格式契约、27 个手写预期和用途，再验证参考、错误控制与独立编码方向的往返输入。运行代码未变时复用旧回归回执，另存本轮数据验证及源码摘要，不重复执行或重复计数旧测试。
+
+```powershell
+python -B scripts/runtime_batch.py build configs/runtime-v0.16/batch.json data/runtime-batch-v0.16
+python -B scripts/runtime_collect.py execute data/runtime-batch-v0.16 data/runtime-model-v0.16 --config configs/runtime-v0.16/collection.json --ledger data/production-current
+```
+
+输出已冻结，不应覆盖重采。后续验收器暴露问题时，保留原包与失败工作目录；修复外部检查并在新目录验收，分别绑定修复前后脚本。篡改反例先要确实改变语义，否则不能用验证器未拒绝来断言数据验证失效。本次只修正目录记录的选取，不改变评分或模型结果。
+
 ## v0.15：派生材料继承父任务，不增加独立来源
 
 同源材料在 batch.json 的 source 项登记 parent：固定 ZIP 文件名与 SHA-256、父 task_id、原 batch/tasks.jsonl 及 batch/manifest.json 的摘要。构建器验证原包，保存父索引/清单到 source/parents/；离线验证继续从冻结快照检查谱系。材料声明的 parent_task_id、family_id、source_group_id、split、rights 必须与父任务一致。

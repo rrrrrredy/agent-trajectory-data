@@ -1,0 +1,21 @@
+{
+  "dataset_version": "0.16",
+  "max_steps": 48,
+  "prior_release": {
+    "sha256": "9de49c2c2ce0074d7e5e97dc39103ccbc551f0d8a36919db2d4ce054655a191a",
+    "tag": "dataset-v0.15"
+  },
+  "source_mode": "authored_synthetic",
+  "sources": [
+    {
+      "path": "configs/runtime-v0.16/quoted-report-rows.json",
+      "sha256": "60e017b72a6ee91797eb86d69a84b0371d5aefa452ee60a0f1b0bf975f26b7fb",
+      "task_id": "quoted-report-rows",
+      "variants": [
+        "clean"
+      ]
+    }
+  ],
+  "toolkit_commit": "28524448eaf6534125a24dd1ea26e986016c8aea",
+  "version": "runtime-repair-batch-1"
+}

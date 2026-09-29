@@ -1,0 +1,36 @@
+{
+  "dataset_version": "0.16",
+  "sources": [
+    {
+      "archive": "agent-runtime-v0.10.zip",
+      "sha256": "6c7c9c143ee9084adec1e523aedaff1c69e28d9260094b20545ce5ab709908b2",
+      "source_id": "v0.10"
+    },
+    {
+      "archive": "agent-runtime-v0.11.zip",
+      "sha256": "cac142bfc1fc7e78c0b6c330421850b235ad43753f08682d0eb4bf183a2dd4d7",
+      "source_id": "v0.11"
+    },
+    {
+      "archive": "agent-runtime-v0.12.zip",
+      "sha256": "5476c94ae5d2c727b31380c2e7dfa5637c3ec7cc5e11cf51f5a1d0bf32799d48",
+      "source_id": "v0.12"
+    },
+    {
+      "archive": "agent-runtime-v0.14.zip",
+      "sha256": "5190303045ecbc3ca5b7d55fdda61d4cb4c3f43a9f6360709f8bdc0ed4126070",
+      "source_id": "v0.14"
+    },
+    {
+      "archive": "agent-runtime-v0.15.zip",
+      "sha256": "9de49c2c2ce0074d7e5e97dc39103ccbc551f0d8a36919db2d4ce054655a191a",
+      "source_id": "v0.15"
+    },
+    {
+      "archive": "agent-runtime-v0.16.zip",
+      "sha256": "adae343fc3f14fb292aa1f46cf66b2ed4befbdd91fa3bfd03c8ac9a03e362df3",
+      "source_id": "v0.16"
+    }
+  ],
+  "version": "runtime-consumer-1"
+}

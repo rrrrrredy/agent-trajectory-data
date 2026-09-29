@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.16 — Report-row parsing and verified recovery-gap audit (2026-09-29)
+
+- Add one original synthetic report-row task using the unchanged repair runtime: 27 fixed cases, 36 encoding round trips and nine erroneous controls.
+- Collect one successful first attempt in ten calls, yielding one eligible demonstration and ten training transitions. Record zero post-edit behavioral failures instead of substituting scripted controls for observed retries.
+- Audit retained actual episodes and screen a three-event real construction failure for a diagnostic-only reconstruction in the existing executor.
+- Fix the external acceptance check that accidentally promoted an already-train record. Preserve the failed acceptance and verify that the corrected development-to-train mutation changes semantics and is rejected.
+- Pass eight independent main-package checks, seventeen rehashed controls and three consumer commands. Reuse the unchanged runtime's prior 273-test receipt; bind the later acceptance-checker repair separately.
+- Extend the combined consumer to 22 actual episodes, 276 transitions, 91 eligible training transitions and seven positive demonstrations; keep all prior source ZIPs unchanged.
+
 ## v0.15 — Same-family delimiter-collision repair (2026-09-29)
 
 - Measure seven implementations against fifteen diagnostic inputs; show that the previous model probe misses delimiter collisions and a delimiter substitution passes all twelve previous fixed cases.

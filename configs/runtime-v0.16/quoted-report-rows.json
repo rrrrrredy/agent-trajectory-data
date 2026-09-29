@@ -1,0 +1,414 @@
+{
+  "contract": "Repair solve(data) for an originally authored bounded report-row format. Input is exactly {'text': str}; text has at most 128 Unicode characters. Return a list of rows, each a list of decoded field strings. There is no header handling, fixed column count, trimming or type conversion. This grammar is fully defined below; do not assume a third-party CSV dialect.\nOutside a quoted field, semicolon separates fields and LF or CRLF separates records. A bare CR outside quotes is invalid. Empty input returns []; each blank record is ['']; a final record separator does not create an extra record. A trailing semicolon does create an empty final field. A record need not end with a separator.\nA double quote may start quoting only as the first character of a field. Inside quotes, semicolons, LF, CRLF, bare CR and all Unicode characters are literal field data and must be preserved exactly. Two consecutive double quotes inside quoting encode one literal double quote. A closing quote must be followed immediately by a semicolon, record separator or EOF; even a space after a closing quote is invalid. An unescaped quote in an unquoted field, an unclosed quoted field or malformed closing sequence makes the entire input invalid: raise ValueError and return no partial rows. Empty quoted fields count as present fields, including when they are the only field at EOF.\nUnicode line-separator characters U+0085, U+2028 and U+2029 are ordinary data, never record separators. There is no backslash-escape syntax. The input shape and size are guaranteed; validation of that outer object is outside this task.\nPublic examples are available through read(sample) and test. Reproduce the initial test failure, repair the worker, reread it and run test again. If a candidate still fails, use the observed failures to repair it and retest within the declared budget. A failed test does not terminate the environment. Keep a short evidence-based diagnosis; do not claim an unobserved failure or retry. This is a synthetic grammar exercise representing a structured report export, not a real company file.\n",
+  "control_codes": {
+    "drop_doubled_quote": "def solve(data):\n    text = data['text']\n    rows = []\n    row = []\n    field = ''\n    mode = 'start'\n    ended = False\n    for char in text:\n        ended = False\n        if mode == 'cr':\n            if char != '\\n':\n                raise ValueError('bare_cr')\n            mode = 'start'\n            ended = True\n        elif mode == 'quoted':\n            if char == '\"':\n                mode = 'closed'\n            else:\n                field = field + char\n        elif mode == 'closed':\n            if char == '\"':\n                field = field\n                mode = 'quoted'\n            elif char == ';':\n                row.append(field)\n                field = ''\n                mode = 'start'\n            elif char in ('\\n', '\\r'):\n                row.append(field)\n                rows.append(row)\n                row = []\n                field = ''\n                mode = 'cr' if char == '\\r' else 'start'\n                ended = True\n            else:\n                raise ValueError('after_quote')\n        else:\n            if char == '\"':\n                if mode != 'start':\n                    raise ValueError('quote_in_plain')\n                mode = 'quoted'\n            elif char == ';':\n                row.append(field)\n                field = ''\n                mode = 'start'\n            elif char in ('\\n', '\\r'):\n                row.append(field)\n                rows.append(row)\n                row = []\n                field = ''\n                mode = 'cr' if char == '\\r' else 'start'\n                ended = True\n            else:\n                field = field + char\n                mode = 'plain'\n    if mode in ('quoted', 'cr'):\n        raise ValueError('incomplete_record')\n    if text and not ended:\n        row.append(field)\n        rows.append(row)\n    return rows\n",
+    "drop_empty_final": "def solve(data):\n    text = data['text']\n    rows = []\n    row = []\n    field = ''\n    mode = 'start'\n    ended = False\n    for char in text:\n        ended = False\n        if mode == 'cr':\n            if char != '\\n':\n                raise ValueError('bare_cr')\n            mode = 'start'\n            ended = True\n        elif mode == 'quoted':\n            if char == '\"':\n                mode = 'closed'\n            else:\n                field = field + char\n        elif mode == 'closed':\n            if char == '\"':\n                field = field + '\"'\n                mode = 'quoted'\n            elif char == ';':\n                row.append(field)\n                field = ''\n                mode = 'start'\n            elif char in ('\\n', '\\r'):\n                row.append(field)\n                rows.append(row)\n                row = []\n                field = ''\n                mode = 'cr' if char == '\\r' else 'start'\n                ended = True\n            else:\n                raise ValueError('after_quote')\n        else:\n            if char == '\"':\n                if mode != 'start':\n                    raise ValueError('quote_in_plain')\n                mode = 'quoted'\n            elif char == ';':\n                row.append(field)\n                field = ''\n                mode = 'start'\n            elif char in ('\\n', '\\r'):\n                row.append(field)\n                rows.append(row)\n                row = []\n                field = ''\n                mode = 'cr' if char == '\\r' else 'start'\n                ended = True\n            else:\n                field = field + char\n                mode = 'plain'\n    if mode in ('quoted', 'cr'):\n        raise ValueError('incomplete_record')\n    if field or row:\n        row.append(field)\n        rows.append(row)\n    return rows\n",
+    "normalize_quoted_crlf": "def solve(data):\n    text = data['text'].replace('\\r\\n', '\\n')\n    rows = []\n    row = []\n    field = ''\n    mode = 'start'\n    ended = False\n    for char in text:\n        ended = False\n        if mode == 'cr':\n            if char != '\\n':\n                raise ValueError('bare_cr')\n            mode = 'start'\n            ended = True\n        elif mode == 'quoted':\n            if char == '\"':\n                mode = 'closed'\n            else:\n                field = field + char\n        elif mode == 'closed':\n            if char == '\"':\n                field = field + '\"'\n                mode = 'quoted'\n            elif char == ';':\n                row.append(field)\n                field = ''\n                mode = 'start'\n            elif char in ('\\n', '\\r'):\n                row.append(field)\n                rows.append(row)\n                row = []\n                field = ''\n                mode = 'cr' if char == '\\r' else 'start'\n                ended = True\n            else:\n                raise ValueError('after_quote')\n        else:\n            if char == '\"':\n                if mode != 'start':\n                    raise ValueError('quote_in_plain')\n                mode = 'quoted'\n            elif char == ';':\n                row.append(field)\n                field = ''\n                mode = 'start'\n            elif char in ('\\n', '\\r'):\n                row.append(field)\n                rows.append(row)\n                row = []\n                field = ''\n                mode = 'cr' if char == '\\r' else 'start'\n                ended = True\n            else:\n                field = field + char\n                mode = 'plain'\n    if mode in ('quoted', 'cr'):\n        raise ValueError('incomplete_record')\n    if text and not ended:\n        row.append(field)\n        rows.append(row)\n    return rows\n"
+  },
+  "initial": "def solve(data):\n    return [row.split(';') for row in data['text'].splitlines()]\n",
+  "missingness": [
+    "original_synthetic_not_observed_company_export",
+    "one_new_train_family_not_independent_blind_evaluation",
+    "failed_partial_controls_are_scripted_not_actual_model_failures"
+  ],
+  "origin": "authored_synthetic",
+  "partial": "def solve(data):\n    text = data['text'].replace('\\u2028', '\\n')\n    rows = []\n    row = []\n    field = ''\n    mode = 'start'\n    ended = False\n    for char in text:\n        ended = False\n        if mode == 'cr':\n            if char != '\\n':\n                raise ValueError('bare_cr')\n            mode = 'start'\n            ended = True\n        elif mode == 'quoted':\n            if char == '\"':\n                mode = 'closed'\n            else:\n                field = field + char\n        elif mode == 'closed':\n            if char == '\"':\n                field = field + '\"'\n                mode = 'quoted'\n            elif char == ';':\n                row.append(field)\n                field = ''\n                mode = 'start'\n            elif char in ('\\n', '\\r'):\n                row.append(field)\n                rows.append(row)\n                row = []\n                field = ''\n                mode = 'cr' if char == '\\r' else 'start'\n                ended = True\n            else:\n                raise ValueError('after_quote')\n        else:\n            if char == '\"':\n                if mode != 'start':\n                    raise ValueError('quote_in_plain')\n                mode = 'quoted'\n            elif char == ';':\n                row.append(field)\n                field = ''\n                mode = 'start'\n            elif char in ('\\n', '\\r'):\n                row.append(field)\n                rows.append(row)\n                row = []\n                field = ''\n                mode = 'cr' if char == '\\r' else 'start'\n                ended = True\n            else:\n                field = field + char\n                mode = 'plain'\n    if mode in ('quoted', 'cr'):\n        raise ValueError('incomplete_record')\n    if text and not ended:\n        row.append(field)\n        rows.append(row)\n    return rows\n",
+  "private_cases": [
+    {
+      "expected": {
+        "ok": true,
+        "value": []
+      },
+      "input": {
+        "text": ""
+      },
+      "name": "empty-input"
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": [
+          [
+            ""
+          ]
+        ]
+      },
+      "input": {
+        "text": "\n"
+      },
+      "name": "blank-line"
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": [
+          [
+            ""
+          ],
+          [
+            ""
+          ]
+        ]
+      },
+      "input": {
+        "text": "\n\n"
+      },
+      "name": "two-blank-lines"
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": [
+          [
+            "",
+            "a",
+            "",
+            ""
+          ]
+        ]
+      },
+      "input": {
+        "text": ";a;;"
+      },
+      "name": "leading-and-trailing-fields"
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "c",
+            "d"
+          ]
+        ]
+      },
+      "input": {
+        "text": "a;b\r\nc;d\r\n"
+      },
+      "name": "crlf-records"
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": [
+          [
+            "a\r\nb",
+            "c"
+          ]
+        ]
+      },
+      "input": {
+        "text": "\"a\r\nb\";c"
+      },
+      "name": "quoted-crlf-preserved"
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": [
+          [
+            "a\rb"
+          ]
+        ]
+      },
+      "input": {
+        "text": "\"a\rb\""
+      },
+      "name": "quoted-bare-cr-preserved"
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": [
+          [
+            "a b",
+            "c"
+          ]
+        ]
+      },
+      "input": {
+        "text": "a b;c"
+      },
+      "name": "unicode-line-separator-is-data"
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": [
+          [
+            "a bc",
+            "甲"
+          ]
+        ]
+      },
+      "input": {
+        "text": "\"a bc\";甲"
+      },
+      "name": "quoted-unicode-is-data"
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": [
+          [
+            " a ",
+            " b "
+          ]
+        ]
+      },
+      "input": {
+        "text": " a ;\" b \""
+      },
+      "name": "spaces-preserved"
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": [
+          [
+            "\""
+          ]
+        ]
+      },
+      "input": {
+        "text": "\"\"\"\""
+      },
+      "name": "escaped-quote-only"
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": [
+          [
+            "x",
+            "",
+            "y"
+          ]
+        ]
+      },
+      "input": {
+        "text": "x;\"\";y"
+      },
+      "name": "quoted-empty-in-row"
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": [
+          [
+            "a\""
+          ]
+        ]
+      },
+      "input": {
+        "text": "\"a\"\"\""
+      },
+      "name": "quote-at-end-of-field"
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": [
+          [
+            "x",
+            "\n"
+          ]
+        ]
+      },
+      "input": {
+        "text": "x;\"\n\""
+      },
+      "name": "newline-in-last-field"
+    },
+    {
+      "expected": {
+        "error": "ValueError",
+        "ok": false
+      },
+      "input": {
+        "text": "a\"b;c"
+      },
+      "name": "quote-in-unquoted-field"
+    },
+    {
+      "expected": {
+        "error": "ValueError",
+        "ok": false
+      },
+      "input": {
+        "text": "\"a\" ;b"
+      },
+      "name": "space-after-closing-quote"
+    },
+    {
+      "expected": {
+        "error": "ValueError",
+        "ok": false
+      },
+      "input": {
+        "text": "a\r"
+      },
+      "name": "bare-cr-at-eof"
+    },
+    {
+      "expected": {
+        "error": "ValueError",
+        "ok": false
+      },
+      "input": {
+        "text": "a\rb"
+      },
+      "name": "bare-cr-before-data"
+    },
+    {
+      "expected": {
+        "error": "ValueError",
+        "ok": false
+      },
+      "input": {
+        "text": "\"a\"\""
+      },
+      "name": "unclosed-after-escape"
+    }
+  ],
+  "public_cases": [
+    {
+      "expected": {
+        "ok": true,
+        "value": [
+          [
+            "team",
+            "value"
+          ],
+          [
+            "alpha",
+            "7"
+          ]
+        ]
+      },
+      "input": {
+        "text": "team;value\nalpha;7\n"
+      },
+      "name": "plain-rows"
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": [
+          [
+            "alpha;beta",
+            "7"
+          ]
+        ]
+      },
+      "input": {
+        "text": "\"alpha;beta\";7\n"
+      },
+      "name": "quoted-separator"
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": [
+          [
+            "say \"yes\"",
+            "x"
+          ]
+        ]
+      },
+      "input": {
+        "text": "\"say \"\"yes\"\"\";x"
+      },
+      "name": "doubled-quote"
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": [
+          [
+            "line1\nline2",
+            "x"
+          ]
+        ]
+      },
+      "input": {
+        "text": "\"line1\nline2\";x"
+      },
+      "name": "quoted-line-feed"
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": [
+          [
+            ""
+          ]
+        ]
+      },
+      "input": {
+        "text": "\"\""
+      },
+      "name": "empty-quoted-final"
+    },
+    {
+      "expected": {
+        "ok": true,
+        "value": [
+          [
+            "a",
+            ""
+          ]
+        ]
+      },
+      "input": {
+        "text": "a;"
+      },
+      "name": "trailing-empty-field"
+    },
+    {
+      "expected": {
+        "error": "ValueError",
+        "ok": false
+      },
+      "input": {
+        "text": "\"a\"b;x"
+      },
+      "name": "text-after-closing-quote"
+    },
+    {
+      "expected": {
+        "error": "ValueError",
+        "ok": false
+      },
+      "input": {
+        "text": "a;\"b"
+      },
+      "name": "unterminated-quote"
+    }
+  ],
+  "reference": "def solve(data):\n    text = data['text']\n    rows = []\n    row = []\n    field = ''\n    mode = 'start'\n    ended = False\n    for char in text:\n        ended = False\n        if mode == 'cr':\n            if char != '\\n':\n                raise ValueError('bare_cr')\n            mode = 'start'\n            ended = True\n        elif mode == 'quoted':\n            if char == '\"':\n                mode = 'closed'\n            else:\n                field = field + char\n        elif mode == 'closed':\n            if char == '\"':\n                field = field + '\"'\n                mode = 'quoted'\n            elif char == ';':\n                row.append(field)\n                field = ''\n                mode = 'start'\n            elif char in ('\\n', '\\r'):\n                row.append(field)\n                rows.append(row)\n                row = []\n                field = ''\n                mode = 'cr' if char == '\\r' else 'start'\n                ended = True\n            else:\n                raise ValueError('after_quote')\n        else:\n            if char == '\"':\n                if mode != 'start':\n                    raise ValueError('quote_in_plain')\n                mode = 'quoted'\n            elif char == ';':\n                row.append(field)\n                field = ''\n                mode = 'start'\n            elif char in ('\\n', '\\r'):\n                row.append(field)\n                rows.append(row)\n                row = []\n                field = ''\n                mode = 'cr' if char == '\\r' else 'start'\n                ended = True\n            else:\n                field = field + char\n                mode = 'plain'\n    if mode in ('quoted', 'cr'):\n        raise ValueError('incomplete_record')\n    if text and not ended:\n        row.append(field)\n        rows.append(row)\n    return rows\n",
+  "rights": {
+    "allowed_uses": [
+      "diagnostic",
+      "evaluation",
+      "training"
+    ],
+    "basis": "New original synthetic contract, implementations and independently fixed expected cases authored for this project and registered as train before actual model collection. Existing source restrictions remain unchanged.",
+    "distribution": "private_internal",
+    "training_eligible": true
+  },
+  "source_group_id": "authored-quoted-report-rows-20260929",
+  "sources": [
+    {
+      "description": "Original explicitly defined report-row grammar and code; no standard conformance claim, third-party corpus, company record or archived development material is imported.",
+      "role": "original_authoring",
+      "source_group_id": "authored-quoted-report-rows-20260929"
+    }
+  ],
+  "split": "train",
+  "task_id": "quoted-report-rows"
+}

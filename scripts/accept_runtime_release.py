@@ -228,7 +228,7 @@ def accept(archive,work,report):
             mutate("historical_failure_evidence_removed",source_evidence,"material_derivation_changed")
         def catalog_promotion(root):
             p=root/"catalog/records.jsonl";values=rows(p)
-            selected=next(value for value in values if value["split"]=="development") if probe_repair else values[-1]
+            selected=next(value for value in values if value["split"]=="development")
             selected.update(split="train",training_eligible=True);row_save(p,values)
         mutate("catalog_development_promoted_to_train" if authored else "catalog_rights_promoted",catalog_promotion,"catalog_projection_changed")
         def censoring(root):

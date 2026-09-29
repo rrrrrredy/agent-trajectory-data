@@ -1,0 +1,23 @@
+{
+  "approval_record": {
+    "budget": "At most 48 new calls and 48 environment steps in 1200 seconds; preserve the existing 815 monthly cap and prior ledger.",
+    "model_inherited_from_previous_approved_batch": "gpt-6-astra",
+    "payload": "Only public policy, contract, worker, public cases and actual preceding tool observations. No private cases, scripted partial fixes or reference code.",
+    "scope": "Continue the accepted recovery-data plan: audit actual post-edit failures, validate one more demanding report-row parser candidate using the existing environment, collect one first attempt and preserve its true outcome.",
+    "source_use": "One new original synthetic train source registered before collection; no existing development/test source is promoted.",
+    "user_instruction": "继续"
+  },
+  "dataset_version": "0.16",
+  "environment_profile": "bounded_program_repair",
+  "evaluation_mode": "first_attempt_synthetic_development",
+  "execution_authorization": "approved_by_user",
+  "max_batch_seconds": 1200,
+  "max_call_seconds": 90,
+  "max_new_calls": 48,
+  "model": "gpt-6-astra",
+  "monthly_model_calls": 815,
+  "task_ids": [
+    "repair-quoted-report-rows-clean-v1"
+  ],
+  "version": "runtime-collection-1"
+}
