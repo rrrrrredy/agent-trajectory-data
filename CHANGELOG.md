@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.13 — existing trajectory consumer (2026-09-29)
+
+- Added a standard-library consumer for the pinned v0.10-v0.12 ZIPs: build, verify, read original public history, and replay each frozen source runtime independently.
+- Standardized 19 existing actual episodes and 242 transitions; retained 57 training transitions, four positive demonstrations and two existing evaluation tasks without promoting restricted sources.
+- Preserved failure/recovery observations, external stop reasons and final-artifact references. No new tasks, source groups or model calls.
+- Passed six focused tests with eight semantic mutation cases and independent CLI verification/history checks plus all three original archive replays.
+
+
 ## dataset-v0.12 — Complete-denominator repair task
 
 - Add one original synthetic development task for cohort completeness, final usability, failed elapsed time and a declared improvement policy.

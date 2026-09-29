@@ -110,3 +110,18 @@ py -3 -B scripts/runtime_batch.py verify data/runtime-batch-v0.12
 ```
 
 开发集任务不会进入成功训练导出，材料训练用途许可与任务切分分别判断。题内私有用例只能证明该任务的行为约束，不构成独立任务测试集。参考、错误控制、实际模型执行和处理过程分别保存。
+
+## v0.13：统一消费既有发布包
+
+`configs/runtime-v0.13/exports.json` 固定三个来源 ZIP 的名称与 SHA-256。`runtime_exports.py` 直接读取每包的实际模型 episode 索引，按版本给 ID 加命名空间，避免把累计来源或失败索引中的重复历史再计入执行数量。
+
+```powershell
+python -B scripts/runtime_exports.py build configs/runtime-v0.13/exports.json data/runtime-consumer-v0.13 --source-root artifacts
+python -B scripts/runtime_exports.py verify data/runtime-consumer-v0.13
+python -B scripts/runtime_exports.py history data/runtime-consumer-v0.13 v0.12/repair-denominator-integrity-clean-v1/0006
+python -B scripts/runtime_exports.py replay data/runtime-consumer-v0.13 --work D:/Codex/_tmp/runtime-v013-replay
+```
+
+构建与复放目录必须尚不存在。输出继承来源的 split 和 rights，保留每一步原观察、动作、反馈、实际奖励、环境终止标记与采集停止原因。公开 history 按原请求引用加载，不读取最终状态来补早期上下文。原 ZIP 原样嵌入，复放时各自在独立子进程中加载自己的代码；不改旧环境或评分，也不重新采集模型。
+
+转换校验从冻结来源重新派生所有消费文件。`training/rl-transitions.jsonl` 只含原来允许且属于 train 的步骤；`evaluation.json` 只列既有 test 选择，不是新盲测。新增来源或机制仍走原批次构建和采集流程；这个入口只解决跨包读取，不能代替数据生成。

@@ -2,7 +2,17 @@
 
 Private task data, observable agent trajectories, executable environments and reproducible evaluation.
 
-**Latest verified package: v0.12.** One original synthetic repair task checks complete task coverage, final usability and accounting for failed attempts. The first model attempt succeeds in 13 calls, preserving a baseline test failure, two edits, a real 412 read-before-write violation, its recovery and final verification. [Private package](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.12) · [Data card](docs/DATASET-v0.12.zh-CN.md).
+**Latest consumer package: v0.13.** Read 19 existing actual episodes and 242 transitions from the unchanged v0.10-v0.12 packages through one format. It preserves all outcomes and the existing 57 eligible training transitions/four positive demonstrations; it creates no new tasks, sources or model calls. [Private consumer package](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.13) · [Consumer guide](docs/DATASET-v0.13.zh-CN.md) · [Next-stage plan](docs/PLAN.zh-CN.md).
+
+From the extracted v0.13 consumer package:
+
+    python -B runtime_exports.py verify .
+    python -B runtime_exports.py history . v0.12/repair-denominator-integrity-clean-v1/0006
+    python -B runtime_exports.py replay . --work ../runtime-v013-replay
+
+Six focused regression tests, including eight semantic mutation cases, and independent package checks passed. All three original frozen verifiers replayed the nineteen episodes successfully. Public transition files and full prior public request references are ready to read; original evaluator archives remain separate from policy input.
+
+**Latest new-task package: v0.12.** One original synthetic repair task checks complete task coverage, final usability and accounting for failed attempts. The first model attempt succeeds in 13 calls, preserving a baseline test failure, two edits, a real 412 read-before-write violation, its recovery and final verification. [Private package](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.12) · [Data card](docs/DATASET-v0.12.zh-CN.md).
 
 - One executable task with two public and sixteen private behavioral cases; these are cases within one development task, not eighteen independent tasks.
 - One passing scripted reference and eleven rejected erroneous controls, including always rejecting, substituting local labels for usability, discarding failed elapsed time, comparing only counts and silently deduplicating records.
