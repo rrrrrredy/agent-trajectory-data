@@ -2,6 +2,8 @@
 
 Private task data, observable agent trajectories, executable environments and reproducible evaluation.
 
+**Four-model usefulness study completed (2026-09-29).** All 48 episodes pass, including the baseline condition. Full demonstrations reduce 42 aggregate steps, of which 41 are fewer outer-format rejections, while reported input tokens increase to 3.50x baseline. This does not demonstrate better business outcomes. The study preserves 901 environment steps and 906 service attempts, including five recovered unusable responses. All new episodes remain diagnostic-only. [Results and limitations](docs/USEFULNESS-STUDY.zh-CN.md) · [Private study data](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/study-2026-09-29).
+
 **Latest: v0.16.** One original report-row parsing task adds an actual ten-call first attempt using the existing repair environment. The model succeeds in one edit; the targeted gap in actual post-edit failure/retry data remains unfilled. [Private release](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.16) · [Data card](docs/DATASET-v0.16.zh-CN.md) · [Candidate evidence](docs/CANDIDATE-v0.16.zh-CN.md) · [Next-stage plan](docs/PLAN.zh-CN.md).
 
 - The explicit synthetic grammar covers quoted delimiters/newlines, doubled quotes, empty fields, EOF and invalid syntax. It makes no external CSV-standard claim.
