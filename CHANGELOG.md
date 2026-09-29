@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.15 — Same-family delimiter-collision repair (2026-09-29)
+
+- Measure seven implementations against fifteen diagnostic inputs; show that the previous model probe misses delimiter collisions and a delimiter substitution passes all twelve previous fixed cases.
+- Add one same-family initial-code variant and one fixed pipe-collision case; retain the original train split and rights, with zero new independent source groups.
+- Bind derived material to the pinned parent archive/index and correct inherited-source counting. Runtime, executor, grader and collector remain unchanged.
+- Collect one successful first attempt in twelve calls: one eligible demonstration, twelve training decisions and one verified regression recovery. Final code passes thirteen fixed cases; fifteen scripted negative controls fail.
+- Pass 273 tests, nine independent main-package checks, twenty-one rehashed mutation controls and three consumer checks.
+- Extend the combined consumer to 21 actual episodes, 266 transitions, 81 training transitions and six positive demonstrations. Preserve construction failures and all old archive bytes.
+
 ## v0.14 — Model-authored regression probes (2026-09-29)
 
 - Add one original synthetic train task whose supplied public cases initially pass; retain separate development/test and archived-source restrictions.

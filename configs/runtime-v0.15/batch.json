@@ -1,0 +1,29 @@
+{
+  "dataset_version": "0.15",
+  "environment_version": "research-repair-2",
+  "max_steps": 48,
+  "prior_release": {
+    "sha256": "5190303045ecbc3ca5b7d55fdda61d4cb4c3f43a9f6360709f8bdc0ed4126070",
+    "tag": "dataset-v0.14"
+  },
+  "source_mode": "authored_synthetic",
+  "sources": [
+    {
+      "parent": {
+        "archive": "agent-runtime-v0.14.zip",
+        "archive_sha256": "5190303045ecbc3ca5b7d55fdda61d4cb4c3f43a9f6360709f8bdc0ed4126070",
+        "index_sha256": "4ed7f5410e162d567089694d0b4f9ae993e4d00ca6678dfa0d036d0351c76ecd",
+        "manifest_sha256": "f9d1898b1616e66cd5332be30bfae495b9756b11890179164a71d8f2f1b15e17",
+        "task_id": "repair-scoped-event-regression-clean-v2"
+      },
+      "path": "configs/runtime-v0.15/scoped-event-key-encoding.json",
+      "sha256": "10289b0e0de711bd117fca12a7589b542e2f9d6dc03ae050803d9a6e2ac42a7b",
+      "task_id": "scoped-event-key-encoding",
+      "variants": [
+        "clean"
+      ]
+    }
+  ],
+  "toolkit_commit": "28524448eaf6534125a24dd1ea26e986016c8aea",
+  "version": "runtime-repair-batch-1"
+}

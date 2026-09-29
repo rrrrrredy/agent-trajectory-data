@@ -1,0 +1,23 @@
+{
+  "approval_record": {
+    "budget": "At most 48 new calls and 48 environment steps in 1200 seconds; preserve the existing 815 monthly cap and prior ledger.",
+    "model_inherited_from_previous_approved_batch": "gpt-6-astra",
+    "payload": "Only public task policy, contract, worker, fixed public cases and actual prior observations; no reference probe, oracle, private cases or reference code.",
+    "scope": "Continue the accepted plan: measure existing probe coverage, collect one justified delimiter-collision variant in the same train family, preserve all outcomes and privately release.",
+    "source_use": "Derived from the registered v0.14 synthetic train family with an explicit hash-bound parent. Zero new independent source groups; split and rights unchanged.",
+    "user_instruction": "继续"
+  },
+  "dataset_version": "0.15",
+  "environment_profile": "bounded_program_probe_repair",
+  "evaluation_mode": "first_attempt_synthetic_development",
+  "execution_authorization": "approved_by_user",
+  "max_batch_seconds": 1200,
+  "max_call_seconds": 90,
+  "max_new_calls": 48,
+  "model": "gpt-6-astra",
+  "monthly_model_calls": 815,
+  "task_ids": [
+    "repair-scoped-event-key-encoding-clean-v2"
+  ],
+  "version": "runtime-collection-1"
+}

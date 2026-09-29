@@ -1,6 +1,6 @@
 """Import real incident bindings and reconstruct bounded executable repair tasks."""
 from __future__ import annotations
-import ast,copy,json
+import ast,copy,json,zipfile
 from pathlib import Path
 import runtime_batch as b
 import research_env_v3 as common
@@ -133,13 +133,13 @@ def authored_scenario(config,material,variant):
     """The same repair environment, with original authored inputs rather than archived incidents."""
     common.check(variant=="clean","unsupported_authored_variant")
     m=material;ids={"policy":"policy","contract":"contract","worker":"worker.py","sample":"sample"}
-    result={"version":env.VERSION,"task_id":"repair-"+m["task_id"]+"-clean-v1","family_id":"repair-"+m["task_id"],
+    result={"version":env.VERSION,"task_id":"repair-"+m["task_id"]+"-clean-v1","family_id":m.get("family_id","repair-"+m["task_id"]),
         "source_group_id":m["source_group_id"],"mechanism":"bounded_program_repair","variant":variant,"fault":"clean",
-        "split":m["split"],"rights":copy.deepcopy(m["rights"]),"origin":"authored_synthetic_environment","parent_task_id":None,
+        "split":m["split"],"rights":copy.deepcopy(m["rights"]),"origin":"authored_synthetic_environment","parent_task_id":m.get("parent_task_id"),
         "source_sha256":common.digest(m),"source_incident":None,"max_steps":config["max_steps"],"document_ids":ids,"document_order":list(ids.values()),
         "contract":m["contract"],"initial_code":m["initial"],"reference_code":m["reference"],"partial_code":m["partial"],
         "public_cases":copy.deepcopy(m["public_cases"]),"private_cases":copy.deepcopy(m["private_cases"]),
-        "control_codes":copy.deepcopy(m.get("control_codes",{})),"missingness":m["missingness"],"variant_origin":"authored_synthetic"}
+        "control_codes":copy.deepcopy(m.get("control_codes",{})),"missingness":m["missingness"],"variant_origin":"derived_synthetic_initial_code_variant" if m.get("parent_task_id") else "authored_synthetic"}
     if config.get("environment_version")=="research-repair-2":
         result.update(version="research-repair-2",task_id="repair-"+m["task_id"]+"-clean-v2",mechanism="counterexample_driven_program_repair",oracle_id=m["oracle_id"],reference_probe=copy.deepcopy(m["reference_probe"]))
     return result
@@ -151,6 +151,41 @@ def authored_controls(scenario):
         extra=repair_probe_tasks.CONTROLS
     return CONTROLS+extra+sorted(scenario["control_codes"])
 
+def parent_paths(item):
+    prefix="source/parents/"+item["task_id"]
+    return prefix+".tasks.jsonl",prefix+".manifest.json"
+
+def freeze_authored_parent(repo,root,item):
+    parent=item.get("parent")
+    if parent is None:return
+    archive=b.local(repo/"artifacts",parent["archive"])
+    common.check(b.sha(archive.read_bytes())==parent["archive_sha256"],"parent_archive_changed")
+    with zipfile.ZipFile(archive) as z:
+        index=z.read("batch/tasks.jsonl");manifest=z.read("batch/manifest.json")
+    for path,raw,key in zip(parent_paths(item),(index,manifest),("index_sha256","manifest_sha256")):
+        common.check(b.sha(raw)==parent[key],"parent_snapshot_changed")
+        b.write(b.local(root,path),raw)
+
+def verify_authored_parent(root,item,material):
+    parent=item.get("parent")
+    if parent is None:
+        common.check(not material.get("parent_task_id") and "family_id" not in material,"authored_parent_binding_missing")
+        return
+    index_path,manifest_path=parent_paths(item)
+    raw=b.local(root,index_path).read_bytes();manifest_raw=b.local(root,manifest_path).read_bytes()
+    common.check(b.sha(raw)==parent["index_sha256"] and b.sha(manifest_raw)==parent["manifest_sha256"],"parent_snapshot_changed")
+    common.check(json.loads(manifest_raw)["files"].get("tasks.jsonl")==b.sha(raw),"parent_index_unbound")
+    matches=[row for row in b.lines(root/index_path) if row["task_id"]==parent["task_id"]]
+    common.check(len(matches)==1,"parent_task_missing_or_ambiguous")
+    original=matches[0]
+    common.check(material.get("parent_task_id")==original["task_id"] and material.get("family_id")==original["family_id"] and material["source_group_id"]==original["source_group_id"],"parent_lineage_changed")
+    common.check(material["split"]==original["split"] and common.equal(material["rights"],original["rights"]),"parent_use_changed")
+
+def authored_groups(rows):
+    groups={r["source_group_id"] for r in rows}
+    inherited={r["source_group_id"] for r in rows if r.get("parent_task_id")}
+    return len(groups),len(groups-inherited)
+
 def authored_material(root,config,item):
     raw=(root/"source"/(item["task_id"]+".json")).read_bytes()
     common.check(b.sha(raw)==item["sha256"],"authored_source_changed")
@@ -159,6 +194,7 @@ def authored_material(root,config,item):
     common.check(material["split"] in {"train","development","test"} and type(material["rights"]["training_eligible"]) is bool,"authored_use_missing")
     common.check(material["public_cases"] and material["private_cases"] and material["sources"] and material["missingness"],"authored_contract_incomplete")
     common.check(not set(CONTROLS)&set(material.get("control_codes",{})),"authored_control_collision")
+    verify_authored_parent(root,item,material)
     return material
 
 def build_authored(config,root):
@@ -168,6 +204,7 @@ def build_authored(config,root):
     tasks=[];controls=[];training=[]
     for item in config["sources"]:
         raw=b.local(repo,item["path"]).read_bytes();common.check(b.sha(raw)==item["sha256"],"authored_source_changed")
+        freeze_authored_parent(repo,root,item)
         b.write(root/"source"/(item["task_id"]+".json"),raw);material=authored_material(root,config,item)
         b.put(root/"inputs"/(item["task_id"]+".json"),material)
         for variant in item["variants"]:
@@ -179,8 +216,9 @@ def build_authored(config,root):
                 run=run_reference(scenario,mutation);common.check(run["grade"]["reward"]==0,"negative_control_passed:"+mutation)
                 path="tasks/"+tid+"/controls/"+mutation+".json";b.put(root/path,run);controls.append({"task_id":tid,"mutation":mutation,"path":path,"expected_reward":0})
     b.put_lines(root/"tasks.jsonl",tasks);b.put_lines(root/"controls.jsonl",controls);b.put_lines(root/"training/scripted-trajectories.jsonl",training)
+    groups,new_groups=authored_groups(tasks)
     b.put(root/"manifest.json",{"version":VERSION,"files":b.hashes(root),"task_count":len(tasks),"real_incident_chains":0,
-        "source_groups":len({x["source_group_id"] for x in tasks}),"new_independent_source_groups":len({x["source_group_id"] for x in tasks})})
+        "source_groups":groups,"new_independent_source_groups":new_groups})
     return verify(root)
 
 def verify_authored(root,config,manifest):
@@ -204,8 +242,8 @@ def verify_authored(root,config,manifest):
         scenario=b.read(b.local(root,task_map[row["task_id"]]["scenario"]));run=b.read(b.local(root,row["path"]))
         common.check(b.verify_episode(scenario,run)["reward"]==row["expected_reward"]==0 and common.equal(run,run_reference(scenario,row["mutation"])),"negative_control_changed")
     common.check(common.equal(b.lines(root/"training/scripted-trajectories.jsonl"),expected_training),"authored_training_changed")
-    groups=len({r["source_group_id"] for r in rows})
-    common.check(manifest["task_count"]==len(rows) and manifest["real_incident_chains"]==0 and manifest["source_groups"]==manifest["new_independent_source_groups"]==groups,"authored_counts_changed")
+    groups,new_groups=authored_groups(rows)
+    common.check(manifest["task_count"]==len(rows) and manifest["real_incident_chains"]==0 and manifest["source_groups"]==groups and manifest["new_independent_source_groups"]==new_groups,"authored_counts_changed")
     return {"passed":True,"tasks":len(rows),"families":len({r["family_id"] for r in rows}),"real_incident_chains":0,"source_groups":groups,
-        "new_independent_source_groups":groups,"controls":len(controls),"scripted_train_trajectories":len(expected_training),"model_calls":0,"source_family_overlap":0,
+        "new_independent_source_groups":new_groups,"controls":len(controls),"scripted_train_trajectories":len(expected_training),"model_calls":0,"source_family_overlap":0,
         "boundary":"Original synthetic inputs; source-group counts are catalog bookkeeping, not independent company observations. Hidden behavioral cases are not an independent task test split."}

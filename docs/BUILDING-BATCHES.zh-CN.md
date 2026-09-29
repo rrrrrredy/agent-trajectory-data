@@ -1,5 +1,19 @@
 # 扩充数据批次
 
+## v0.15：派生材料继承父任务，不增加独立来源
+
+同源材料在 batch.json 的 source 项登记 parent：固定 ZIP 文件名与 SHA-256、父 task_id、原 batch/tasks.jsonl 及 batch/manifest.json 的摘要。构建器验证原包，保存父索引/清单到 source/parents/；离线验证继续从冻结快照检查谱系。材料声明的 parent_task_id、family_id、source_group_id、split、rights 必须与父任务一致。
+
+本版修正 authored_groups 统计：有父绑定的来源组属于继承，new_independent_source_groups=0。catalog 仍跨版本连接这些记录。源码改动只在 repair_batch.py；已有模型工具、环境、评分和采集不变。九项新增测试覆盖谱系、用途、父包/快照绑定、重哈希篡改、行为漏检与十五个错误控制。
+
+```powershell
+python -B scripts/runtime_batch.py build configs/runtime-v0.15/batch.json data/runtime-batch-v0.15
+python -B scripts/runtime_collect.py execute data/runtime-batch-v0.15 data/runtime-model-v0.15 --config configs/runtime-v0.15/collection.json --ledger data/production-current
+python -B scripts/runtime_exports.py build configs/runtime-v0.15/exports.json data/runtime-consumer-v0.15 --source-root artifacts
+```
+
+上述输出已冻结，命令用于说明实际流程，不应覆盖重采。覆盖分析先于采集，依据原契约手工固定新增用例；不能在看到模型输出后追加评分要求。本次按既定 48 次/20 分钟上限采集，实际 12 次。
+
 ## v0.14：先证明需要自编测试，再增加环境行为
 
 `configs/runtime-v0.14/scoped-event-regression.json` 在采集前固定公开契约、错误初态、参考程序、错误控制、2 个公开与 10 个私有用例、评价侧 reference_probe，以及原创 train 来源。候选原型证明：六种实现都通过固定公开例，只有参考与独立 oracle 通过私有例；旧环境拒绝自编 test 参数，即使最终正确也因缺少公开基线失败得 0 分。证据见 [候选说明](CANDIDATE-v0.14.zh-CN.md)。
