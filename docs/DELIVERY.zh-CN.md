@@ -73,7 +73,7 @@ cycle 使用 UTC 时间窗口和配置生成稳定批次 ID；同一窗口重复
 
 ## 本次实际验证
 
-58 项自动测试通过。既有真实模型批次为三个合成任务、七次可见模型调用，三个确定性结果通过；原始证据在 data/production-v0.2。
+58 项自动测试通过。既有真实模型批次为三个使用构造材料的任务、七次可见模型调用，三个确定性结果通过；原始证据在 data/production-v0.2。
 
 新入口使用该批次的自有运行汇总，生成一个产物衍生家族的三个变体。本地脚本执行全部通过；导出的 ZIP 在独立解压目录重跑也全部通过。详细记录在 data/artifact-delivery/delivery-verification.json，包为 artifacts/agent-evaluation-internal.zip。
 

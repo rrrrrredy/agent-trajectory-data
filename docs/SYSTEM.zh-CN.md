@@ -12,7 +12,7 @@
 py -3 -B -m agentdata --root data/production-current stats
 ```
 
-当前目录保留 300 条合成任务、300 条脚本控制和 2 条模型轨迹。旧模型批次在 data/production-v0.2，另有 3 条模型轨迹。数据完整度与来源边界见[当前判断](CONCLUSION.zh-CN.md)。
+当前目录保留 300 条使用构造材料的任务、300 条脚本控制和 2 条模型轨迹。旧模型批次在 data/production-v0.2，另有 3 条模型轨迹。数据完整度与来源边界见[当前判断](CONCLUSION.zh-CN.md)。
 
 当前任务切分为 train 180、development 80、holdout 40。同一参数家族不跨切分，但各切分共享场景模板，不能因此宣称跨模板泛化。
 

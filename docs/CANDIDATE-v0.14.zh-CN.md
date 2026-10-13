@@ -50,6 +50,6 @@
 
 新家族 source_group_id 为 authored-scoped-event-regression-20260929，task_id 为 scoped-event-regression，origin 为 authored_synthetic。该来源在任何实际模型采集前固定为 train；rights 为 private_internal，允许 diagnostic、evaluation、training。已有发布的 development、test 及受限来源保持原分割和用途。
 
-资格只表示本原创来源可以用于训练；脚本参考、负控和原型执行仍单独标记，不能算成实际模型成功。当前设计只有一个训练家族，不构成独立盲测集。实际采集、停止原因、回归复测结果和最终资格须由后续冻结的执行记录证明。
+资格只表示本原创来源可以用于训练；脚本参考、负控和原型执行仍单独标记，不能算成实际模型成功。当前设计包含一个真实独立任务家族，用途为训练，按实际暴露历史记录。实际采集、停止原因、回归复测结果和最终资格须由后续冻结的执行记录证明。
 
 本文件对应的正式材料 SHA-256：`d3c16e936f9cf9734216b0798db369d5913dbfefd557d2f5aa4d346b6b6fd1cf`。

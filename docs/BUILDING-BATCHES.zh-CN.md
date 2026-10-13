@@ -67,7 +67,7 @@ failures/ 区分预期复现失败、修改后测试失败、动作错误、工�
 
 本版六条新模型执行成功，但原始过程数据只允许诊断，所以新增完整模型训练导出为 0。七组可训练恢复样本来自以前已允许的来源。不要为增加训练量改写原始用途。主包按冻结前缀记录处理证据，后续验收事件放独立补充包，避免自引用。
 
-## 合成研究任务的配置与输入
+## 使用构造材料的研究任务的配置与输入
 
 新机制参考 `configs/runtime-v0.9/batch.json`，原 v3 机制保留 `configs/runtime-v0.8/batch.json`。每个来源声明 family_id、train/test、mechanism、material 和 variants；批次声明 as_of、max_steps、评分范围、上游 toolkit 提交及上一发布版本。
 
