@@ -70,4 +70,4 @@ python -B runtime_exports.py replay . --work ../runtime-v014-replay
 - `artifacts/agent-runtime-v0.14.zip`：1,449,207 字节，SHA-256：`5190303045ecbc3ca5b7d55fdda61d4cb4c3f43a9f6360709f8bdc0ed4126070`。
 - `artifacts/agent-runtime-v0.14-consumer.zip`：8,436,549 字节，SHA-256：`716607e222234dd55776d6276aca3f461b3480be2af7faa4c3ea9399cbd3bddd`。
 
-本轮增量集中在私有数据集：让“自行提出检验”成为可执行、可评分、可重放的任务要求。toolkit 未因此修改。
+本轮增量集中在公开数据集：让“自行提出检验”成为可执行、可评分、可重放的任务要求。toolkit 未因此修改。

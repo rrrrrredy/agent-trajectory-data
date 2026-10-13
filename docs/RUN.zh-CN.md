@@ -37,7 +37,7 @@ py -3 -B -m agentdata --root data/model-v0.2 pipeline --config configs/codex-loc
 
 ```text
 data/model-v0.2/
-  tasks/                         冻结任务、环境与私有参考答案
+  tasks/                         冻结任务、环境与评分侧参考答案
   runs/<run-id>/
     task_snapshot.json           本次执行使用的任务快照
     events.jsonl                 宿主可见动作、工具观察和终态
@@ -55,7 +55,7 @@ data/model-v0.2/
     sft.json                     训练用途门禁的输出及隔离原因
 ```
 
-诊断导出会内嵌调用输入、可见事件和采集摘要，读取导出包不需要回到原机器取这些文件。原始快照仍然保持私有。
+诊断导出会内嵌调用输入、可见事件和采集摘要，读取导出包不需要回到原机器取这些文件。原始快照随发布包公开。
 
 ## 怎样理解“真实”
 

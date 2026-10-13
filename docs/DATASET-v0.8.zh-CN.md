@@ -34,7 +34,7 @@
 
 ## 直接运行
 
-解压私有发布包后验证全部内容：
+解压公开发布包后验证全部内容：
 
     py -3 -X utf8 -B runtime_release.py verify .
 
@@ -62,4 +62,4 @@ ResearchEnv.reset(seed) 返回公开初态和 info；step(action) 返回 observa
 
 本轮评价具有明确答案的证据操作，下一轮应优先增加长依赖、真实可复现的新失败和更难的不可判定边界。不能仅通过改名、增加 seed 或重复运行提升“独立任务”数量。配置和扩充入口见 [批次构建说明](BUILDING-BATCHES.zh-CN.md)。
 
-公开 toolkit 只接收通用 JSONL 修复与回归，提交为 `28524448eaf6534125a24dd1ea26e986016c8aea`。本轮数据、场景、评分及过程证据交付于私有数据集仓库。
+公开 toolkit 只接收通用 JSONL 修复与回归，提交为 `28524448eaf6534125a24dd1ea26e986016c8aea`。本轮数据、场景、评分及过程证据交付于公开数据集仓库。

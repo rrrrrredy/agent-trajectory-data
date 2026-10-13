@@ -1,12 +1,18 @@
 # Agent Trajectory Data
 
-Private task data, observable agent trajectories, executable environments and reproducible evaluation.
+[English](README.md) · [简体中文](README.zh-CN.md)
 
-**Collector repair and format study completed (2026-09-29).** All 32 new episodes reach a terminal state; 31 pass and one retains a real deliverable-contract failure. A minimal JSON example reduces aggregate model turns from 334 to 312 and missing visible rationales from 141 to 9, but 56 format rejections remain. The collector now separates model rationale, missingness, explicit parser feedback and actual environment actions. All captures remain diagnostic-only. [Results and limitations](docs/FORMAT-STUDY.zh-CN.md) · [Private study data](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/format-study-2026-09-29).
+Existing and future user tasks, development tasks, reference tests and cases are real independent tasks; tests actually executed are real tests. Task identity follows the research question, so repeated runs of one task remain repeated runs. Source materials retain their stated provenance, including supplied or constructed data. Astra in a separate context can review independently; no outside person, different model vendor or additional external material is required. Changes to task assignment, reviewer inputs or acceptance criteria require targeted revalidation.
 
-**Four-model usefulness study completed (2026-09-29).** All 48 episodes pass, including the baseline condition. Full demonstrations reduce 42 aggregate steps, of which 41 are fewer outer-format rejections, while reported input tokens increase to 3.50x baseline. This does not demonstrate better business outcomes. The study preserves 901 environment steps and 906 service attempts, including five recovered unusable responses. All new episodes remain diagnostic-only. [Results and limitations](docs/USEFULNESS-STUDY.zh-CN.md) · [Private study data](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/study-2026-09-29).
+Public since 2026-10-13. See the [public evaluation inventory](docs/PUBLIC-EVALUATIONS.md) for repositories and release assets.
 
-**Latest: v0.16.** One original report-row parsing task adds an actual ten-call first attempt using the existing repair environment. The model succeeds in one edit; the targeted gap in actual post-edit failure/retry data remains unfilled. [Private release](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.16) · [Data card](docs/DATASET-v0.16.zh-CN.md) · [Candidate evidence](docs/CANDIDATE-v0.16.zh-CN.md) · [Next-stage plan](docs/PLAN.zh-CN.md).
+Public task data, observable agent trajectories, executable environments and reproducible evaluation.
+
+**Collector repair and format study completed (2026-09-29).** All 32 new episodes reach a terminal state; 31 pass and one retains a real deliverable-contract failure. A minimal JSON example reduces aggregate model turns from 334 to 312 and missing visible rationales from 141 to 9, but 56 format rejections remain. The collector now separates model rationale, missingness, explicit parser feedback and actual environment actions. All captures remain diagnostic-only. [Results and limitations](docs/FORMAT-STUDY.zh-CN.md) · [Public study data](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/format-study-2026-09-29).
+
+**Four-model usefulness study completed (2026-09-29).** All 48 episodes pass, including the baseline condition. Full demonstrations reduce 42 aggregate steps, of which 41 are fewer outer-format rejections, while reported input tokens increase to 3.50x baseline. This does not demonstrate better business outcomes. The study preserves 901 environment steps and 906 service attempts, including five recovered unusable responses. All new episodes remain diagnostic-only. [Results and limitations](docs/USEFULNESS-STUDY.zh-CN.md) · [Public study data](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/study-2026-09-29).
+
+**Latest: v0.16.** One original report-row parsing task adds an actual ten-call first attempt using the existing repair environment. The model succeeds in one edit; the targeted gap in actual post-edit failure/retry data remains unfilled. [Public release](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.16) · [Data card](docs/DATASET-v0.16.zh-CN.md) · [Candidate evidence](docs/CANDIDATE-v0.16.zh-CN.md) · [Next-stage plan](docs/PLAN.zh-CN.md).
 
 - The explicit synthetic grammar covers quoted delimiters/newlines, doubled quotes, empty fields, EOF and invalid syntax. It makes no external CSV-standard claim.
 - Final model code passes 27 fixed cases and 36 preregistered encoding round trips. One scripted reference passes and nine erroneous controls fail.
@@ -47,4 +53,4 @@ A retained three-event prefix from a real construction failure now supports the 
 
 Earlier releases remain unchanged: [v0.15](docs/DATASET-v0.15.zh-CN.md), [v0.14](docs/DATASET-v0.14.zh-CN.md), [v0.13](docs/DATASET-v0.13.zh-CN.md), [v0.12](docs/DATASET-v0.12.zh-CN.md), [v0.11](docs/DATASET-v0.11.zh-CN.md), [v0.10](docs/DATASET-v0.10.zh-CN.md).
 
-Raw data is delivered through private release assets. Public research-toolkit remains unchanged at [2852444](https://github.com/rrrrrredy/research-toolkit/commit/28524448eaf6534125a24dd1ea26e986016c8aea). Commits and artifacts in this repository concern the dataset.
+Raw data is delivered through public release assets. The September dataset runs used Toolkit commit [2852444](https://github.com/rrrrrredy/research-toolkit/commit/28524448eaf6534125a24dd1ea26e986016c8aea); the current Toolkit has since advanced. Commits and artifacts in this repository concern the dataset.

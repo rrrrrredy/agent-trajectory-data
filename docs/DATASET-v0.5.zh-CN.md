@@ -74,10 +74,10 @@ v0.5 使用 business-env-2，旧版 business-env-1 原样保留。新规则要�
 
 ## 交付与边界
 
-[私有 v0.5](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.5) 交付 ZIP、验收回执和测试回执。ZIP 为 558,416 字节，SHA-256：
+[公开 v0.5](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.5) 交付 ZIP、验收回执和测试回执。ZIP 为 558,416 字节，SHA-256：
 
     7d43c1e0ea59e29346ec48bf49c07b0e5d01edbe1188b1b3c7f16f337eb44086
 
 正式构建与独立验收过的 ZIP 完全一致。v0.4 目录和原 ZIP 的摘要也保持不变。
 
-当前构建解决了可执行性、可追溯性和已发现的评分漏洞；独立模型能力、真实企业适用性与跨企业泛化尚未验证。训练记录为 0，全部仍为私有开发诊断用途。没有增加调用预算、人工环节、企业平台集成或商业功能。
+当前构建解决了可执行性、可追溯性和已发现的评分漏洞；独立模型能力、真实企业适用性与跨企业泛化尚未验证。训练记录为 0，全部仍为开发诊断用途。没有增加调用预算、人工环节、企业平台集成或商业功能。

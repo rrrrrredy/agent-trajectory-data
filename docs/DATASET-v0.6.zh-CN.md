@@ -63,6 +63,6 @@ Muse 和循环 Transformer 的原报告、来源表、主张表按原字节冻�
 
     982f9867b6356f9d777addb7e18c9919317b4f99622b3a503254ed2e73c15d37
 
-[私有发布](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.6)同时提供独立验收及测试回执。旧 v0.4 完整历史语料和 v0.5 环境修订保持不变。本版是可运行、可检查的小型数据集；没有足够证据支持模型能力提升或跨企业迁移结论。
+[公开发布](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.6)同时提供独立验收及测试回执。旧 v0.4 完整历史语料和 v0.5 环境修订保持不变。本版是可运行、可检查的小型数据集；没有足够证据支持模型能力提升或跨企业迁移结论。
 
 主包冻结后的提取修复结果、打包与独立验收另有 18 条可见事件，随 agent-runtime-v0.6-delivery-evidence.zip 交付；其摘要绑定主包及两份验收回执，衔接主包内处理记录的结束位置。

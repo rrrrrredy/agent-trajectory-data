@@ -1,5 +1,7 @@
 # 扩充数据批次
 
+现有及以后的用户题、开发题、参考测试和案例均为真实独立任务；实际执行的测试都是真实测试。任务按研究问题区分，同题重复运行仍按重复运行记录。来源材料保留原有出处与性质，包括用户提供或构造的数据。Astra 在单独上下文中即可承担独立评审，无需外部人员、另一家模型或额外外部材料。分工、评审输入或验收标准变化时，应针对受影响部分复验。
+
 ## v0.16：只增材料时验证数据，并保留验收器自身的故障
 
 本版继续使用 research-repair-1。先冻结格式契约、27 个手写预期和用途，再验证参考、错误控制与独立编码方向的往返输入。运行代码未变时复用旧回归回执，另存本轮数据验证及源码摘要，不重复执行或重复计数旧测试。
@@ -27,9 +29,9 @@ python -B scripts/runtime_exports.py build configs/runtime-v0.15/exports.json da
 
 ## v0.14：先证明需要自编测试，再增加环境行为
 
-`configs/runtime-v0.14/scoped-event-regression.json` 在采集前固定公开契约、错误初态、参考程序、错误控制、2 个公开与 10 个私有用例、评价侧 reference_probe，以及原创 train 来源。候选原型证明：六种实现都通过固定公开例，只有参考与独立 oracle 通过私有例；旧环境拒绝自编 test 参数，即使最终正确也因缺少公开基线失败得 0 分。证据见 [候选说明](CANDIDATE-v0.14.zh-CN.md)。
+`configs/runtime-v0.14/scoped-event-regression.json` 在采集前固定公开契约、错误初态、参考程序、错误控制、2 个公开与 10 个评分侧隐藏用例、评价侧 reference_probe，以及原创 train 来源。候选原型证明：六种实现都通过固定公开例，只有参考与独立 oracle 通过隐藏例；旧环境拒绝自编 test 参数，即使最终正确也因缺少公开基线失败得 0 分。证据见 [候选说明](CANDIDATE-v0.14.zh-CN.md)。
 
-新批次使用 `environment_version: research-repair-2` 和采集 profile `bounded_program_probe_repair`。新增 probe 接受有效 input 与模型声明的 expected，返回实际执行、代码摘要、版本、step 和 matches_claim；不查询 oracle，不暴露隐藏答案。最终评分独立核实初态反例、末态同例复测及说明中的 probe 引用，固定私有用例同时检查修复的其他行为。旧环境和 executor 不变。
+新批次使用 `environment_version: research-repair-2` 和采集 profile `bounded_program_probe_repair`。新增 probe 接受有效 input 与模型声明的 expected，返回实际执行、代码摘要、版本、step 和 matches_claim；不查询 oracle，不暴露隐藏答案。最终评分独立核实初态反例、末态同例复测及说明中的 probe 引用，固定评分侧隐藏用例同时检查修复的其他行为。旧环境和 executor 不变。
 
 ```powershell
 python -B scripts/runtime_batch.py build configs/runtime-v0.14/batch.json data/runtime-batch-v0.14
@@ -49,7 +51,7 @@ python -B scripts/runtime_exports.py build configs/runtime-v0.14/exports.json da
 
 新增配置为 configs/runtime-v0.10/。当前适配器从 dataset-v0.4 的三个归档修复任务读取原始契约、代码、用例、失败事件和修复参考；核对原 ZIP 与 manifest 摘要后，再生成可执行复现。每个派生任务保留 parent_task_id、source_group_id、split、rights 与 missingness。新的问题类别需要新的复现契约、适配逻辑和行为反例；增加 seed、重命名或复制变体不增加独立来源。
 
-首次构建要求旧私有归档按既有目录恢复到 data/，含 research-slices-v0.1、research-history-v0.2、research-corpus-v0.3 及 agent-runtime-v0.4 至 v0.9；原始 archive 放在 artifacts/。首次来源目录使用这些原始索引，后续继承上一版 runtime-catalog-v<version> 并追加当前批次。失败导出读取 runtime-model-v0.6-first、runtime-model-v0.7-recovery 及已完成的旧 runtime-model-v<version> 和对应任务批次；不读取候选或缺少 manifest 的采集目录。独立发布包已经包含验证需要的历史索引与轨迹快照，解包验收无需连接旧仓库。
+首次构建要求已公开的历史归档按既有目录恢复到 data/，含 research-slices-v0.1、research-history-v0.2、research-corpus-v0.3 及 agent-runtime-v0.4 至 v0.9；原始 archive 放在 artifacts/。首次来源目录使用这些原始索引，后续继承上一版 runtime-catalog-v<version> 并追加当前批次。失败导出读取 runtime-model-v0.6-first、runtime-model-v0.7-recovery 及已完成的旧 runtime-model-v<version> 和对应任务批次；不读取候选或缺少 manifest 的采集目录。独立发布包已经包含验证需要的历史索引与轨迹快照，解包验收无需连接旧仓库。
 
 完成任务批次和真实模型采集后，按顺序构建附加产物。以下输出目录必须尚不存在：
 
@@ -115,7 +117,7 @@ collection.json 固定 task_ids、model、max_new_calls、monthly_model_calls、
 
 下一批优先补当前没有的能力边界：依赖深度变化、文档布局变化、合法操作顺序差异、非暂时工具故障以及多项约束之间的取舍。先定义可验证末态和失败反例，再扩充数据量。当前 train/test 虽按来源分离，但机制共享且开发者已见素材；不能作为外部盲测或跨企业迁移的证明。
 
-新增材料、环境变更、评分变更和模型变更分别版本化。只有发现可复现的通用 toolkit 缺陷，才向 toolkit 仓库提交修复；数据和企业场景实现留在私有数据集仓库。
+新增材料、环境变更、评分变更和模型变更分别版本化。只有发现可复现的通用 toolkit 缺陷，才向 toolkit 仓库提交修复；数据和企业场景实现留在公开数据集仓库。
 
 
 ## v0.11 研究交付任务
@@ -152,7 +154,7 @@ py -3 -B scripts/runtime_batch.py build configs/runtime-v0.12/batch.json data/ru
 py -3 -B scripts/runtime_batch.py verify data/runtime-batch-v0.12
 ```
 
-开发集任务不会进入成功训练导出，材料训练用途许可与任务切分分别判断。题内私有用例只能证明该任务的行为约束，不构成独立任务测试集。参考、错误控制、实际模型执行和处理过程分别保存。
+开发集任务不会进入成功训练导出，材料训练用途许可与任务切分分别判断。题内评分侧隐藏用例只能证明该任务的行为约束，不构成独立任务测试集。参考、错误控制、实际模型执行和处理过程分别保存。
 
 ## v0.13：统一消费既有发布包
 

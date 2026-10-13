@@ -1,6 +1,6 @@
 # v0.13：统一读取既有研究交付与程序修复轨迹
 
-更新：2026-09-29。本版将 v0.10、v0.11、v0.12 已有的实际执行整理成同一种消费格式。原始任务、环境、评分和轨迹不变；新增任务、来源、模型调用和训练示范均为 0。已通过下述针对性测试和独立解包验收，交付见 [v0.13 私有发布](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.13)。
+更新：2026-09-29。本版将 v0.10、v0.11、v0.12 已有的实际执行整理成同一种消费格式。原始任务、环境、评分和轨迹不变；新增任务、来源、模型调用和训练示范均为 0。已通过下述针对性测试和独立解包验收，交付见 [v0.13 公开发布](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.13)。
 
 ## 为什么需要这一版
 
@@ -51,6 +51,6 @@ python -B scripts/runtime_exports.py build configs/runtime-v0.13/exports.json da
 
 独立解包后通过三个命令级检查：消费投影核验、真实 412 之前的公开上下文读取、三个原包各自的冻结验证器执行。三个原包合计 19 次实际执行、242 步全部通过原环境重放，新增模型调用为 0。这里的 3 个命令级检查包含 3 次原包验证，不把它们相加冒充 6 项独立实验。
 
-主包 7,066,060 字节，SHA-256：`805a0374fa36200ee98c8c87b869e7be32f1de3dc7b0759154b9b95bb09678f4`。测试回执为 `artifacts/agent-runtime-v0.13-tests.json`，独立验收为 `artifacts/agent-runtime-v0.13-acceptance.json`。可见构建过程另附私有过程包，保留主线程及两个任务子代理的规划、实现、测试和重放记录。
+主包 7,066,060 字节，SHA-256：`805a0374fa36200ee98c8c87b869e7be32f1de3dc7b0759154b9b95bb09678f4`。测试回执为 `artifacts/agent-runtime-v0.13-tests.json`，独立验收为 `artifacts/agent-runtime-v0.13-acceptance.json`。可见构建过程另附公开过程包，保留主线程及两个任务子代理的规划、实现、测试和重放记录。
 
 旧发布包未重新生成；本轮验收只验证新增读取与转换行为及其对既有环境的复放调用。完整来源 ZIP 的原始摘要继续由配置约束。
