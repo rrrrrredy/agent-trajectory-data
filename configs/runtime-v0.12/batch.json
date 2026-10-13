@@ -9,7 +9,7 @@
   "sources": [
     {
       "path": "configs/runtime-v0.12/denominator-integrity.json",
-      "sha256": "7172e6a08a1aba5555886c41d1f9d964b4dfaddf3b1fc8dde120a45423b2fae7",
+      "sha256": "858af4c3490488c5a16ad944089e1079926bb8c22bb3b4ff4ef7cc03eb030797",
       "task_id": "denominator-integrity",
       "variants": [
         "clean"

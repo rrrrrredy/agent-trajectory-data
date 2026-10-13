@@ -1,0 +1,15 @@
+{
+  "source_commit": "58ae41521f943571801fe99db6bff3d8a06858f6",
+  "source_path": "configs/runtime-v0.14/scoped-event-regression.json",
+  "purpose": "Original inherited permission record; current task descriptions live in the task contract.",
+  "rights": {
+    "allowed_uses": [
+      "diagnostic",
+      "evaluation",
+      "training"
+    ],
+    "basis": "Entirely original synthetic task, code, and manually fixed expected examples authored for this project. This new source family is preregistered as train before any actual model collection; no existing released development or test source is promoted.",
+    "distribution": "private_internal",
+    "training_eligible": true
+  }
+}

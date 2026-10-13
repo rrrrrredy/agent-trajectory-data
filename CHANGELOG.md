@@ -66,7 +66,7 @@
 
 ## dataset-v0.9 — Dependency, conflict and revision environments
 
-- Add 24 synthetic tasks across six source families, with dependency tracing, unresolved evidence conflicts and multi-claim revision.
+- Add 24 real tasks using constructed materials across six source families, with dependency tracing, unresolved evidence conflicts and multi-claim revision.
 - Record six successful first model attempts in 70 calls; export three train trajectories and 37 decisions.
 - Preserve time-based visibility, rate limits, revision conflicts and separate source-family splits.
 - Pass 195 regression tests, 20 independent checks and 14 rehashed semantic mutations.

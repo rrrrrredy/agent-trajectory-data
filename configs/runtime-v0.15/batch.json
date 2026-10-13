@@ -17,7 +17,7 @@
         "task_id": "repair-scoped-event-regression-clean-v2"
       },
       "path": "configs/runtime-v0.15/scoped-event-key-encoding.json",
-      "sha256": "10289b0e0de711bd117fca12a7589b542e2f9d6dc03ae050803d9a6e2ac42a7b",
+      "sha256": "5c51efd3fe48b412226ad79c231626eb3543881948cb804c6e5d46c4123e89af",
       "task_id": "scoped-event-key-encoding",
       "variants": [
         "clean"

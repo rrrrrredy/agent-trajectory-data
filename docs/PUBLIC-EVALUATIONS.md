@@ -6,7 +6,26 @@ As of 2026-10-13, research-toolkit and agent-trajectory-data are public. All 19 
 
 Toolkit's dedicated seven cases, conversation packs, semantic cases, studies and actual-run diagnostics are in [research-toolkit/evals](https://github.com/rrrrrredy/research-toolkit/tree/main/evals). The data repository supplies historical research records, executable tasks, model trajectories, replay code and study archives. The v0.4 archive embeds prior v0.3/v0.2/v0.1 contents; v0.2 is also independently downloadable. Public availability does not change task identity, outcomes or source-use permissions.
 
-Release ZIPs are frozen historical records. Their old “private” labels describe the former access state, not a current access restriction. Old statements equating constructed material or development use with a task not being real are superseded: all these tasks are real independent tasks, and executed tests are real. Repeated versions remain versions of the same task. Astra can review in a separate context without outside people or a different model vendor. Changed roles, evidence packets or acceptance criteria require targeted revalidation.
+
+## What is inside the public archives
+
+All existing and future user tasks, development tasks, tests and cases are real independent tasks; executed tests are real tests. Astra can review in a separate context, including with the same model as the author. Changed assignments, reviewer inputs and acceptance require targeted revalidation.
+
+Paths below are relative to the root of `agent-runtime-v0.4.zip` unless noted. Count record types separately; versions and repeated runs overlap.
+
+| Path / release | Actual content | Use |
+|---|---|---|
+| `prior/tasks.jsonl` | 45 report-review inputs: 23 development and 22 paired-study | Full research/report evaluation |
+| `prior/reviews.jsonl`; `prior/author_attempts.jsonl` | 221 retained review records; 34 author-attempt records | First outputs, failures and review provenance |
+| `prior/prior/runs.jsonl`; `prior/prior/turns.jsonl` | Four historical research runs, eight retained turns | Original multi-turn work and observed tool actions |
+| `prior/prior/base/tasks.jsonl` | Ten earlier task rows | Original research/source-operation slices |
+| `tasks.jsonl`; `coverage.jsonl` | 17 executable task rows; 98 overlapping coverage rows | Environment tasks and links to underlying research |
+| v0.5–v0.9; v0.6-curriculum | Evidence receipts, measurement/constraint tasks, curriculum, model collection and recovery | Evidence handling and executable trajectories |
+| v0.10–v0.12 | Code repair, workspace research delivery and denominator integrity | Real error diagnosis and repair |
+| v0.13–v0.16 | Replay/export, counterexample-driven repair, event identity and report-row parsing | Current-code evidence and behavioral regression |
+| study-2026-09-29; format-study-2026-09-29 | 48 and 32 actual episodes on four shared task identities | Demonstration-usefulness and output-format comparisons |
+
+The dated data cards and [building guide](BUILDING-BATCHES.zh-CN.md) identify contracts and entry commands. Current generators produce current usage/access descriptions. Released ZIPs retain their original transcripts, embedded code and outcomes; historical access labels record the former state. Source permissions and training eligibility stay attached to their data. [Toolkit collection-to-method coverage](https://github.com/rrrrrredy/research-toolkit/blob/main/docs/correction-audit-2026-10-13.md).
 
 | Release | Public assets |
 |---|---:|

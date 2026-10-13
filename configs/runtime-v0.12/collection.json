@@ -2,7 +2,7 @@
   "approval_record": {
     "budget": "One task with 48 environment steps; at most 48 new calls; keep the prior monthly ledger and its existing 815-call limit.",
     "model_inherited_from_previous_approved_batch": "gpt-6-astra",
-    "payload": "New original synthetic task contract, initial worker, public test cases and observed action history only. No third-party code, historical raw reviews, private cases or reference solution enter the policy context.",
+    "payload": "New original task contract using authored input material, initial worker, public test cases and observed action history only. No third-party code, historical raw reviews, private cases or reference solution enter the policy context.",
     "scope": "Implement the narrowed complete-denominator task, collect one actual model first attempt, verify and privately release the increment.",
     "user_instruction": "ok，继续推进任务"
   },

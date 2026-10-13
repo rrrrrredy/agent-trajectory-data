@@ -332,7 +332,7 @@ CARD="""# Agent runtime evidence-receipt update v0.5
 This standalone update revises the ten existing development business scenarios. It includes task
 instructions, frozen environments, private graders, reference solutions, executed controls and
 two actual interactive runs by the current authoring assistant.
-The unchanged full historical corpus and seven coding repair tasks remain in the private v0.4 asset.
+The unchanged full historical corpus and seven coding repair tasks remain in the v0.4 release asset.
 This is not a new independent benchmark or a model training result.
 
 A successful read requires a 200 receipt matching the current document. A 429 is an observation of
@@ -351,7 +351,7 @@ Run python -B verify_dataset.py verify .
 Run python -X utf8 -B business_env_v2.py tasks/TASK/environment/scenario.json --output ../episode.json
 Reference: add --policy reference. Grade: add --verify ../episode.json.
 Give an agent only export-learner output and tool observations, not the entire evaluator archive.
-All material remains private diagnostic development data; training eligibility is false.
+This material is diagnostic development data; training eligibility is false. Access follows the repository release setting; original source-use permissions remain recorded.
 """
 def main():
     parser=argparse.ArgumentParser();sub=parser.add_subparsers(dest="cmd",required=True)

@@ -38,7 +38,7 @@ POLICY["grade_boundary"] = (
     "Final grading requires a genuine pre-repair counterexample with a contract-correct "
     "expected envelope, the same case passing on the final code before the note, current "
     "public tests and independent private behavior. Scenario, oracle and reference code "
-    "are evaluator-only. This is a bounded synthetic task, not unrestricted execution."
+    "are evaluator-only. This real repair task uses authored scenario material and the bounded execution tools specified in its contract."
 )
 HELP = copy.deepcopy(base.HELP)
 HELP["probe"] = {
