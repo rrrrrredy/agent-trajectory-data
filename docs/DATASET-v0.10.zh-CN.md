@@ -65,7 +65,7 @@ failures/ 汇集实际模型历史，包含 25 条失败或截断记录；复用
 
 225 项工程回归通过，独立解包运行与行为检查 20 项通过，16 类重算外围哈希后的语义篡改被拒绝。检查包括删除初态失败、删除 409、泄露答案、伪造预算或奖励、改变源码入口、改写历史来源、把截断说成模型错误，以及将受限来源塞入训练导出。独立验收没有新增模型调用。
 
-在 [私有 v0.10 发布包](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.10) 的解压目录执行：
+在 [公开 v0.10 发布包](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.10) 的解压目录执行：
 
     py -3 -X utf8 -B runtime_release.py verify .
     py -3 -X utf8 -B task-entrypoints/repair-manifest-hashes-stale_patch-v1/tests/verify.py model/episodes/repair-manifest-hashes-stale_patch-v1/episode.json
@@ -78,4 +78,4 @@ failures/ 汇集实际模型历史，包含 25 条失败或截断记录；复用
 
 这批建立了真实问题记录到可执行复现、失败反馈、实际模型修复及独立验证的闭环。六条开发任务的成功率不能推导跨企业泛化；三个问题家族也没有增加来源独立性。持续扩充优先增加有证据的新问题与不同约束，分别统计来源、任务、变体和执行，保留原有切分与用途。
 
-本版仅更新私有 agent-trajectory-data 仓库。research-toolkit 保持 `28524448eaf6534125a24dd1ea26e986016c8aea`。本轮三个开发缺陷已在数据管线中修复，没有新证据要求修改 toolkit。
+本版仅更新公开 agent-trajectory-data 仓库。research-toolkit 保持 `28524448eaf6534125a24dd1ea26e986016c8aea`。本轮三个开发缺陷已在数据管线中修复，没有新证据要求修改 toolkit。

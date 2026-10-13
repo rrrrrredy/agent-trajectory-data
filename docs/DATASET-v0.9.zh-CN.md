@@ -43,7 +43,7 @@
 
 ## 独立运行与验收
 
-在私有发布包的解压目录：
+在公开发布包的解压目录：
 
     py -3 -X utf8 -B runtime_release.py verify .
     py -3 -X utf8 -B task-entrypoints/aster-routing-stale_revision-v4/tests/verify.py model/episodes/aster-routing-stale_revision-v4/episode.json
@@ -60,4 +60,4 @@
 
 新材料是合成的，执行是实际模型调用。旧版本的真实研究报告、执行记录和原失败继续保留，没有把新合成场景描述成新增真实企业记录。来源家族分离、机制共享、开发者已见素材；六条开发任务不能证明跨公司泛化、开放式研究质量或 toolkit 的因果收益。
 
-本轮只更新私有数据集仓库。toolkit 保持 `28524448eaf6534125a24dd1ea26e986016c8aea`，没有混入数据、素材或场景代码。
+本轮只更新公开数据集仓库。toolkit 保持 `28524448eaf6534125a24dd1ea26e986016c8aea`，没有混入数据、素材或场景代码。

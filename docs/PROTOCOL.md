@@ -1,5 +1,7 @@
 # Runtime dataset protocol
 
+Existing and future user tasks, development tasks, reference tests and cases are real independent tasks; tests actually executed are real tests. Task identity follows the research question, so repeated runs of one task remain repeated runs. Source materials retain their stated provenance, including supplied or constructed data. Astra in a separate context can review independently; no outside person, different model vendor or additional external material is required. Changes to task assignment, reviewer inputs or acceptance criteria require targeted revalidation.
+
 Current implementation: v0.11 research workspace tasks, pending full model collection and release acceptance. The latest fully published package remains v0.10. See [current plan](PLAN.zh-CN.md) and [batch construction](BUILDING-BATCHES.zh-CN.md).
 
 The current workspace protocol exposes reset/step public observations. report.md and analysis.json have separate versions and are updated with an idempotency key. A 409 requires refreshed evidence or artifact state; a 504 leaves the write outcome unknown. Public validation checks consistency and freshness. Terminal grading independently recomputes the assigned bounded result and verifies evidence timing, protected content, final reads, current validation and duplicate effects. A legitimate missing-evidence response preserves the initial files and ends blocked.
@@ -36,7 +38,7 @@ Model call inputs, captures, and visible events are embedded in accepted diagnos
 
 ## Data objects
 
-A task stores a public goal, available source identifiers, a synthetic environment, a private deterministic oracle, rights metadata, and a family identifier. A run stores the observed visible loop plus a task snapshot. The oracle and environment are excluded from external command input.
+A task stores a public goal, available source identifiers, a synthetic environment, an evaluator-side deterministic oracle, rights metadata, and a family identifier. A run stores the observed visible loop plus a task snapshot. The oracle and environment are excluded from external command input.
 
 The independent provenance dimensions are:
 
@@ -121,7 +123,7 @@ Imports remain `partial_review_metadata`, with unverified rights and no outcome 
 
 ## Research evidence and operational interfaces
 
-The research-evidence-v1 profile adds a visible source-selection contract: region and cutoff-date filters, authority then recency ordering, abstention for missing/conflicting top-ranked facts, exact winning-source citations, and annual price conversion rounded half-up. Environments use immutable response schedules. The private generator stays outside customer archives; the deterministic client protocol is distributed under the proprietary evaluation license.
+The research-evidence-v1 profile adds a visible source-selection contract: region and cutoff-date filters, authority then recency ordering, abstention for missing/conflicting top-ranked facts, exact winning-source citations, and annual price conversion rounded half-up. Environments use immutable response schedules. The generator source stays outside the exported customer task archives; the deterministic client protocol is distributed under the proprietary evaluation license.
 
 Native visible-session-v1 imports retain top-level visible messages and tool interactions. Observed sessions, artifact-derived tasks, synthetic tasks, model_cli runs, external_command runs and scripted controls remain distinct provenance classes. Imported sessions without frozen environments remain unassessed and training-ineligible.
 

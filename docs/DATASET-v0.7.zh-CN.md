@@ -59,4 +59,4 @@
 
     843d424d4553d00e6d510eaad0dd7fe66df56a849f70be00e6188b79cde9fa05
 
-[私有 v0.7 发布](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.7)附独立验收、测试与处理证据。原 v0.4 历史语料和七个排错任务、v0.5 修订及 v0.6 首次尝试继续保持冻结。
+[公开 v0.7 发布](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.7)附独立验收、测试与处理证据。原 v0.4 历史语料和七个排错任务、v0.5 修订及 v0.6 首次尝试继续保持冻结。

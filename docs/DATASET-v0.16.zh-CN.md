@@ -1,13 +1,13 @@
 # v0.16：报告行解析、真实恢复缺口审计与验收修复
 
-更新：2026-09-29。本批次采到一条新的报告行解析修复轨迹：模型在 10 次调用内完成一次修改，终局成功。它扩展了任务内容，但没有出现修改后行为仍错，因此“语义修改失败后重试”的实际策略样本缺口仍然存在。数据与回执见 [v0.16 私有发布](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.16)。
+更新：2026-09-29。本批次采到一条新的报告行解析修复轨迹：模型在 10 次调用内完成一次修改，终局成功。它扩展了任务内容，但没有出现修改后行为仍错，因此“语义修改失败后重试”的实际策略样本缺口仍然存在。数据与回执见 [v0.16 公开发布](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/dataset-v0.16)。
 
 ## 实际数据与过程
 
 | 项目 | 结果 |
 |---|---|
 | 新任务/来源 | 1 个原创合成 train 任务、1 个新来源组 |
-| 任务行为 | 8 个公开、19 个私有固定用例；1 个任务共 27 个用例 |
+| 任务行为 | 8 个公开、19 个评分侧隐藏固定用例；1 个任务共 27 个用例 |
 | 参考验证 | 27 个手写预期用例、36 组独立编码方向的往返检查、9 条错误控制 |
 | 实际模型 | 请求配置 gpt-6-astra；首次执行 10 次调用，1 次接受的修改，reward=1 |
 | 新增训练导出 | 1 条成功示范、10 条 SFT 决策、10 条 RL transitions |
@@ -44,7 +44,7 @@ python -B task-entrypoints/repair-quoted-report-rows-clean-v1/solution/reference
 python -B repair_env.py batch/tasks/repair-quoted-report-rows-clean-v1/scenario.json --output ../episode-v16.json
 ```
 
-逐行输入 JSON 动作，环境提供 reset/step、观察、奖励和终止状态。test 失败后仍可继续修改。最终代码保存在 episode 的 final_state.code；原请求、可见动作、反馈、代码修改、检查点、说明与终局评分一起保存。参考程序、私有用例和脚本错误控制留在评价侧。
+逐行输入 JSON 动作，环境提供 reset/step、观察、奖励和终止状态。test 失败后仍可继续修改。最终代码保存在 episode 的 final_state.code；原请求、可见动作、反馈、代码修改、检查点、说明与终局评分一起保存。参考程序、评分侧隐藏用例和脚本错误控制留在评价侧。
 
 解压 agent-runtime-v0.16-consumer.zip：
 

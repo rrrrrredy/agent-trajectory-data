@@ -1,0 +1,563 @@
+{
+  "checked_on": "2026-10-13",
+  "authentication": "none",
+  "repository": "rrrrrredy/agent-trajectory-data",
+  "visibility": "public",
+  "release_count": 19,
+  "asset_count": 79,
+  "assets": [
+    {
+      "tag": "study-2026-09-29",
+      "name": "workspace-usefulness-20260929-verification.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/study-2026-09-29/workspace-usefulness-20260929-verification.json",
+      "status": 200,
+      "bytes": 446
+    },
+    {
+      "tag": "study-2026-09-29",
+      "name": "workspace-usefulness-20260929.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/study-2026-09-29/workspace-usefulness-20260929.zip",
+      "status": 200,
+      "bytes": 6053471
+    },
+    {
+      "tag": "format-study-2026-09-29",
+      "name": "workspace-format-20260929-verification.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/format-study-2026-09-29/workspace-format-20260929-verification.json",
+      "status": 200,
+      "bytes": 436
+    },
+    {
+      "tag": "format-study-2026-09-29",
+      "name": "workspace-format-20260929.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/format-study-2026-09-29/workspace-format-20260929.zip",
+      "status": 200,
+      "bytes": 3650693
+    },
+    {
+      "tag": "dataset-v0.16",
+      "name": "agent-runtime-v0.16-acceptance-repair.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.16/agent-runtime-v0.16-acceptance-repair.json",
+      "status": 200,
+      "bytes": 1692
+    },
+    {
+      "tag": "dataset-v0.16",
+      "name": "agent-runtime-v0.16-acceptance.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.16/agent-runtime-v0.16-acceptance.json",
+      "status": 200,
+      "bytes": 26478
+    },
+    {
+      "tag": "dataset-v0.16",
+      "name": "agent-runtime-v0.16-consumer-acceptance.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.16/agent-runtime-v0.16-consumer-acceptance.json",
+      "status": 200,
+      "bytes": 8639
+    },
+    {
+      "tag": "dataset-v0.16",
+      "name": "agent-runtime-v0.16-consumer.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.16/agent-runtime-v0.16-consumer.zip",
+      "status": 200,
+      "bytes": 11157738
+    },
+    {
+      "tag": "dataset-v0.16",
+      "name": "agent-runtime-v0.16-processing-supplement.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.16/agent-runtime-v0.16-processing-supplement.zip",
+      "status": 200,
+      "bytes": 161929
+    },
+    {
+      "tag": "dataset-v0.16",
+      "name": "agent-runtime-v0.16-source-commit-verification.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.16/agent-runtime-v0.16-source-commit-verification.json",
+      "status": 200,
+      "bytes": 33105
+    },
+    {
+      "tag": "dataset-v0.16",
+      "name": "agent-runtime-v0.16-tests.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.16/agent-runtime-v0.16-tests.json",
+      "status": 200,
+      "bytes": 28902
+    },
+    {
+      "tag": "dataset-v0.16",
+      "name": "agent-runtime-v0.16.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.16/agent-runtime-v0.16.zip",
+      "status": 200,
+      "bytes": 1405494
+    },
+    {
+      "tag": "dataset-v0.15",
+      "name": "agent-runtime-v0.15-acceptance.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.15/agent-runtime-v0.15-acceptance.json",
+      "status": 200,
+      "bytes": 27158
+    },
+    {
+      "tag": "dataset-v0.15",
+      "name": "agent-runtime-v0.15-consumer-acceptance.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.15/agent-runtime-v0.15-consumer-acceptance.json",
+      "status": 200,
+      "bytes": 8175
+    },
+    {
+      "tag": "dataset-v0.15",
+      "name": "agent-runtime-v0.15-consumer.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.15/agent-runtime-v0.15-consumer.zip",
+      "status": 200,
+      "bytes": 9825098
+    },
+    {
+      "tag": "dataset-v0.15",
+      "name": "agent-runtime-v0.15-processing-supplement.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.15/agent-runtime-v0.15-processing-supplement.zip",
+      "status": 200,
+      "bytes": 64899
+    },
+    {
+      "tag": "dataset-v0.15",
+      "name": "agent-runtime-v0.15-source-commit-verification.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.15/agent-runtime-v0.15-source-commit-verification.json",
+      "status": 200,
+      "bytes": 31634
+    },
+    {
+      "tag": "dataset-v0.15",
+      "name": "agent-runtime-v0.15-tests.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.15/agent-runtime-v0.15-tests.json",
+      "status": 200,
+      "bytes": 71749
+    },
+    {
+      "tag": "dataset-v0.15",
+      "name": "agent-runtime-v0.15.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.15/agent-runtime-v0.15.zip",
+      "status": 200,
+      "bytes": 1472540
+    },
+    {
+      "tag": "dataset-v0.14",
+      "name": "agent-runtime-v0.14-acceptance.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.14/agent-runtime-v0.14-acceptance.json",
+      "status": 200,
+      "bytes": 26956
+    },
+    {
+      "tag": "dataset-v0.14",
+      "name": "agent-runtime-v0.14-consumer-acceptance.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.14/agent-runtime-v0.14-consumer-acceptance.json",
+      "status": 200,
+      "bytes": 7645
+    },
+    {
+      "tag": "dataset-v0.14",
+      "name": "agent-runtime-v0.14-consumer.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.14/agent-runtime-v0.14-consumer.zip",
+      "status": 200,
+      "bytes": 8436549
+    },
+    {
+      "tag": "dataset-v0.14",
+      "name": "agent-runtime-v0.14-processing-supplement.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.14/agent-runtime-v0.14-processing-supplement.zip",
+      "status": 200,
+      "bytes": 244618
+    },
+    {
+      "tag": "dataset-v0.14",
+      "name": "agent-runtime-v0.14-source-commit-verification.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.14/agent-runtime-v0.14-source-commit-verification.json",
+      "status": 200,
+      "bytes": 30179
+    },
+    {
+      "tag": "dataset-v0.14",
+      "name": "agent-runtime-v0.14-tests.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.14/agent-runtime-v0.14-tests.json",
+      "status": 200,
+      "bytes": 69804
+    },
+    {
+      "tag": "dataset-v0.14",
+      "name": "agent-runtime-v0.14.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.14/agent-runtime-v0.14.zip",
+      "status": 200,
+      "bytes": 1449207
+    },
+    {
+      "tag": "dataset-v0.13",
+      "name": "agent-runtime-v0.13-acceptance.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.13/agent-runtime-v0.13-acceptance.json",
+      "status": 200,
+      "bytes": 32878
+    },
+    {
+      "tag": "dataset-v0.13",
+      "name": "agent-runtime-v0.13-processing.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.13/agent-runtime-v0.13-processing.zip",
+      "status": 200,
+      "bytes": 197988
+    },
+    {
+      "tag": "dataset-v0.13",
+      "name": "agent-runtime-v0.13-source-commit-verification.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.13/agent-runtime-v0.13-source-commit-verification.json",
+      "status": 200,
+      "bytes": 1763
+    },
+    {
+      "tag": "dataset-v0.13",
+      "name": "agent-runtime-v0.13-tests.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.13/agent-runtime-v0.13-tests.json",
+      "status": 200,
+      "bytes": 2155
+    },
+    {
+      "tag": "dataset-v0.13",
+      "name": "agent-runtime-v0.13.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.13/agent-runtime-v0.13.zip",
+      "status": 200,
+      "bytes": 7066060
+    },
+    {
+      "tag": "dataset-v0.12",
+      "name": "agent-runtime-v0.12-acceptance.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.12/agent-runtime-v0.12-acceptance.json",
+      "status": 200,
+      "bytes": 29659
+    },
+    {
+      "tag": "dataset-v0.12",
+      "name": "agent-runtime-v0.12-processing-supplement.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.12/agent-runtime-v0.12-processing-supplement.zip",
+      "status": 200,
+      "bytes": 172757
+    },
+    {
+      "tag": "dataset-v0.12",
+      "name": "agent-runtime-v0.12-source-commit-verification.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.12/agent-runtime-v0.12-source-commit-verification.json",
+      "status": 200,
+      "bytes": 30476
+    },
+    {
+      "tag": "dataset-v0.12",
+      "name": "agent-runtime-v0.12-tests.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.12/agent-runtime-v0.12-tests.json",
+      "status": 200,
+      "bytes": 66941
+    },
+    {
+      "tag": "dataset-v0.12",
+      "name": "agent-runtime-v0.12.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.12/agent-runtime-v0.12.zip",
+      "status": 200,
+      "bytes": 1405096
+    },
+    {
+      "tag": "dataset-v0.11",
+      "name": "agent-runtime-v0.11-acceptance.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.11/agent-runtime-v0.11-acceptance.json",
+      "status": 200,
+      "bytes": 75437
+    },
+    {
+      "tag": "dataset-v0.11",
+      "name": "agent-runtime-v0.11-processing-supplement.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.11/agent-runtime-v0.11-processing-supplement.zip",
+      "status": 200,
+      "bytes": 23870
+    },
+    {
+      "tag": "dataset-v0.11",
+      "name": "agent-runtime-v0.11-source-commit-verification.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.11/agent-runtime-v0.11-source-commit-verification.json",
+      "status": 200,
+      "bytes": 29814
+    },
+    {
+      "tag": "dataset-v0.11",
+      "name": "agent-runtime-v0.11-tests-complete.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.11/agent-runtime-v0.11-tests-complete.json",
+      "status": 200,
+      "bytes": 65712
+    },
+    {
+      "tag": "dataset-v0.11",
+      "name": "agent-runtime-v0.11.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.11/agent-runtime-v0.11.zip",
+      "status": 200,
+      "bytes": 4400490
+    },
+    {
+      "tag": "dataset-v0.9",
+      "name": "agent-runtime-v0.9-acceptance.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.9/agent-runtime-v0.9-acceptance.json",
+      "status": 200,
+      "bytes": 42893
+    },
+    {
+      "tag": "dataset-v0.9",
+      "name": "agent-runtime-v0.9-processing-supplement.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.9/agent-runtime-v0.9-processing-supplement.zip",
+      "status": 200,
+      "bytes": 8485
+    },
+    {
+      "tag": "dataset-v0.9",
+      "name": "agent-runtime-v0.9-source-commit-verification.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.9/agent-runtime-v0.9-source-commit-verification.json",
+      "status": 200,
+      "bytes": 16364
+    },
+    {
+      "tag": "dataset-v0.9",
+      "name": "agent-runtime-v0.9-tests.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.9/agent-runtime-v0.9-tests.json",
+      "status": 200,
+      "bytes": 16535
+    },
+    {
+      "tag": "dataset-v0.9",
+      "name": "agent-runtime-v0.9.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.9/agent-runtime-v0.9.zip",
+      "status": 200,
+      "bytes": 2066311
+    },
+    {
+      "tag": "dataset-v0.8",
+      "name": "agent-runtime-v0.8-acceptance.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.8/agent-runtime-v0.8-acceptance.json",
+      "status": 200,
+      "bytes": 18354
+    },
+    {
+      "tag": "dataset-v0.8",
+      "name": "agent-runtime-v0.8-processing-supplement.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.8/agent-runtime-v0.8-processing-supplement.zip",
+      "status": 200,
+      "bytes": 13980
+    },
+    {
+      "tag": "dataset-v0.8",
+      "name": "agent-runtime-v0.8-source-commit-verification.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.8/agent-runtime-v0.8-source-commit-verification.json",
+      "status": 200,
+      "bytes": 3617
+    },
+    {
+      "tag": "dataset-v0.8",
+      "name": "agent-runtime-v0.8-tests.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.8/agent-runtime-v0.8-tests.json",
+      "status": 200,
+      "bytes": 14114
+    },
+    {
+      "tag": "dataset-v0.8",
+      "name": "agent-runtime-v0.8.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.8/agent-runtime-v0.8.zip",
+      "status": 200,
+      "bytes": 1397601
+    },
+    {
+      "tag": "dataset-v0.7",
+      "name": "agent-runtime-v0.7-acceptance.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.7/agent-runtime-v0.7-acceptance.json",
+      "status": 200,
+      "bytes": 4284
+    },
+    {
+      "tag": "dataset-v0.7",
+      "name": "agent-runtime-v0.7-processing-evidence.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.7/agent-runtime-v0.7-processing-evidence.zip",
+      "status": 200,
+      "bytes": 106271
+    },
+    {
+      "tag": "dataset-v0.7",
+      "name": "agent-runtime-v0.7-source-commit-verification.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.7/agent-runtime-v0.7-source-commit-verification.json",
+      "status": 200,
+      "bytes": 1913
+    },
+    {
+      "tag": "dataset-v0.7",
+      "name": "agent-runtime-v0.7-tests-delivered.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.7/agent-runtime-v0.7-tests-delivered.json",
+      "status": 200,
+      "bytes": 12535
+    },
+    {
+      "tag": "dataset-v0.7",
+      "name": "agent-runtime-v0.7.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.7/agent-runtime-v0.7.zip",
+      "status": 200,
+      "bytes": 1136165
+    },
+    {
+      "tag": "dataset-v0.6-curriculum",
+      "name": "runtime-curriculum-v0.6-acceptance.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.6-curriculum/runtime-curriculum-v0.6-acceptance.json",
+      "status": 200,
+      "bytes": 8677
+    },
+    {
+      "tag": "dataset-v0.6-curriculum",
+      "name": "runtime-curriculum-v0.6.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.6-curriculum/runtime-curriculum-v0.6.zip",
+      "status": 200,
+      "bytes": 488068
+    },
+    {
+      "tag": "dataset-v0.6-curriculum",
+      "name": "runtime-v0.6-processing.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.6-curriculum/runtime-v0.6-processing.zip",
+      "status": 200,
+      "bytes": 72439
+    },
+    {
+      "tag": "dataset-v0.6-curriculum",
+      "name": "runtime-v0.6-tests-final.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.6-curriculum/runtime-v0.6-tests-final.json",
+      "status": 200,
+      "bytes": 6010
+    },
+    {
+      "tag": "dataset-v0.6",
+      "name": "agent-runtime-v0.6-acceptance.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.6/agent-runtime-v0.6-acceptance.json",
+      "status": 200,
+      "bytes": 8046
+    },
+    {
+      "tag": "dataset-v0.6",
+      "name": "agent-runtime-v0.6-delivery-evidence.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.6/agent-runtime-v0.6-delivery-evidence.zip",
+      "status": 200,
+      "bytes": 25419
+    },
+    {
+      "tag": "dataset-v0.6",
+      "name": "agent-runtime-v0.6-tests.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.6/agent-runtime-v0.6-tests.json",
+      "status": 200,
+      "bytes": 4583
+    },
+    {
+      "tag": "dataset-v0.6",
+      "name": "agent-runtime-v0.6.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.6/agent-runtime-v0.6.zip",
+      "status": 200,
+      "bytes": 860494
+    },
+    {
+      "tag": "dataset-v0.5",
+      "name": "agent-runtime-v0.5-acceptance.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.5/agent-runtime-v0.5-acceptance.json",
+      "status": 200,
+      "bytes": 33491
+    },
+    {
+      "tag": "dataset-v0.5",
+      "name": "agent-runtime-v0.5-tests.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.5/agent-runtime-v0.5-tests.json",
+      "status": 200,
+      "bytes": 2487
+    },
+    {
+      "tag": "dataset-v0.5",
+      "name": "agent-runtime-v0.5.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.5/agent-runtime-v0.5.zip",
+      "status": 200,
+      "bytes": 558416
+    },
+    {
+      "tag": "dataset-v0.10",
+      "name": "agent-runtime-v0.10-acceptance.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.10/agent-runtime-v0.10-acceptance.json",
+      "status": 200,
+      "bytes": 40558
+    },
+    {
+      "tag": "dataset-v0.10",
+      "name": "agent-runtime-v0.10-processing-supplement.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.10/agent-runtime-v0.10-processing-supplement.zip",
+      "status": 200,
+      "bytes": 78161
+    },
+    {
+      "tag": "dataset-v0.10",
+      "name": "agent-runtime-v0.10-source-commit-verification.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.10/agent-runtime-v0.10-source-commit-verification.json",
+      "status": 200,
+      "bytes": 18236
+    },
+    {
+      "tag": "dataset-v0.10",
+      "name": "agent-runtime-v0.10-tests.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.10/agent-runtime-v0.10-tests.json",
+      "status": 200,
+      "bytes": 19008
+    },
+    {
+      "tag": "dataset-v0.10",
+      "name": "agent-runtime-v0.10.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.10/agent-runtime-v0.10.zip",
+      "status": 200,
+      "bytes": 1907396
+    },
+    {
+      "tag": "v0.3.0",
+      "name": "research-evidence-eval-20260924.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/v0.3.0/research-evidence-eval-20260924.zip",
+      "status": 200,
+      "bytes": 23593
+    },
+    {
+      "tag": "dataset-v0.4",
+      "name": "agent-runtime-v0.4-acceptance.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.4/agent-runtime-v0.4-acceptance.json",
+      "status": 200,
+      "bytes": 28237
+    },
+    {
+      "tag": "dataset-v0.4",
+      "name": "agent-runtime-v0.4-tests.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.4/agent-runtime-v0.4-tests.json",
+      "status": 200,
+      "bytes": 1201
+    },
+    {
+      "tag": "dataset-v0.4",
+      "name": "agent-runtime-v0.4.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.4/agent-runtime-v0.4.zip",
+      "status": 200,
+      "bytes": 42757013
+    },
+    {
+      "tag": "dataset-v0.2",
+      "name": "research-history-v0.2-acceptance.json",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.2/research-history-v0.2-acceptance.json",
+      "status": 200,
+      "bytes": 1687
+    },
+    {
+      "tag": "dataset-v0.2",
+      "name": "research-history-v0.2.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.2/research-history-v0.2.zip",
+      "status": 200,
+      "bytes": 1465636
+    },
+    {
+      "tag": "dataset-v0.1",
+      "name": "research-slices-v0.1.zip",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/dataset-v0.1/research-slices-v0.1.zip",
+      "status": 200,
+      "bytes": 255663
+    }
+  ]
+}

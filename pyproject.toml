@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "agent-trajectory-data"
 version = "0.3.0"
-description = "Private automated task, trajectory and evaluation data pipeline"
+description = "Public automated task, trajectory and evaluation data pipeline"
 requires-python = ">=3.10"
 dependencies = []
 

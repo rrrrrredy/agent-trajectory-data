@@ -63,4 +63,4 @@ GLM 全程使用 Claude Code 2.1.114 的 Coding Plan 通道，没有切换普通
 
 之后若做补充对照，优先检查一个最小动作格式例子能否解释完整示范减少的格式拒绝，再决定是否需要长轨迹。当前停止沿同一模板机械扩容；下一批材料必须增加现有四题没有覆盖的真实判断或操作难点，而不是只更改名字、数字、测试数量。小样本结果没有支持继续默认追加长示范，也没有检验实际训练收益。
 
-本轮只更新私有 agent-trajectory-data。research-toolkit 保持原提交 28524448eaf6534125a24dd1ea26e986016c8aea。
+本轮只更新公开 agent-trajectory-data。research-toolkit 保持原提交 28524448eaf6534125a24dd1ea26e986016c8aea。
