@@ -125,7 +125,7 @@ Imports remain `partial_review_metadata`, with unverified rights and no outcome 
 
 The research-evidence-v1 profile adds a visible source-selection contract: region and cutoff-date filters, authority then recency ordering, abstention for missing/conflicting top-ranked facts, exact winning-source citations, and annual price conversion rounded half-up. Environments use immutable response schedules. The generator source stays outside the exported customer task archives; the deterministic client protocol is distributed under the proprietary evaluation license.
 
-Native visible-session-v1 imports retain top-level visible messages and tool interactions. Observed sessions, artifact-derived tasks, synthetic tasks, model_cli runs, external_command runs and scripted controls remain distinct provenance classes. Imported sessions without frozen environments remain unassessed and training-ineligible.
+Native visible-session-v1 imports retain top-level visible messages and tool interactions. Observed sessions, artifact-derived tasks, tasks using constructed source material, model_cli runs, external_command runs and scripted controls remain distinct provenance classes. Imported sessions without frozen environments remain unassessed and training-ineligible.
 
 Training outputs use atd-visible-messages-v1 and atd-trajectory-preference-v1. These are vendor-neutral containers, not direct claims of compatibility with a trainer. Only the train split is eligible; task and model-output permissions are checked. Linked fresh attempts do not establish causal repair.
 
