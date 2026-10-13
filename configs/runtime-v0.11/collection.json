@@ -3,7 +3,7 @@
     "model_inherited_from_previous_approved_batch": "gpt-6-astra",
     "payload": "Public frozen task observations and histories only; private grader, future updates, original provenance and reference solutions remain outside policy context.",
     "scope": "Implement the approved v0.11 plan, validate four development pilot tasks, then collect remaining tasks once; freeze and privately release the verified dataset.",
-    "staging": "Collect the first eight authored-synthetic tasks only while explicit archived-excerpt processing authorization is pending. Four archived tasks remain deferred.",
+    "staging": "The release records the eight authored-material tasks and four archived-source tasks. For a new collection, use the declared task selection and source permissions.",
     "user_instruction": "推进"
   },
   "dataset_version": "0.11",

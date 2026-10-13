@@ -17,6 +17,16 @@ class AuthoredLineageTests(unittest.TestCase):
         self.item['parent'].update(archive_sha256=b.sha(archive.read_bytes()),index_sha256=b.sha(self.index),manifest_sha256=b.sha(self.manifest))
         repair.freeze_authored_parent(self.repo,self.root,self.item)
         self.save_material()
+    def test_current_child_matches_retained_original_parent_permissions(self):
+        # A parent generated from today's source would hide a simultaneous
+        # wording change to both parent and child permission records.
+        original=b.read(ROOT/'tests/fixtures/v0.14-parent-rights.json')
+        parent=copy.deepcopy(self.parent);parent['rights']=original['rights']
+        index=(json.dumps(parent,sort_keys=True)+'\n').encode()
+        manifest=json.dumps({'files':{'tasks.jsonl':b.sha(index)}}).encode()
+        self.item['parent'].update(index_sha256=b.sha(index),manifest_sha256=b.sha(manifest))
+        ip,mp=repair.parent_paths(self.item);b.write(self.root/ip,index);b.write(self.root/mp,manifest)
+        self.assertEqual(self.verify_material()['rights'],original['rights'])
     def save_material(self):
         path=self.root/'source'/(self.item['task_id']+'.json');path.write_bytes(b.encoded(self.material));self.item['sha256']=b.sha(path.read_bytes())
     def verify_material(self):return repair.authored_material(self.root,self.config,self.item)

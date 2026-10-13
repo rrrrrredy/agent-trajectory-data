@@ -261,7 +261,7 @@ def build(config_path,output):
             e.check(not e.equal(expected_outcome(original),expected_outcome(changed)),"ineffective_counterfactual:"+source["family_id"])
     put_lines(root/"tasks.jsonl",tasks);put_lines(root/"controls.jsonl",controls);put_lines(root/"training/scripted-trajectories.jsonl",training)
     put(root/"manifest.json",{"version":config["version"],"files":hashes(root),"task_count":len(tasks),"family_count":len(config["sources"]),
-        "control_count":len(controls),"source_family_overlap":0,"model_calls":0,"claim":"synthetic development tasks; shared mechanisms; no broad generalization claim"})
+        "control_count":len(controls),"source_family_overlap":0,"model_calls":0,"claim":"real development tasks using constructed materials; shared mechanisms; no broad generalization claim"})
     return verify(root)
 
 def verify(root):

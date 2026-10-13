@@ -1,4 +1,4 @@
-"""Versioned, executable synthetic research tasks with structured evidence grading.
+"""Versioned, executable research tasks using constructed materials with structured evidence grading.
 Only reset/step observations are exposed to a policy. Scenario and grade are evaluator-only.
 """
 from __future__ import annotations
