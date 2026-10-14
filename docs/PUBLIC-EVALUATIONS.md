@@ -9,6 +9,8 @@ Toolkit's dedicated seven cases, conversation packs, semantic cases, studies and
 
 ## What is inside the public archives
 
+The [October 13 Toolkit version comparison](https://github.com/rrrrrredy/research-toolkit/tree/main/evals/studies/2026-10-13-before-after), completed with repairs October 14, adds 20 complete reports on seven existing and three new task identities, 20 first blind reviews, and separately preserved revisions. Primary mean is 100 → 99.5, with three order-sensitive preferences; no stable overall gain was observed. Its 87 total model calls include five targeted repair/recheck calls. The new collection is public in Toolkit; it does not alter the historical release counts below or count reused tasks as additional independent questions.
+
 All existing and future user tasks, development tasks, tests and cases are real independent tasks; executed tests are real tests. Astra can review in a separate context, including with the same model as the author. Changed assignments, reviewer inputs and acceptance require targeted revalidation.
 
 Paths below are relative to the root of `agent-runtime-v0.4.zip` unless noted. Count record types separately; versions and repeated runs overlap.
