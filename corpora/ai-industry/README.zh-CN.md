@@ -6,6 +6,8 @@
 
 **[在线分类目录：281 份材料](BROWSE.zh-CN.md) · [五份重点整理](recovered/README.zh-CN.md) · [下载完整历史版本包](https://github.com/rrrrrredy/agent-trajectory-data/releases/download/ai-industry-corpus-v1/ai-industry-v1.zip)**
 
+[在 Toolkit 网站内阅读目录和文章](https://rrrrrredy.github.io/research-toolkit/materials/index.zh-CN.html)。这里的 Markdown 仍是内容来源，网站提供静态阅读副本。
+
 ## 使用
 
 在线可直接阅读分类目录和单篇材料；需要原始记录与其他历史版本时，下载 [ai-industry-v1.zip](https://github.com/rrrrrredy/agent-trajectory-data/releases/download/ai-industry-corpus-v1/ai-industry-v1.zip)，解压后打开 `README.zh-CN.md`，按标题选择材料，再打开对应的 `documents/` 文件；五份重点恢复材料从 `recovered/README.zh-CN.md` 进入。每份阅读稿标明所选记录、正文性质及其他历史版本的位置。[Release 页面](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/ai-industry-corpus-v1)另附 SHA-256 校验值和盘点结果。
@@ -44,3 +46,5 @@ python scripts/build_ai_industry_corpus.py --inputs .. --output artifacts/ai-ind
 Python 标准库即可。脚本使用 `git show` 读取固定提交，复用现有数据集的哈希和不可覆盖写入逻辑，不调用模型或原站服务。输出目录已存在时停止；选择新目录才能生成另一版本。原始材料遵循仓库现有约定保存在 `artifacts/`，不写入 Git 源码树。本轮已将原有材料包原样发布为独立的 `ai-industry-corpus-v1` 预发布资产，保留历史版本及未核实标记，不替换现有运行数据集的 latest。
 
 盘点结果见 [inventory-summary.json](inventory-summary.json)，深度恢复说明见 [recovery-notes.zh-CN.md](recovery-notes.zh-CN.md)。
+
+网站发布时，在 Node 22+ 环境中提供 marked@17.0.5，运行 node scripts/export_ai_industry_site.cjs ../research-toolkit/docs/materials，再运行 Toolkit 现有的 python scripts/build_site.py。导出器复用本目录、阅读稿和恢复说明，只生成静态 HTML 与页面元数据；Toolkit 安装和日常网站构建不增加 Node 或 marked 依赖。原 Markdown 和历史材料包保持不变。
