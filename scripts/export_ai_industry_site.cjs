@@ -35,6 +35,47 @@ const escape = text => text.replaceAll('&', '&amp;').replaceAll('<', '&lt;').rep
 const relative = (from, to) => path.posix.relative(path.posix.dirname(from), to);
 const descriptions = {};
 
+// Display only: keep source Markdown and undecodable captures unchanged.
+function renderBody(text, render, zh) {
+  const blocks = [];
+  const hold = (html, block = true) => {
+    const key = '<!--material-fragment-' + blocks.push(html) + '-->';
+    return block ? '\n\n' + key + '\n\n' : key;
+  };
+  const missing = (label, originalHtml) => hold('<div class="material-gap"><p>' + label + '</p><details class="material-fragment"><summary>' +
+    (zh ? '查看原始片段' : 'View original fragment') + '</summary>' + originalHtml + '</details></div>');
+  const tableMissing = zh ? '表格缺失：现有片段无法完整还原。' : 'Table unavailable: the retained fragment cannot be fully reconstructed.';
+  const diagramMissing = zh ? '图表缺失：材料只保留引用，未保存可显示的图表内容。' : 'Diagram unavailable: only a reference was retained, without displayable diagram content.';
+  // Code examples are not document formatting directives.
+  text = text.replace(/^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[ \t]*$/gm, raw => hold(render(raw)));
+  text = text.replace(/(?:未能展开此表；以下保留该处原始捕获内容。\s*)?<pre>[\s\S]*?<\/pre>/g, raw =>
+    raw.includes(':::table') ? missing(tableMissing, raw.replace(/^未能展开此表；以下保留该处原始捕获内容。\s*/, '<p>未能展开此表；以下保留该处原始捕获内容。</p>')) : hold(raw));
+  text = text.replace(/`[^`\n]+`/g, raw => hold(marked.parseInline(raw), false));
+  // These rows end in an explicitly truncated formatting token. Do not let GFM pad them with invented empty cells.
+  text = text.replace(/^[ \t]*\|[^\n]*(?::::(?:par|parag)\b|:\[font\]\{size=$)[^\n]*$/gm,
+    raw => missing(tableMissing, '<pre>' + escape(raw) + '</pre>'));
+  text = text.replace(/:::(drawio|attachment)\{[^}\n]*\}|:\[data2chart\]\{[^}\n]*\}/g, (raw, kind) =>
+    missing(kind === 'attachment' ? (zh ? '附件缺失：材料只保留附件引用。' : 'Attachment unavailable: only its reference was retained.') : diagramMissing,
+      '<pre>' + escape(raw) + '</pre>'));
+  // Private-source images have no corresponding image file in the material package.
+  text = text.replace(/!\[[^\]\n]*\]\(https:\/\/km\.sankuai\.com\/api\/file\/cdn\/[^)\n]*\)(?:\{[^}\n]*\})?/g,
+    raw => missing(zh ? '图片缺失：图片文件未随材料保存。' : 'Image unavailable: its file was not retained with the material.', '<pre>' + escape(raw) + '</pre>'));
+  text = text.replace(/:::heading\{[^}\n]*\blevel=([1-6])\b[^}\n]*\}[ \t]*\n([^\n]+)/g,
+    (_, level, title) => '#'.repeat(Number(level)) + ' ' + title);
+  text = text.replace(/:::title\{[^}\n]*\}[ \t]*\n([^\n]+)/g, (_, title) => '# ' + title);
+  text = text.replace(/:::collapse\{[^}\n]*\}(?:\s*点击展开内容\s*---)?|:::note\{[^}\n]*\}/g, '');
+  // Known inline wrappers affect presentation, not their enclosed wording.
+  text = text.replace(/:\[(?:color|quote|font)\]\{[^}\n]*\}|\[\/(?:color|quote|font)\]/g, '');
+  text = text.replace(/:\[link\]\{[^}\n]*href="([^"]+)"[^}\n]*\}([^\n]*?)\[\/link\]/g, (_, href, label) => '[' + label + '](' + href + ')');
+  text = text.replace(/:\[open_link\]\{[^}\n]*href="([^"]+)"[^}\n]*\}/g, (_, href) => '[' + (zh ? '原链接' : 'Original link') + '](' + href + ')');
+  text = text.replace(/:\[footnote\]\{[^}\n]*annotate="([^"]+)"[^}\n]*\}/g, (_, note) => '〔' + note + '〕');
+  text = text.replace(/:\[mention\]\{[^}\n]*name="([^"]+)"[^}\n]*\}/g, (_, name) => name);
+  let html = render(text);
+  // Complete HTML tables were already decoded by the corpus builder; retain their rows and spans.
+  html = html.replace(/(<t[dh](?:\s[^>]*)?>)([\s\S]*?)(<\/t[dh]>)/g, (_, open, cell, close) => open + marked.parseInline(cell) + close);
+  return html.replace(/<!--material-fragment-(\d+)-->/g, (_, index) => blocks[Number(index) - 1]);
+}
+
 for (const [source, target] of routes) {
   const markdown = fs.readFileSync(path.join(sourceRoot, source), 'utf8');
   const title = markdown.split('\n')[0].replace(/^#\s+/, '').trim();
@@ -61,7 +102,7 @@ for (const [source, target] of routes) {
       '<p class="material-status">' + escape(state + correction) + '</p>\n' +
       '<details class="material-notes"><summary>' + (zh ? '来源、历史版本与整理说明' : 'Sources, historical versions and notes') + '</summary>\n' +
       render(notes) + '<p>' + provenance + '</p></details>\n' +
-      '<section class="material-body">' + render(markdown.slice(start)) + '</section>\n';
+      '<section class="material-body">' + renderBody(markdown.slice(start), render, zh) + '</section>\n';
   } else {
     content = render(markdown);
   }
