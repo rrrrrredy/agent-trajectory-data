@@ -1,0 +1,353 @@
+# AI industry research materials: browse online
+
+[English](BROWSE.md) · [简体中文](BROWSE.zh-CN.md)
+
+**281 materials · 259 with stored text · 22 summary/metadata only · 5 selected recoveries.**
+
+Open a title to read it. Topic selections use existing tags; the complete list retains the original categories and separately lists uncategorized records. Source text, dates and unverified labels are retained; dates are not verified publication dates. Titles and source text remain in their original language.
+
+[Five selected recoveries](recovered/README.md) · [Download all historical versions](https://github.com/rrrrrredy/agent-trajectory-data/releases/download/ai-industry-corpus-v1/ai-industry-v1.zip) · [Sources and use](README.md)
+
+## Read by topic
+
+| Topic | Selected reading |
+| --- | --- |
+| <a id="topic-company"></a>Companies & strategy | [阿里AI全景解析](reading/D-2284936066.md) · [腾讯AI全景解析](recovered/D-2499046308.md) · [字节AI全景解析](recovered/D-2271174789.md) |
+| <a id="topic-models"></a>Models & techniques | [大模型推理加速方法研究01期](reading/D-2245111253.md) · [Kimi推理架构](reading/D-2353060535.md) · [基础模型评估报告](reading/D-2439236809.md) |
+| <a id="topic-agents"></a>Agents & applications | [AI Agent研究报告](reading/D-2495089975.md) · [AI搜索产品报告](reading/D-2384136287.md) · [OpenClaw龙虾系统专题1](reading/D-2750574471.md) |
+| <a id="topic-compute"></a>Costs & compute | [大模型成本研究](reading/D-2447425504.md) · [大模型降价潮分析](recovered/D-2279323149.md) · [十万卡集群解析](reading/D-2344925419.md) |
+| <a id="topic-industry"></a>Industry tracking | [AI行业月度观察202602](recovered/D-2748557520.md) · [2025 年 AI 行业年度观察](reading/D-2742244719.md) · [AI行业月度观察202604](reading/D-2760436637.md) |
+| <a id="topic-papers"></a>Paper reading | [Stable Diffusion 生态论文](reading/D-2294958503.md) · [DeepSeek-V3 技术报告](reading/D-408615557136385.md) · [Gemini 1.5 Technical Report](reading/D-408615503233025.md) |
+
+## Five selected recoveries
+
+| Material | Recovered content and remaining gaps |
+| --- | --- |
+| [大模型降价潮分析](recovered/D-2279323149.md) | Pricing units and input/output distinctions; 16 complete cells recovered. Amounts and effective dates remain unverified, not current quotes. |
+| [OpenAI近期信息报告-2024年初](recovered/D-2073114610.md) | Team and compensation text; 13 complete cells recovered. Unclear units and pending-verification labels remain; no salary values were invented. |
+| [字节AI全景解析](recovered/D-2271174789.md) | Historical products and strategy; 16 complete cells recovered. The unavailable timeline and truncated content remain missing. |
+| [腾讯AI全景解析](recovered/D-2499046308.md) | Historical text with a separate correction: the claim that Tencent introduced XGBoost is incorrect; the original authors were at the University of Washington. Other claims remain unverified. |
+| [AI行业月度观察202602](recovered/D-2748557520.md) | Recover the different weeks behind 4.12/5.16 trillion tokens and 14 complete cells. The figures and statistical scope remain unverified. |
+
+## Complete catalog
+
+[Topic reports（118）](#type-reports) · [Weekly reports（59）](#type-weekly) · [Monthly observations（13）](#type-monthly) · [Paper selections（55）](#type-papers) · [Not listed in the original categories（36）](#type-other)
+
+Category membership follows exact title matches in the original category file. Original topic tags are shown; distinct document IDs are retained even when titles match. Each reading page links to the original historical package.
+
+<a id="type-reports"></a>
+
+### Topic reports · 118
+
+| Material | Existing tags | Recorded date | Content |
+| --- | --- | --- | --- |
+| [OpenAI近期信息报告-2024年初](reading/D-2073114610.md) | OpenAI · 应用工程团队 · 大模型产品研发 · AI人才招聘 · ChatGPT | Not provided | Stored text · unverified |
+| [重点公司多模态在招人才分析](reading/D-2159694113.md) | 多模态 · 人才招聘分析 · 大模型 · 互联网大厂 · AI岗位需求 | date=2024-02-29 | Stored text · unverified |
+| [多模态系列研究——字节视频生成模型](reading/D-2167784495.md) | 视频生成 · 多模态大模型 · 扩散模型 · 视觉语言学习 · 字节跳动 | date=2024-01 | Stored text · unverified |
+| [多模态趋势下的架构选择](reading/D-2227377518.md) | 多模态学习 · Transformer架构 · CNN · 视觉语言预训练 · 大模型 | Not provided | Stored text · unverified |
+| [大模型推理加速方法研究01期](reading/D-2245111253.md) | LLM推理加速 · 注意力机制优化 · AI推理芯片 · 模型量化与压缩 · 投机性解码 | Not provided | Stored text · unverified |
+| [GPT-4o团队报告](reading/D-2262680539.md) | GPT-4o · OpenAI · 多模态AI · 团队研究 · 大模型开发 | Not provided | Stored text · unverified |
+| [模型价格对比](reading/D-2268031104.md) | 模型API定价 · 大语言模型 · 价格对比 · Token计费 · AI成本分析 | Not provided | Stored text · unverified |
+| [字节AI全景解析](reading/D-2271174789.md) | 字节跳动 · 大语言模型 · AI产品矩阵 · AI云服务 · 技术出海 | Not provided | Stored text · unverified |
+| [大模型降价潮分析](reading/D-2279323149.md) | 大模型价格战 · API定价 · 国内AI竞争 · 大语言模型 · 云计算 | date=2024-05 | Stored text · unverified |
+| [阿里AI全景解析](reading/D-2284936066.md) | 阿里巴巴 · 人工智能战略 · 大语言模型 · 阿里云 · AI生态投资 | Not provided | Stored text · unverified |
+| [大模型处理时序数据的挑战和方法](reading/D-2290737002.md) | 时间序列基础模型 · LLM时序预测 · 多模态时序分析 · ICML 2024 | Not provided | Stored text · unverified |
+| [Stable Diffusion 生态论文](reading/D-2294958503.md) | Stable Diffusion · 图像生成 · 扩散模型 · 模型微调 · 生成式AI | Not provided | Stored text · unverified |
+| [百度AI全景解析](reading/D-2304779979.md) | 百度AI · 大模型 · 自动驾驶 · 深度学习 · 云计算 · AI芯片 | Not provided | Stored text · unverified |
+| [360 AI 搜索思路](reading/D-2313295669.md) | AI搜索 · 大模型应用 · RAG检索 · AI SEO · 多模态搜索 | Not provided | Stored text · unverified |
+| [小红书AI全景解析](reading/D-2331981809.md) | 小红书AI · 大模型应用 · AI产品布局 · 内容推荐 · AI搜索 | Not provided | Stored text · unverified |
+| [字节AI产品经理访谈](reading/D-2332735640.md) | AI产品经理 · 职业转型 · 人工智能行业 · 产品管理 · 生成式AI | Not provided | Stored text · unverified |
+| [国内大模型公司出海产品](reading/D-2339817152.md) | 大模型出海 · AI应用产品 · To C商业化 · AI陪伴社交 · 海外市场布局 | date=2023-09 | Stored text · unverified |
+| [十万卡集群解析](reading/D-2344925419.md) | 大规模GPU集群 · LLM训练 · AI基础设施 · 并行训练 · 数据中心 | Not provided | Stored text · unverified |
+| [Kimi推理架构](reading/D-2353060535.md) | LLM推理架构 · 存算分离 · KVCache · 大规模集群 · Prefill-Decoding分离 | Not provided | Stored text · unverified |
+| [快手可灵团队信息](reading/D-2369500365.md) | 视频生成大模型 · 快手可灵 · AIGC · DiT架构 · 文生视频 | date=2024-07-05 | Stored text · unverified |
+| [OpenAI「草莓」项目信息](reading/D-2376989206.md) | OpenAI草莓项目 · 高级推理能力 · 强化学习 · AGI · 后训练方法 · 思维链 | Not provided | Stored text · unverified |
+| [AI搜索产品报告](reading/D-2384136287.md) | AI搜索 · RAG技术 · 大语言模型 · 产品分析 · 搜索引擎 | Not provided | Stored text · unverified |
+| [OpenAI及Apple近期信息（202407）](reading/D-2397485693.md) | GPT-5 · Apple Intelligence · 大语言模型 · 模型量化 · AI代理 | Not provided | Stored text · unverified |
+| [ICML 2024概述及技术趋势](reading/D-2404121394.md) | ICML 2024 · 大语言模型 · 机器学习 · 学术会议 · 技术趋势 | Not provided | Stored text · unverified |
+| [小模型浪潮](reading/D-2411625824.md) | 小模型 · 大语言模型 · 开源AI · 模型蒸馏 · 2024AI进展 | Not provided | Stored text · unverified |
+| [Machine Unlearning 技术解析](reading/D-2420700702.md) | Machine Unlearning · 数据隐私保护 · 大语言模型 · 联邦学习 · 被遗忘权利 | Not provided | Stored text · unverified |
+| [AI视频生成市场概况](reading/D-2434601422.md) | AI视频生成 · 生成式AI · 大模型 · 国产AI · 融资热潮 | date=2024-02-16 | Stored text · unverified |
+| [基础模型评估报告](reading/D-2439236809.md) | 基础模型评估 · AI治理 · AI安全 · 基准测试 · 红队评估 | Not provided | Stored text · unverified |
+| [大模型成本研究](reading/D-2447425504.md) | 大模型训练成本 · 推理优化 · Wright's Law · MoE架构 · AI算力经济 | Not provided | Stored text · unverified |
+| [OpenAI、Google及字节近期信息202408](reading/D-2450414741.md) | OpenAI · 大语言模型 · AI行业动态 · Google Gemini · 字节跳动 · AI安全 | date=2024-08 | Stored text · unverified |
+| [Zilliz和月之暗面的长文本与RAG实践](reading/D-2459917173.md) | 长文本 · RAG · 向量数据库 · 大模型推理 · KV Cache | Not provided | Stored text · unverified |
+| [谷歌、OpenAI&微软、xAI数据中心信息](reading/D-2468277809.md) | 数据中心 · AI基础设施 · GPU集群 · 液冷技术 · 能源消耗 | Not provided | Stored text · unverified |
+| [Scaling Law 收益递减的争议和技术探索](reading/D-2471778177.md) | Scaling Law · Test-Time Compute · LLM推理能力 · 强化学习后训练 · 计算资源优化 | Not provided | Stored text · unverified |
+| [小红书大模型技术应用案例](reading/D-2473842900.md) | 大模型推理优化 · 知识蒸馏 · 多模态生成 · 思维链推理 · 领域预训练 | Not provided | Stored text · unverified |
+| [OpenAI新产品及Self-Play RL最新信息202409](reading/D-2475778276.md) | Self-Play强化学习 · OpenAI Strawberry · 过程奖励模型PRM · LLM Scaling Law · 推理时计算 | Not provided | Stored text · unverified |
+| [Self-Play相关研究推荐](reading/D-2476601246.md) | Self-Play · 大语言模型对齐 · 强化学习 · 自我博弈微调 · 偏好优化 | Not provided | Stored text · unverified |
+| [OpenAI o1 补充信息](reading/D-2482718861.md) | OpenAI o1 · 推理时计算扩展 · 强化学习 · Self-Play · 思维链CoT · 大语言模型 | Not provided | Stored text · unverified |
+| [OpenAI o1最新信息20240919](reading/D-2487543299.md) | OpenAI o1 · 测试时计算扩展 · 强化学习 · 思维链CoT · 大模型推理 · AI基础设施 | Not provided | Stored text · unverified |
+| [AI Agent研究报告](reading/D-2495089975.md) | AI Agent · 大语言模型 · Multi-agent · 规划与推理 · Function Calling | Not provided | Stored text · unverified |
+| [Google AI全景解析](reading/D-2498948162.md) | Google AI · 大语言模型 · 多模态AI · 生成式AI · 计算机视觉 · 开源模型 | Not provided | Stored text · unverified |
+| [华为AI全景解析](reading/D-2499045999.md) | 华为AI战略 · 昇腾芯片 · 盘古大模型 · 全栈AI · 智能计算 | Not provided | Stored text · unverified |
+| [腾讯AI全景解析](reading/D-2499046308.md) | 腾讯AI · 大模型 · 计算机视觉 · 自然语言处理 · 游戏AI · 混元大模型 | Not provided | Stored text · unverified |
+| [Meta AI全景解析](reading/D-2499152352.md) | Meta AI · 大语言模型 · 开源AI · 负责任AI · AI产品 | Not provided | Stored text · unverified |
+| [亚马逊AI全景解析](reading/D-2499161881.md) | 亚马逊AWS · AI云服务 · 生成式AI · 机器学习平台 · AI产品体系 | Not provided | Stored text · unverified |
+| [市场趋势内容参考-大模型](reading/D-2514364094.md) | 大模型 · 行业趋势 · 多模态 · 强化学习 · AI基础设施 · 企业AI | Not provided | Stored text · unverified |
+| [近期大模型行业重要信息202410-1](reading/D-2518008758.md) | 大模型技术进展 · 多模态模型 · OpenAI动态 · 推理模型 · 视频生成 | date=2024-10 | Stored text · unverified |
+| [OpenAI信息更新20241015](reading/D-2524320782.md) | OpenAI模型进展 · 公司组织扩张 · AI内部项目 · 多智能体 · 竞争格局 | Not provided | Stored text · unverified |
+| [OpenAI 近期三篇重要研究](reading/D-2534131989.md) | AI基准测试 · 扩散生成模型 · AI公平性 · 大语言模型 · AGI | Not provided | Stored text · unverified |
+| [大模型领域近期热门论文202410-1](reading/D-2536812517.md) | 大语言模型 · 多模态 · 推理能力 · 扩散模型 · 终生学习 · 模型评估 | Not provided | Stored text · unverified |
+| [大模型领域近期热门论文202410-2](reading/D-2540607180.md) | 大语言模型 · 知识蒸馏 · 多模态模型 · 注意力机制 · RAG · AI对齐 | date=2410-16 | Stored text · unverified |
+| [近期大模型行业重要信息202410-2](reading/D-2547985032.md) | 大模型进展 · 多模态AI · AI推理优化 · AI Agent · 开源模型 | Not provided | Stored text · unverified |
+| [国内多模态大模型公司进展](reading/D-2549943726.md) | 多模态大模型 · AI视频生成 · 国内AI公司 · 产品商业化 · 大语言模型 | Not provided | Stored text · unverified |
+| [持续反向传播与新的训练范式研究](reading/D-2552314908.md) | 持续学习 · 反向传播 · 动态深度学习 · 可塑性丧失 · 灾难性遗忘 | Not provided | Stored text · unverified |
+| [大模型领域近期热门论文202411](reading/D-2558205323.md) | 大语言模型 · 知识蒸馏 · 强化学习 · 多智能体 · 推理能力 | Not provided | Stored text · unverified |
+| [近期大模型行业重要信息202411](reading/D-2560421605.md) | 大模型 · AI芯片 · 多模态 · 强化学习 · AI评测基准 | Not provided | Stored text · unverified |
+| [近期 AI Agent 趋势](reading/D-2562982683.md) | AI Agent · GUI自动化 · RPA智能化 · 多模态模型 · 计算机操控 · 大模型应用 | Not provided | Stored text · unverified |
+| [大模型领域近期热门论文202411-2](reading/D-2565305546.md) | 大语言模型 · 多模态AI · 视频生成 · 指令微调 · 综述论文 | Not provided | Stored text · unverified |
+| [豆包相关信息](reading/D-2565364707.md) | AI智能体平台 · 字节跳动 · 豆包 · 大模型应用 · 产品迭代 | date=2023-08 | Stored text · unverified |
+| [豆包相关论文](reading/D-2568556220.md) | 视频生成 · 多模态模型 · 世界模型 · 字节跳动 · 大语言模型 | Not provided | Stored text · unverified |
+| [近期大模型行业重要信息202411-2](reading/D-2573617039.md) | 大模型安全与对齐 · 强化学习RLHF · AI智能体架构 · 视频生成加速 · AI游戏生成 | Not provided | Stored text · unverified |
+| [LLM 架构范式探索与模型能力的提升](reading/D-2576018195.md) | LLM架构 · Transformer替代方案 · 推理时计算 · 强化学习 · 持续学习 | Not provided | Stored text · unverified |
+| [豆包大模型在招岗位信息](reading/D-2580113283.md) | 豆包大模型招聘 · 大模型算法研究员 · 强化学习RLHF · 语音视觉多模态 · 应届生博士招聘 | Not provided | Stored text · unverified |
+| [大模型领域近期热门论文202411-3](reading/D-2583309944.md) | 大模型 · 图像编辑 · 模型微调 · 幻觉检测 · 混合专家模型 | Not provided | Stored text · unverified |
+| [近期大模型行业重要信息202411-3](reading/D-2586890123.md) | 大模型 · Scaling Law · 视频生成 · 多模态理解 · AI瓶颈 | Not provided | Stored text · unverified |
+| [近期关于 Scaling Law 的业界探讨](reading/D-2589239558.md) | Scaling Law · 推理时间计算 · 大语言模型 · Post-Training · 思维链CoT | date=2024-11-11 | Stored text · unverified |
+| [大模型领域近期热门论文202411-4](reading/D-2591802522.md) | 大语言模型 · 偏好对齐 · 多智能体系统 · 扩散模型 · 模型安全 | Not provided | Stored text · unverified |
+| [数据标注公司Scale AI研究报告](reading/D-2594359116.md) | 数据标注 · Scale AI · AI基础设施 · RLHF · 大模型训练数据 | Not provided | Stored text · unverified |
+| [主流AI视频生成产品报告](reading/D-2595303185.md) | AI视频生成 · 文生视频 · 产品对比 · DiT架构 · 生成式AI | Not provided | Stored text · unverified |
+| [近期大模型行业重要信息202411-4](reading/D-2599862109.md) | 多模态大模型 · AI产品发布 · 大模型评测 · 移动端AI部署 · AI智能体 | Not provided | Stored text · unverified |
+| [LeCun AI 战略变化](reading/D-2602417889.md) | Yann LeCun · AI技术路线 · 能量模型 · 自监督学习 · 世界模型 · 目标驱动AI | Not provided | Stored text · unverified |
+| [大模型领域近期热门论文202411-5](reading/D-2604867103.md) | 大模型 · 视频生成 · 多模态推理 · 模型优化 · 移动端部署 · 幻觉检测 | Not provided | Stored text · unverified |
+| [主流视频生成模型的进展与挑战](reading/D-2607403887.md) | 视频生成 · 文生视频 · DiT架构 · 生成式AI · 多模态 | date=2405-10 | Stored text · unverified |
+| [近期大模型行业重要信息202412-1](reading/D-2612979687.md) | 大模型 · AI Agent · 视频生成 · 多模态 · RAG · 开源模型 | Not provided | Stored text · unverified |
+| [类 o1 推理模型技术思路](reading/D-2615972519.md) | 推理模型 · 强化学习 · 思维链 · 大语言模型 · Scaling Laws | Not provided | Stored text · unverified |
+| [「程序性知识」与大模型推理](reading/D-2618443676.md) | 大语言模型推理 · 程序性知识 · 预训练数据 · 可解释性 · Scaling Law | Not provided | Stored text · unverified |
+| [腾讯元宝概况](reading/D-2622118209.md) | AI助手 · 腾讯元宝 · 混元大模型 · AI搜索 · 大模型应用 | Not provided | Stored text · unverified |
+| [字节Coze/扣子概况](reading/D-2622291986.md) | AI智能体开发平台 · 字节跳动扣子Coze · Agent应用编排 · 无代码AI开发 · 大模型应用 | Not provided | Stored text · unverified |
+| [快手可灵概况](reading/D-2622331241.md) | 视频生成大模型 · 图像生成 · 语言大模型 · 生成式AI · 快手AI | date=2022-03 | Stored text · unverified |
+| [国内公司 AI 布局概况（汇总版）](reading/D-2622474070.md) | 国内AI竞争格局 · 大模型 · 多模态AI · AI应用落地 · 开源模型 | Not provided | Stored text · unverified |
+| [OpenAI、谷歌赛马，国内厂商加速探索应用场景](reading/D-2627027230.md) | 大模型进展 · AI基础设施 · 多模态AI · 世界模型 · AI商业化 | Not provided | Stored text · unverified |
+| [推理计算之外的两种技术思路](reading/D-2629828177.md) | 深度强化学习 · 持续学习 · 递归自我改进 · 流式学习 · 大语言模型 · AGI | date=2411-16 | Stored text · unverified |
+| [DeepMind 三篇研究瞩目；推理方向研究频出](reading/D-2632544648.md) | 大语言模型推理优化 · AI自主学习与AGI · 扩散模型图像视频编辑 · 多智能体系统 · 强化学习 | Not provided | Stored text · unverified |
+| [国内大模型厂商商业化专家访谈及投放策略](reading/D-2634968983.md) | 大模型商业化 · To B市场 · To C投放策略 · AI价格战 · 私有化部署 | Not provided | Stored text · unverified |
+| [OpenAI o1 团队 Noam Brown 访谈](reading/D-2635793218.md) | 测试时间计算 · 大语言模型推理 · AGI时间线 · OpenAI o1 · 强化学习 | Not provided | Stored text · unverified |
+| [AI 行业迎来“最卷”一周](reading/D-2641522160.md) | AI大模型 · 多模态 · AI智能体 · 量子计算 · 产品发布 | date=2411-02 | Stored text · unverified |
+| [「撞墙」争议下，关于 Scaling Law 的下一步探索](reading/D-2644289456.md) | Scaling Law · 大语言模型 · 推理时计算 · 世界模型 · 后训练 · 空间智能 | Not provided | Stored text · unverified |
+| [Scaling Law——o1 Pro 架构、推理基础设施、Orion 和 Claude 3.5 Opus“失败”](reading/D-2650564803.md) | Scaling Law · 推理时计算扩展 · 合成数据 · 大语言模型 · AI基础设施 · 强化学习 | Not provided | Stored text · unverified |
+| [豆包调研信息202412](reading/D-2652962252.md) | 豆包大模型 · 字节跳动AI战略 · AI应用竞争格局 · 扣子Coze · 即梦 · 大模型商业化 | Not provided | Stored text · unverified |
+| [海外厂商多点开花，国内加速应用探索](reading/D-2656546876.md) | 多模态大模型 · 文生视频 · 推理模型 · AI产品发布 · 大语言模型架构 | Not provided | Stored text · unverified |
+| [Gemini 2.0 如何映射 DeepMind 的研究路线](reading/D-2662594004.md) | Gemini 2.0 · AI Agent · 多模态系统 · AGI · 自主决策 | Not provided | Stored text · unverified |
+| [Meta 提出的无需 Tokenizer 新架构与多模态对齐、融合的新工作](reading/D-2665481551.md) | 字节级语言模型 · 多模态对齐与融合 · Transformer架构 · 大语言模型 · MoE架构 | Not provided | Stored text · unverified |
+| [OpenAI 重组公司，国内模型表现亮眼](reading/D-2671738045.md) | 大模型 · AI融资 · 国内AI · OpenAI重组 · 多模态 | Not provided | Stored text · unverified |
+| [近期「空间推理」领域进展](reading/D-2674448007.md) | 空间推理 · 多模态大语言模型 · 视觉空间智能 · 3D场景理解 · 具身智能 | Not provided | Stored text · unverified |
+| [Meta、苹果发力应用，腾讯、阿里、字节持续输出](reading/D-2683775240.md) | 大模型 · AI应用 · 人形机器人 · AI安全 · 大模型降价 | Not provided | Stored text · unverified |
+| [模型伪装与安全](reading/D-2687528881.md) | 大模型安全 · 对齐伪装 · 策略欺骗 · RLHF · AI对齐 | Not provided | Stored text · unverified |
+| [​海外市场进入蓄力期，谷歌、微软开始发力；国内企业多点开花，阿里系表现亮眼](reading/D-2698405037.md) | CES 2025科技发布 · 大模型开源与融资 · 谷歌DeepMind整合 · AI硬件与超算 · 国内AI动态 | Not provided | Stored text · unverified |
+| [谷歌最新 Agent 白皮书及往期 AI Agent 研究](reading/D-2700822328.md) | AI Agent · 大语言模型 · 谷歌白皮书 · 编排层 · 工具调用 | Not provided | Stored text · unverified |
+| [谷歌两篇新研究瞩目；推理和 agent 仍是重点](reading/D-2702209638.md) | AI智能体 · 大模型推理 · 3D生成 · 预训练优化 · 综述论文 | Not provided | Stored text · unverified |
+| [小红书大模型探索案例](reading/D-2702216092.md) | RLHF · 大模型训练 · 多模态大模型 · 训推一体化 · PPO · 分布式训练 | Not provided | Stored text · unverified |
+| [模型轮番上新：80% 聚焦底层能力，类 o1 推理模型开卷](reading/D-2702554771.md) | 大模型更新 · AI Agent · 推理模型 · 多模态 · 底层能力 · 行业趋势 | Not provided | Stored text · unverified |
+| [国内大模型市场近期信息](reading/D-2703517602.md) | 国内大模型 · MoE架构 · 多模态大模型 · 大模型竞争 · 视频生成 | Not provided | Stored text · unverified |
+| [大模型行业近期市场信息：腾讯、阿里、字节及DeepSeek](reading/D-2704140634.md) | 大模型 · AI算力 · 推理模型 · 云计算 · 国产芯片 | date=2024-05 | Stored text · unverified |
+| [xAI核心华人报告](reading/D-2704282122.md) | xAI · 华人AI人才 · 大语言模型 · Grok · AI创业团队 | date=2023-07 | Stored text · unverified |
+| [阿里多模态通义万相2.1调研](reading/D-2704576332.md) | 视频生成 · 多模态大模型 · 阿里云 · AIGC · 资本开支 | Not provided | Stored text · unverified |
+| [DeepSeek跟踪研究及外部访谈](reading/D-2705047087.md) | DeepSeek · 大模型开源 · AI基础设施 · MOE架构 · 推理优化 | Not provided | Stored text · unverified |
+| [Bot帮助文档](reading/D-2705059312.md) | AI知识问答Bot · 大模型 · 多模态 · AI行业动态 · 企业内部工具 | Not provided | Stored text · unverified |
+| [Anthropic产品官克里格的反思：行业洞察和独特数据是AI产生价值的关键、需要更简化、敏捷、重视一方产品](reading/D-2705252166.md) | AI产品策略 · Anthropic · 垂直SaaS · 模型差异化 · 第一方产品 · AI竞争格局 | date=2025-03-03 | Stored text · unverified |
+| [爱诗科技完成A5轮融资，PixVerse月活突破1500万并将在国内上线](reading/D-2705252837.md) | AI视频生成 · 创业融资 · PixVerse · 生成式AI · 商业化 | date=2023-04 | Stored text · unverified |
+| [从 R1 到 Sonnet 3.7，Reasoning Model 首轮竞赛中有哪些关键信号？](reading/D-2705290835.md) | Reasoning Model · AI编程 · 强化学习 · 混合推理 · 大语言模型竞争 | Not provided | Stored text · unverified |
+| [Agent 的未来是端到端强化学习微调——OpenAI Deep Research 团队分享](reading/D-2705635548.md) | 强化学习 · AI Agent · Deep Research · 推理模型 · 端到端训练 | Not provided | Stored text · unverified |
+| [周论文：微信 AI 、何恺明团队均贡献两篇佳作；模型层论文高产（高质量的一周）](reading/D-2706177182.md) | MoE模型优化 · 多模态大模型 · 强化学习 · AI安全 · 高效训练 · 论文综述 | Not provided | Stored text · unverified |
+| [字节 AI 再创业：独立组织、全链条的饱和出击](reading/D-2709699989.md) | 字节跳动 · 大语言模型 · AI竞争 · 豆包 · DeepSeek · 智能体 | Not provided | Stored text · unverified |
+| [字节 AI 产品调整：猫箱负责人离职，星绘并入豆包](reading/D-2709739716.md) | 字节跳动 · AI产品 · 大模型应用 · 产品调整 · 竞争格局 · Flow | Not provided | Stored text · unverified |
+| [字节 AI 研发调整继续：吴永辉直接管理范围扩大，AI Lab 3 个方向并入 Seed](reading/D-2709909393.md) | 字节跳动 · AI组织架构 · 大语言模型 · 人才竞争 · Seed | date=2025-04-23 | Stored text · unverified |
+| [字节更新信息](reading/D-2710189046.md) | 字节跳动 · AI算力投入 · 大模型 · 豆包 · 国产芯片 · CapEx | Not provided | Stored text · unverified |
+| [2025 年 AI 行业年度观察](reading/D-2742244719.md) | AI行业趋势 · 大模型商业化 · AI Agent · 推理能力 · 开源模型 · 多模态 | date=2025 | Stored text · unverified |
+| [1 月第 1-2 周：海外 Agent 吞噬软件栈，国内多模态抢跑硬件终端](reading/D-2743487464.md) | AI Agent · 多模态 · 算力竞争 · 开源生态 · 硬件终端 · 大模型 | date=2026-01 | Stored text · unverified |
+| [2 月第 2-3 周："OpenClaw 效应"裂变，超级应用收割流量红利](reading/D-2748138319.md) | AI智能体 · 大模型商业化 · 国产算力 · 超级应用 · 开源生态 | Not provided | Stored text · unverified |
+
+<a id="type-weekly"></a>
+
+### Weekly reports · 59
+
+| Material | Existing tags | Recorded date | Content |
+| --- | --- | --- | --- |
+| [大模型行业双周趋势：DeepSeek引发范式讨论，国内外厂商应用探索加速](reading/D-2703288693.md) | 大模型 · DeepSeek · 多模态AI · 强化学习 · MoE架构 · AI应用 | date=2025-01-20 | Stored text · unverified |
+| [大模型行业周趋势：OpenAI动作频繁，DeepSeek热度不减，阿里、字节、腾讯齐发力](reading/D-2703885080.md) | 大模型行业动态 · AI算力投资 · Agent生态 · 推理模型 · 国内外厂商竞争 | Not provided | Stored text · unverified |
+| [周趋势：国内企业积极调整，开源和推理成为更确定的共识](reading/D-2704259032.md) | 大模型 · 开源AI · 推理模型 · AI行业趋势 · DeepSeek · 国产AI | Not provided | Stored text · unverified |
+| [周趋势：海外模型、应用齐发，DeepSeek持续开源，阿里系表现亮眼](reading/D-2704973362.md) | AI模型发布 · 开源大模型 · AI行业周报 · 推理模型 · 大模型融资 | Not provided | Stored text · unverified |
+| [周趋势：Deep Research成为热门Agent方向，混合模型成新共识](reading/D-2705369390.md) | AI Agent · 融资动态 · 混合模型 · Deep Research · 商业化 · 大模型 | Not provided | Stored text · unverified |
+| [周趋势：开源、投流，各家模型与产品进一步集成](reading/D-2706037259.md) | AI行业动态 · OpenAI · AI Agent · 中美AI竞争 · 算力基础设施 · AI安全 | Not provided | Stored text · unverified |
+| [周趋势：阿里积极调整，谷歌、腾讯竞速；OpenAI、Anthropic多项更新；字节探索Manus类产品](reading/D-2707007075.md) | AI大模型 · AI Agent · 谷歌Gemini · 科技行业动态 · 云安全 · 国内AI竞争 | Not provided | Stored text · unverified |
+| [周趋势：开源、开放与新功能迭代，新一轮竞赛开始](reading/D-2707705947.md) | 大语言模型 · 多模态AI · AI行业动态 · 融资与商业化 · AI竞争格局 | Not provided | Stored text · unverified |
+| [周趋势：模型开源与产品更新进入密集发布期](reading/D-2708405748.md) | 大语言模型 · AI产品更新 · 模型开源 · 强化学习 · 谷歌DeepMind | Not provided | Stored text · unverified |
+| [周趋势：OpenAI将发布系列产品；Google Deep Research迎来重大更新；各公司积极拥抱MCP](reading/D-2708977771.md) | MCP协议 · Deep Research · Gemini更新 · AI Agent · Google AI | Not provided | Stored text · unverified |
+| [周趋势：7天近20款模型更新，OpenAI、Google、阿里、字节、快手等竞速](reading/D-2709870398.md) | 大模型竞争 · OpenAI · 推理模型 · AI编程工具 · AI Agent | Not provided | Stored text · unverified |
+| [周趋势：新模型接连发布，产品更新节奏加速](reading/D-2710426720.md) | AI模型发布 · OpenAI · 产品更新 · 开源模型 · 图像生成 · AI行业动态 | Not provided | Stored text · unverified |
+| [五月第三周：OpenAI、Google 领衔多项发布；混元加速迭代，字节、阿里更新多款模型和开源项目](reading/D-2712295481.md) | AI周报 · 大模型更新 · Google Gemini · OpenAI · 国产AI | date=2025-05 | Stored text · unverified |
+| [五月第四周：Google I/O多项更新，Claude 4系列发布，OpenAI Responses API支持MCP服务，字节、腾讯领跑国内市场](reading/D-2712739615.md) | AI行业周报 · 大语言模型 · AI Agent · Google I/O · 硬件AI | date=2025-05 | Stored text · unverified |
+| [五月第五周：Meta、小红书AI团队调整，可灵AI单季收入超1.5亿，AI Agent产品持续上新](reading/D-2713683682.md) | AI行业周报 · 大模型动态 · AI Agent · AI商业化 · 多模态模型 | Not provided | Stored text · unverified |
+| [六月第一周：Google、OpenAI 与 Anthropic 领衔，海内外创业公司产品批量更新，快手、阿里、小红书发布新模型](reading/D-2714374634.md) | AI模型更新 · AI Agent · 大模型开源 · 端侧AI · 国内外AI动态 | Not provided | Stored text · unverified |
+| [六月第二周：多模态、Agent探索加速，Meta、Google 组织调整，字节发布多款模型及产品更新](reading/D-2715039684.md) | 多模态AI · AI Agent · 大模型竞争 · 视频生成 · AI基础设施 | date=2025-06 | Stored text · unverified |
+| [六月第三周：多模态与 Agent 热持续，OpenAI、MiniMax与月之暗面等接连更新，字节、阿里、腾讯逐步强化产品与外部生态合作](reading/D-2715745822.md) | 多模态AI技术进展 · AI Agent应用落地 · 大模型开源生态 · 视频生成模型 · AI产品周报 | Not provided | Stored text · unverified |
+| [六月第四周：抖音、饿了么上线AI应用，快手、阿里、Google、腾讯等连发模型，Meta 接连挖角 OpenAI](reading/D-2716590617.md) | AI周报 · 多模态模型 · 端侧部署 · AI Agent · 大模型竞争 | Not provided | Stored text · unverified |
+| [七月第一周：Meta 成立「超级智能实验室」，Cursor 发布手机版，豆包上线「深入研究」功能，淘宝全新推荐大模型上线，微信支付 MCP 上线](reading/D-2718010969.md) | AI行业周报 · 大模型商业化 · AI产品动态 · 具身智能 · 开源模型 | Not provided | Stored text · unverified |
+| [七月第二周：模型发布小高峰，场景落地趋向聚焦](reading/D-2718479053.md) | AI行业周报 · 大模型开源 · AI可穿戴 · 人才流动 · 场景落地 · 企业级AI | Not provided | Stored text · unverified |
+| [七月第三周：“Agent 即产品”成为新共识](reading/D-2719116596.md) | AI Agent · 大模型 · 开源生态 · 算力竞赛 · AI周报 | Not provided | Stored text · unverified |
+| [七月第四周：阿里、字节竞速，Agent 热度不减，模型扎堆发布](reading/D-2720006043.md) | AI模型发布 · 开源大模型 · AI Agent · 数学推理 · AI硬件 · 算力基础设施 · AI商业化 · 人才竞争 · 多模态AI · AI周报 | Not provided | Stored text · unverified |
+| [七月第五周：模型集中发布，产品层改造进一步加深](reading/D-2720792800.md) | AI行业周报 · 大模型商业化 · 产品层改造 · 轻量模型 · AI安全对齐 | Not provided | Stored text · unverified |
+| [八月第一周：GPT-5 领衔模型扎堆发布，开源与闭源路径分化](reading/D-2721169234.md) | 大模型发布 · 开源与闭源 · 端侧轻量化 · 世界模型 · AI商业化 | date=2025-08 | Stored text · unverified |
+| [八月第二周：海外用定价权和安全叙事巩固领先，国内用垂直场景和开源速度抢落地](reading/D-2722691037.md) | 大模型竞争格局 · AI商业化 · 垂直场景落地 · 开源生态 · AI Agent · 视频生成 | Not provided | Stored text · unverified |
+| [八月第三周：海外垂直场景走向产品化，国内从工程效率到产业纵深](reading/D-2723501124.md) | AI行业周报 · 大模型商业化 · Agent技术 · 工程效率 · 垂直场景产品化 | Not provided | Stored text · unverified |
+| [八月第四周：开源和多模态的双线主题](reading/D-2724206028.md) | 多模态AI · 边缘AI与小模型 · 开源模型生态 · AI商业化路径 · 图像生成 | Not provided | Stored text · unverified |
+| [九月第一周：模型扎堆发布，Anthropic 断供](reading/D-2725131496.md) | AI行业周报 · 大模型 · 算力布局 · 供应链分裂 · 开源模型 | Not provided | Stored text · unverified |
+| [九月第二周：ChatGPT 宣布支持 MCP，Meta 开源小模型，通义、混元、文心模型连发，支付宝推出国内首个“AI 付”](reading/D-2725389700.md) | AI模型周报 · 小模型效率竞争 · AI支付闭环 · MCP协议 · 多模态大模型 | Not provided | Stored text · unverified |
+| [九月第三周：海外生态竞争进入“系统级”阶段， 国内应用层打“场景纵深”](reading/D-2727031842.md) | AI生态竞争 · 大模型应用 · AI代理支付 · 国产AI · 开源模型 | Not provided | Stored text · unverified |
+| [十月第 1-2 周：海外巨头加速“闭环生态”争夺，国内开源模型“降维打击”](reading/D-2728349420.md) | AI大模型 · 视频生成 · 开源模型 · 端侧AI · 算力生态 · AI Agent | date=2025-10 | Stored text · unverified |
+| [九月第四周：海外用千亿美金把 AI 做成“重工业”，中国用厘级价格把 AI 做成“快消品”](reading/D-2728433345.md) | AI基础设施 · 大模型价格战 · 多模态Agent · 开源生态 · AI芯片 · 中美AI竞争 | Not provided | Stored text · unverified |
+| [十月第 3 周：海外继续走向“系统级生态”，国内模型竞赛转向“场景落地”，AI 的“记忆”与“身份”成为核心战场](reading/D-2729971437.md) | AI系统级生态 · 场景落地 · AI记忆与身份 · 开源模型 · 去英伟达化 · AI芯片 | Not provided | Stored text · unverified |
+| [十月第 4 周：OpenAI 首个 AI 浏览器 ChatGPT Atlas 发布，快手发布 AI 编程产品矩阵](reading/D-2730365556.md) | AI浏览器 · 大模型产品化 · AI合规 · 端侧小模型 · AI编程 | Not provided | Stored text · unverified |
+| [11月第1周：海外从"模型能力展示"转向"全栈控制力争夺"，国内应用层渗透与底层"国产替代"同步加速](reading/D-2732405845.md) | AI算力军备竞赛 · 全栈垂直整合 · 国产替代 · AI编程工具 · 智能体协议 · 大模型商业化 | Not provided | Stored text · unverified |
+| [二月第一周：行业进入生态整合力、场景渗透力、地缘政治博弈力的三维较量](reading/D-2732746355.md) | AI推理模型 · 地缘政治博弈 · DeepSeek · MaaS云服务 · AI Agent · 开源模型 · AI安全治理 · 大模型评测 | Not provided | Stored text · unverified |
+| [一月第二周：海外把 AI 从 “语言” 升级到 “物理”，国内把大模型做成 “水电煤”](reading/D-2732898066.md) | 物理AI · 端侧小模型 · AI商业化 · 世界模型 · 视频生成 · 大模型周报 | Not provided | Stored text · unverified |
+| [一月第四周：海外巨头押注 AI Agent 与基础设施，国内厂商以开源和垂直场景落地双线突围](reading/D-2732967855.md) | AI Agent · 大模型开源 · AI基础设施 · 多模态推理 · 中美AI竞争 | Not provided | Stored text · unverified |
+| [一月第一周：海外从“暴力堆算力”转向“架构效率+合规求生”，国内从“卷模型参数”进入“卷场景闭环+产业捆绑”](reading/D-2733037455.md) | AI行业周报 · 大模型竞争 · AI芯片 · 场景落地 · 合规治理 · AI硬件 | Not provided | Stored text · unverified |
+| [二月第三周：海外 AGI 叙事战与开源博弈，国内人才军备化与开源争夺](reading/D-2733045029.md) | AGI叙事与开源博弈 · AI人才军备化 · DeepSeek生态冲击 · 开源商业化策略 · AI基础设施投资 | Not provided | Stored text · unverified |
+| [一月第五周：海外免费深度推理重构算力价值，国内开源视觉 Agent 颠覆场景门槛](reading/D-2733076695.md) | 多模态大模型 · 端侧AI推理 · 视觉Agent · 开源模型 · DeepSeek · 推理算力定价 | Not provided | Stored text · unverified |
+| [二月第二周：海外重构技术栈，国内聚合新生态](reading/D-2733134041.md) | DeepSeek生态扩张 · OpenAI战略布局 · 国产AI基础设施 · 开源模型竞争 · AI推理成本革命 | Not provided | Stored text · unverified |
+| [二月第四周：海外竞逐混合智能与算力霸权，国内掀起开源闪电战与入口暗战](reading/D-2733392691.md) | 大模型 · 混合推理 · 开源生态 · AI基础设施 · 算力竞争 · Agentic | Not provided | Stored text · unverified |
+| [一月第三周：海外闭源堆栈“锁生态”，国内拆场景卷成本](reading/D-2733543425.md) | AI生态竞争 · 端侧推理 · AI安全合规 · 大模型训练数据 · 国产AI | Not provided | Stored text · unverified |
+| [11月第2周：海外聚焦基础设施与模型范式革命，国内关注场景落地与硬件耦合](reading/D-2733670154.md) | 持续学习 · AI基础设施 · 软硬一体 · 多模态Agent · AI眼镜 · 小参数模型 | Not provided | Stored text · unverified |
+| [11月第3周：海外拼“超长上下文+深推理”刷榜，国内用“免费大模型+小程序”抢日活](reading/D-2734287097.md) | AI大模型 · Agent应用 · AI商业化 · 国产AI · AI交互 | Not provided | Stored text · unverified |
+| [11月第4周：海外卖“可靠性”，国内收“场景税”](reading/D-2735362231.md) | AI行业周报 · 大模型商业化 · AI竞争格局 · 国内外AI对比 · Agent工程化 | Not provided | Stored text · unverified |
+| [12月第1周：海外战略聚焦底层架构政变，国内野蛮生长反噬平台主权](reading/D-2738835038.md) | AI行业周报 · 大模型竞争格局 · AI智能体与平台博弈 · 芯片架构战略 · 国内AI应用生态 | date=2025-12 | Stored text · unverified |
+| [12月第2周：海外进入“智能体工程化与入口争夺”阶段，国内加速“AI能力在端侧与超级入口的产业化落地”](reading/D-2740036168.md) | 智能体工程化 · AI入口争夺 · 端侧AI · 多模态 · 开源生态 · AI安全 | date=2024-12 | Stored text · unverified |
+| [12 月第 4 周：海外通过 Agentic RL 拉动小模型高性价比 ，国内通过开源模型加速落地](reading/D-2741159148.md) | Agentic RL · 小模型高性价比 · AI Agent OS化 · 开源生态竞争 · AI商业化 · 浏览器AI入口 | date=2024-12 | Stored text · unverified |
+| [1 月第 3 周：海外推实时推理与多模态应用，国内全栈技术加速场景化应用](reading/D-2744754321.md) | AI行业周报 · 多模态大模型 · AI Agent · 算力竞争 · 国产AI · 视频生成 | date=2025-01 | Stored text · unverified |
+| [1 月第 4 周：海外重构交互范式，国内卷动亿级用户](reading/D-2745528249.md) | AI行业周报 · 海外AI动态 · 国内AI生态 · 交互范式变革 · AI安全治理 | Not provided | Stored text · unverified |
+| [1 月第 5 周：海外平台级 Agent 生态卡位，国产开源反攻与工业化落地并进](reading/D-2746288936.md) | AI Agent平台化 · 国产开源大模型 · 具身智能 · 多模态生成工业化 · 端侧AI商业化 | Not provided | Stored text · unverified |
+| [2 月第 1 周：海外编程智能体双雄对决，国内生态红包大战卡位入口](reading/D-2747059488.md) | AI编程智能体 · 大模型竞争 · 企业级AI平台 · 端侧模型 · AI生态卡位 | Not provided | Stored text · unverified |
+| [2 月第 4 周：海外Agent落地引爆权限悖论，国内垂直模型深耕产业Know-how](reading/D-2749045048.md) | AI Agent · 大模型竞争 · 开源模型 · 算力生态 · 版权合规 | Not provided | Stored text · unverified |
+| [3月第1周：海外长上下文模型深耕体验，国内OpenClaw"养虾"热与安全风险交织](reading/D-2749655780.md) | 长上下文模型 · AI Agent · OpenClaw安全风险 · 端侧模型 · AI商业化 | Not provided | Stored text · unverified |
+| [3月第2周：海外重估Agent协议标准，国内龙虾部署竞赛白热化](reading/D-2751195717.md) | AI Agent · 企业级AI部署 · 本地化部署 · AI安全 · 多模态 · 大模型 | date=2025-03 | Stored text · unverified |
+| [3月第3周：海外加速收敛编程工具与企业级服务战线，国内阵营饱和攻击Agent入口](reading/D-2752048955.md) | AI行业周报 · Agent生态 · 大模型 · 英伟达GTC · OpenClaw | Not provided | Stored text · unverified |
+
+<a id="type-monthly"></a>
+
+### Monthly observations · 13
+
+| Material | Existing tags | Recorded date | Content |
+| --- | --- | --- | --- |
+| [AI行业月度观察202503](reading/D-2707746702.md) | AI行业观察 · 大模型竞争 · AI Agent · 开源模型 · MCP协议 | date=2025-03 | Stored text · unverified |
+| [AI行业月度观察202505](reading/D-2713823035.md) | AI行业观察 · 大模型 · AI Agent · 开源生态 · 商业化 | Not provided | Stored text · unverified |
+| [AI行业月度观察202506](reading/D-2716784986.md) | AI模型基准评测 · AI Agent · 多模态技术 · 开源生态 · AI商业化 | Not provided | Stored text · unverified |
+| [AI行业月度观察202507](reading/D-2720644247.md) | AI大模型 · 行业趋势 · 商业化 · 开源模型 · AI智能体 | Not provided | Stored text · unverified |
+| [AI行业月度观察202508](reading/D-2724352803.md) | 大模型基准评测 · AI商业化 · 开源模型 · 场景落地 · 国内外AI竞争 | Not provided | Stored text · unverified |
+| [AI行业月度观察202509](reading/D-2728155415.md) | AI行业趋势 · 大语言模型 · AI Agent · 国产AI · 多模态模型 | Not provided | Stored text · unverified |
+| [AI行业月度观察202510](reading/D-2731571214.md) | AI行业趋势 · 大模型 · 产品竞争 · 开源低价 · 系统级卡位 | Not provided | Stored text · unverified |
+| [AI行业月度观察202501](reading/D-2732808468.md) | AI行业趋势 · 大语言模型 · AI Agent · 端侧AI · 模型开源 · 多模态 | Not provided | Stored text · unverified |
+| [AI行业月度观察202502](reading/D-2732875970.md) | 大模型竞争 · AI行业趋势 · 开源生态 · AI Agent · 国产AI | Not provided | Stored text · unverified |
+| [AI行业月度观察202511](reading/D-2735792255.md) | AI大模型评测排行 · 国产AI商业化 · AI硬件新形态 · 算力竞争格局 · AI应用场景化 | Not provided | Stored text · unverified |
+| [AI行业月度观察202512](reading/D-2741369286.md) | 大模型 · AI Agent · 视频生成 · 行业趋势 · 开源模型 · 企业智能体 | Not provided | Stored text · unverified |
+| [AI行业月度观察202601](reading/D-2745919284.md) | AI大模型技术突破 · Agent生态与协议标准化 · AI产品商业化 · 开源模型竞争 · 端侧AI工业化 | Not provided | Stored text · unverified |
+| [AI行业月度观察202602](reading/D-2748557520.md) | AI行业趋势 · 大语言模型 · Agentic AI · 中美AI竞争 · 多模态 · AI编程 | Not provided | Stored text · unverified |
+
+<a id="type-papers"></a>
+
+### Paper selections · 55
+
+| Material | Existing tags | Recorded date | Content |
+| --- | --- | --- | --- |
+| [论文推荐：NeurIPS 最佳论文、推理与多模态](reading/D-2621111964.md) | NeurIPS 2024 · 大语言模型 · 扩散模型 · 推理优化 · 多模态 · AI工作流 | Not provided | Stored text · unverified |
+| [论文推荐：视觉、推理领域热度不减，agent、小模型方向出现新范式](reading/D-2647215663.md) | AI Agent · 视频生成 · 推理范式 · 视觉模型 · 小模型架构 | Not provided | Stored text · unverified |
+| [周论文推荐：多模态佳作频出](reading/D-2659841859.md) | 多模态大模型 · 图像与视频生成 · 具身智能 · 大语言模型 · AI安全对齐 | date=2412-09 | Stored text · unverified |
+| [本周论文推荐](reading/D-2689650728.md) | 多模态大模型 · 视觉生成与理解 · LLM架构创新 · 扩散模型 · AI推理能力 | Not provided | Stored text · unverified |
+| [论文推荐：多模态、推理研究井喷，字节多方向发力](reading/D-2703427171.md) | 多模态 · 推理 · 模型架构 · 低精度训练 · 生成模型 · 字节跳动 | Not provided | Stored text · unverified |
+| [周论文推荐：字节、阿里多篇论文发布，DeepSeek、小红书两项研究亮眼](reading/D-2704065453.md) | 大语言模型 · 知识蒸馏 · 强化学习 · 推理优化 · 预训练框架 | Not provided | Stored text · unverified |
+| [本周多模态论文推荐：字节高产，小红书佳作频出；扩散模型迎来多项新研究](reading/D-2704514741.md) | 多模态学习 · 扩散模型 · 图像生成 · 视觉语言模型 · 自回归模型 | Not provided | Stored text · unverified |
+| [周论文推荐：模型层新方法推荐，快手4篇多模态研究亮眼](reading/D-2704919347.md) | 大语言模型 · 多模态研究 · 高效注意力机制 · 数据质量优化 · 优化器 · 模型训练 | Not provided | Stored text · unverified |
+| [周论文推荐：推理任务涌现新方法，字节、阿里“互卷”多模态](reading/D-2705556472.md) | 大语言模型 · MoE架构 · FP8训练 · 长文本评估 · 多模态 | Not provided | Stored text · unverified |
+| [周论文推荐：推理方向三篇佳作，字节、阿里、腾讯多模态高产](reading/D-2707501024.md) | 大语言模型 · 强化学习 · 长文本处理 · 多模态 · 推理优化 | Not provided | Stored text · unverified |
+| [周论文推荐：多领域多篇佳作，字节、腾讯持续高产](reading/D-2708439983.md) | 强化学习训练优化 · 多模态大语言模型 · 图表理解 · MoE架构 · ICLR 2025 | Not provided | Stored text · unverified |
+| [周论文推荐：推理层佳作频出，上海 AI Lab 多篇论文亮眼，字节发布 Seed-Thinking-v1.5 技术报告](reading/D-2709082817.md) | 大模型推理 · 强化微调 · 多模态大模型 · 论文推荐 · AI研究进展 | Not provided | Stored text · unverified |
+| [周论文推荐：字节多篇研究领衔，豆包公布文生图模型技术报告、Seaweed-7B、Pixel-SAIL、SimpleAR 相继发布](reading/D-2709924660.md) | 多模态生成 · 大语言模型 · 时间序列预测 · 模型量化 · 过程奖励模型 · 字节跳动 | Not provided | Stored text · unverified |
+| [周论文推荐：多模态、推理方向涌向多篇优质论文，字节、Google、Meta 持续高产出](reading/D-2710916122.md) | 多模态 · 推理 · 模型架构 · 强化学习 · 知识蒸馏 · 周论文推荐 | Not provided | Stored text · unverified |
+| [周论文推荐：“Transformer 八子”新论文，快手三篇佳作，MCP 系列论文推荐](reading/D-2712664212.md) | Test-Time Scaling · 多模态奖励模型 · 强化学习 · Transformer · MCP · 大语言模型 | Not provided | Stored text · unverified |
+| [周论文推荐：字节、微软、Google 多篇佳作，何恺明团队新研究，A2A 相关论文推荐](reading/D-2713058431.md) | 文档解析 · 世界模型 · 用户建模 · 混合推理 · 强化学习 · 多模态大模型 · AI论文推荐 · 自适应推理 | Not provided | Stored text · unverified |
+| [周论文推荐：阿里发布多篇研究，Sakana AI 连更，「模型自我进化」论文集中发布](reading/D-2714023502.md) | 大语言模型 · 模型架构 · 自我进化 · 推理优化 · 知识迁移 · 计算扩展 | Not provided | Stored text · unverified |
+| [周论文推荐：OpenAI 发布新作，快手、腾讯接连更新，字节 CVPR 2025 论文精选](reading/D-2714495389.md) | 大语言模型 · 强化学习推理 · CVPR 2025 · 长文本建模 · 指令跟随 · 论文推荐 | Not provided | Stored text · unverified |
+| [周论文推荐：何恺明新研究，英伟达、字节、腾讯等产出佳作，多模态论文频现](reading/D-2715414694.md) | 论文推荐 · 大语言模型 · 多模态 · LoRA适配 · 推理效率 | Not provided | Stored text · unverified |
+| [周论文推荐：快手、字节产出佳作，陈丹琦团队提出「KV 足迹」，MoE 相关论文推荐](reading/D-2716159290.md) | 大语言模型 · 强化学习 · 内存优化 · KV缓存 · MoE架构 | Not provided | Stored text · unverified |
+| [周论文推荐：清华强化学习新论文，小红书、字节新研究，Jeff Dean、朱军团队新作，Agent 领域多篇佳作](reading/D-2717035867.md) | 论文推荐 · 大语言模型 · 强化学习 · 模型压缩 · Agent | Not provided | Stored text · unverified |
+| [周论文推荐：Mamba 作者新作，ICML 2025杰出论文,字节 ICML 2025 精选论文](reading/D-2718325958.md) | Mamba · LLM安全对齐 · 语音增强 · 序列建模 · ICML2025 | Not provided | Stored text · unverified |
+| [周论文推荐：Bengio、周志华、邢波等人新研究，上海交大多篇佳作](reading/D-2718474783.md) | 大语言模型 · 强化学习 · 模型对齐 · 多模态 · 奖励模型 | Not provided | Stored text · unverified |
+| [周论文推荐：Google 推出新模型架构，字节、快手、京东新研究，Transformer 改进架构论文精选](reading/D-2719316673.md) | 模型架构 · Transformer改进 · LLM效率优化 · 代码安全 · 图神经网络 · 论文推荐 | Not provided | Stored text · unverified |
+| [周论文推荐：字节、南洋理工多篇研究，苹果推理新论文，World Models 论文精选](reading/D-2720841423.md) | 大语言模型 · 论文推荐 · 世界模型 · 模型微调 · 推理能力 | Not provided | Stored text · unverified |
+| [周论文推荐：Richard Sutton、周志华新作，小红书提出风格迁移加速算法，ACL 2025 论文精选](reading/D-2721126437.md) | 大语言模型 · 强化学习推理 · 论文推荐 · ACL 2025 · 风格迁移 · 机器人VLA | Not provided | Stored text · unverified |
+| [周论文推荐：腾讯、快手、华为等公司 Agent 新研究，强化学习多篇新论文，上海 AI Lab 持续高产](reading/D-2722114384.md) | Agent研究 · 强化学习 · 大语言模型 · 知识图谱 · 神经机器翻译 · 论文推荐 | Not provided | Stored text · unverified |
+| [周论文推荐：字节开源 Agent 专用模型和多模态框架，微软推出强化学习新算法，Adobe Research 提出图形设计评估系统，亚马逊提出动态混合专家（DyMoE）方法](reading/D-2722983029.md) | 大语言模型 · Agent智能体 · 混合专家架构 · 强化学习 · 多模态 · 模型对齐 | Not provided | Stored text · unverified |
+| [周论文推荐：港大和可灵提出场景一致的交互式视频世界模型，阿里强化学习新研究，字节跳动提出首个大规模动态未来预测基准，OPPO 推出通用智能体模型新范式](reading/D-2724182164.md) | 视频世界模型 · 语言模型压缩 · 强化学习 · 智能体模型 · 动态未来预测 | Not provided | Stored text · unverified |
+| [周论文推荐：Snap+CMU 提出可扩展分组推理，DeepMind、微软、苹果、Meta 等新研究，腾讯多智能体新论文](reading/D-2725071908.md) | AI论文周报 · 大语言模型 · 多智能体系统 · 模型推理优化 · GPU训练 | Not provided | Stored text · unverified |
+| [周论文推荐：OpenAI 新论文，Meta 超级智能实验室首篇论文，MIT 针对模型灾难性遗忘新研究，快手与清华联合提出灵犀系统](reading/D-2725157113.md) | 大语言模型 · AI论文推荐 · 模型幻觉 · 持续学习 · 多模态系统 | Not provided | Stored text · unverified |
+| [周论文推荐：快手可灵团队提出 MIDAS，清华、上海 AI Lab 等发布推理模型 RL 超全综述，小红书发布 SOTA 对话生成模型](reading/D-2726713068.md) | LLM推理优化 · 强化学习 · 视频生成 · 对话生成 · Scaling Law · 论文综述 | Not provided | Stored text · unverified |
+| [周论文推荐：LeCun 新作，Meta、字节、阿里多篇新研究，vivo AI Lab 提出新的后训练方法](reading/D-2727454131.md) | 大语言模型 · 后训练方法 · 自监督学习 · 强化学习 · 多模态Agent · 可解释性AI | Not provided | Stored text · unverified |
+| [周论文推荐：陈怡然团队新作，Meta 论文高产，强化学习多篇研究](reading/D-2727738797.md) | 扩散语言模型 · 持续学习 · 强化学习 · 模型推理加速 · 混合专家架构 | Not provided | Stored text · unverified |
+| [周论文推荐：OpenAI、Anthropic、DeepMind 联合发文，Meta 多篇研究，腾讯开源强化学习新算法](reading/D-2729057112.md) | 大模型后训练 · 强化学习 · LLM安全 · 论文推荐 · 模型对齐 | Not provided | Stored text · unverified |
+| [周论文推荐：DeepSeek 新模型，小米、北大联合发布 R3，苹果提出 DeepMMSearch-R1 模型，清华、智谱推出全新 Glyph 框架](reading/D-2729868029.md) | 大语言模型 · 强化学习 · 多模态AI · 模型推理优化 · MoE模型 | Not provided | Stored text · unverified |
+| [周论文推荐：清华、快手多篇研究，Meta 新论文教会 Transformer「显式思考」，字节放出自研万卡训练系统论文](reading/D-2730339927.md) | 大模型训练 · 论文推荐 · Transformer架构 · 模型微调 · 多模态AI | Not provided | Stored text · unverified |
+| [周论文推荐：LSTM 之父新作，苹果提出新型反向传播，快手、字节、阿里、小红书多篇研究](reading/D-2732410826.md) | 大语言模型 · 世界模型 · 移动端AI · MoE架构 · 反向传播优化 | Not provided | Stored text · unverified |
+| [周论文推荐：谢赛宁、李飞飞、LeCun 联手提出多模态 LLM 新范式，微信提出连续自回归模型 CALM，Google、清华多篇论文](reading/D-2733530730.md) | 大语言模型 · 知识蒸馏 · 持续学习 · 强化学习 · 多模态AI | Not provided | Stored text · unverified |
+| [周论文推荐：OpenAI 新论文拆解语言模型内部机制，LeCun 团队提出关于 JEPAs 的全面理论，何恺明新作让去噪模型回归基本功，字节、清华多篇研究](reading/D-2733972767.md) | 模型可解释性 · 自监督学习 · 模型融合 · 混合专家模型 · 大语言模型 | Not provided | Stored text · unverified |
+| [周论文推荐：Anthropic 新研究，通义实验室推出智能体系统 AgentEvolver，Meta 发布 SAM 3D，快手提出双向智能视频编码器 BRHVC](reading/D-2734448170.md) | AI安全对齐 · 大语言模型 · 智能体系统 · 3D视觉 · 视频编码 | Not provided | Stored text · unverified |
+| [周论文推荐：月之暗面公开强化学习训练加速方法，北大、字节多篇论文](reading/D-2737213538.md) | 大模型训练优化 · 强化学习 · LLM评估 · 论文推荐 · AI研究 | Not provided | Stored text · unverified |
+| [周论文推荐：GPT-5-Thinking 新训练方法，小红书搜索团队提出分段优势掩码策略，千问团队提出针对 LLM 的全新 RL 公式化方法，Agentic RAG 论文推荐](reading/D-2739661566.md) | 大语言模型 · 强化学习 · 检索增强生成 · 模型训练 · AI安全 | Not provided | Stored text · unverified |
+| [周论文推荐：微软发布首个测试时扩展大规模研究，Google 发布智能体 Scaling Law，CMU 强化学习新研究，快手提出熵比裁剪方法，何恺明团队新作](reading/D-2740942791.md) | 大语言模型 · 测试时扩展 · 强化学习 · 多语言推理 · Scaling Law | Not provided | Stored text · unverified |
+| [周论文推荐：Anthropic 新论文，混元/上交多智能体新研究，人大/腾讯提出关于大模型的「推理机制」新研究](reading/D-2741244234.md) | 大语言模型 · 模型安全 · 多智能体 · 推理机制 · 参数高效微调 · 事实性评估 | Not provided | Stored text · unverified |
+| [周论文推荐：OpenAI 提出新的监控性评估框架和指标，深度求索新论文，微信提出扩散语言模型，字节 Seed 推理新研究](reading/D-2743222611.md) | 大语言模型 · AI安全评估 · 扩散语言模型 · 推理增强 · 模型训练 | Not provided | Stored text · unverified |
+| [周论文推荐：Bengio 团队新研究，DeepSeek 更新两篇论文，英伟达提出 GDPO，快手提出全新「检索数据引擎」](reading/D-2744700125.md) | 大语言模型 · 强化学习 · 模型架构优化 · 检索增强生成 · 偏好对齐 | Not provided | Stored text · unverified |
+| [周论文推荐：Google 发现模型进化“真相”，字节推理新研究，微软多篇论文](reading/D-2744934122.md) | 大语言模型 · 论文推荐 · 模型推理优化 · KV Cache · 企业搜索 · LLM理论 | Not provided | Stored text · unverified |
+| [周论文推荐：可灵提出高效强化学习后训练扩散模型新范式，LeCun、谢赛宁团队新作，腾讯提出推理新框架，英伟达多篇论文](reading/D-2745794619.md) | 论文推荐 · 扩散模型强化学习 · 无归一化Transformer · 神经网络可重编程性 · 大模型推理 | Not provided | Stored text · unverified |
+| [周论文推荐：姚顺雨腾讯新作，苹果发布 PCG 语音生成技术，小红书世界模型新论文，何恺明团队新作](reading/D-2747384695.md) | 测试时强化学习 · 联邦学习 · 大语言模型 · 自动化科研 · 对话系统 | Not provided | Stored text · unverified |
+| [周论文推荐：快手世界模型新论文，CMU 开源首份 Agentic Search 日志数据，苹果发布端侧模型，华盛顿大学开源多模型协同框架 MoCo](reading/D-2748238590.md) | 大模型 · 端侧AI · 多模型协同 · 机器遗忘 · 世界模型 · Agentic Search | Not provided | Stored text · unverified |
+| [周论文推荐：DeepMind 智能体新研究，DeepSeek 新论文，Alec Radford 新作，小红书多篇研究](reading/D-2749437400.md) | LLM推理优化 · 智能体 · 模型安全对齐 · 世界模型 · 记忆增强生成 | Not provided | Stored text · unverified |
+| [周论文推荐：滑铁卢大学联合可灵提出UniVideo，蚂蚁联合清华发布强化学习训练框架，小红书开源图像编辑模型，字节世界模型新论文，李飞飞、LeCun新作](reading/D-2750388251.md) | 论文推荐 · 大语言模型 · 视频生成 · 强化学习 · 图像编辑 · 世界模型 | Not provided | Stored text · unverified |
+| [周论文推荐：OpenClaw安全性测试论文，Agent Memory系统性综述，月之暗面发布AttnRes论文，阿里多篇论文](reading/D-2751376919.md) | 大语言模型 · 模型架构创新 · AI安全 · Agent系统 · 强化学习 · 预训练优化 | Not provided | Stored text · unverified |
+| [周论文推荐：浙大开源高性能 LLM Steering 统一框架，字节提出 ReGFT 方法，阿里发布 PrismAudio 视频生成音频框架，中科院领衔世界模型最新综述](reading/D-2752477203.md) | LLM推理控制 · 规模定律 · 强化学习 · 参数高效微调 · 视频音频生成 · 世界模型 | Not provided | Stored text · unverified |
+
+<a id="type-other"></a>
+
+### Not listed in the original categories · 36
+
+| Material | Existing tags | Recorded date | Content |
+| --- | --- | --- | --- |
+| [近期业界Agent相关信息202411](reading/D-2579310848.md) | AI Agent · GUI自动化 · 大语言模型 · 商业化落地 · 多模态模型 | Not provided | Stored text · unverified |
+| [AI学习资源汇总](reading/D-2705296344.md) | AI学习资源 · 自媒体推荐 · AI媒体 · 技术学习 · 知识导航 | Not provided | Stored text · unverified |
+| [十月第5周：海外把 “内存 + 精度” 当新护城河，国内把 “降价 + 开源” 打成一套组合拳](reading/D-2730989466.md) | AI芯片 · 大模型开源 · 视频生成 · AI价值链 · AI硬件 · 英伟达 | Not provided | Stored text · unverified |
+| [12月第3周：海外 Agent 平台化加速，国内入口与工作流迅速落地](reading/D-2740327710.md) | Agent平台化 · 多模态AI · 企业AI工作流 · 开源模型 · AI治理 | Not provided | Stored text · unverified |
+| [OpenClaw龙虾系统专题1](reading/D-2750574471.md) | Agent Skill设计 · 工作流拆解 · 路由契约 · 提示词工程 · AI系统设计 | Not provided | Stored text · unverified |
+| [OpenClaw龙虾系统专题2](reading/D-2751464791.md) | OpenClaw · Agent设计 · Skill边界控制 · 误触发越权漂移 · 知识工作AI风险 | Not provided | Stored text · unverified |
+| [OpenClaw龙虾系统专题3](reading/D-2751464812.md) | Skill工程化 · 伪工程识别 · 生产环境稳定性 · AI系统设计 · 提示词工程 | Not provided | Stored text · unverified |
+| [OpenClaw龙虾系统专题4](reading/D-2751553539.md) | 路由契约 · Skill设计 · AI Agent边界控制 · 知识工作自动化 · 提示词工程 | Not provided | Stored text · unverified |
+| [OpenClaw龙虾系统专题5](reading/D-2752073271.md) | Skill开发流程 · workflow拆解 · 能力工程 · 异常处理与评测 · OpenClaw实践 | Not provided | Stored text · unverified |
+| [OpenClaw龙虾系统专题6](reading/D-2752212952.md) | Skill设计方法论 · 接口思维 · AI工作流 · 提示词工程 · 知识工作效率 | Not provided | Stored text · unverified |
+| [OpenClaw龙虾系统专题7](reading/D-2752292150.md) | Agent系统设计 · Skill路由与治理 · 多Skill歧义问题 · 误触发与越权防控 · 能力边界抽象 | Not provided | Stored text · unverified |
+| [OpenClaw龙虾系统专题8](reading/D-2752575346.md) | Agent架构设计 · 多Agent协作 · Skills能力组织 · 上下文管理 · LLM系统工程 | Not provided | Stored text · unverified |
+| [AI行业月度观察202603](reading/D-2753718656.md) | 月度观察 · 行业趋势 · 2026-03 · 调用量 · 营收 | date=2026-04 | Summary/metadata · unverified |
+| [3月第4周：海外OpenClaw确立基础设施地位，国内龙虾生态卡位超级入口](reading/D-2753843131.md) | OpenClaw生态 · AI Agent · 微信超级入口 · RISC-V · AI商业化 · 开源竞争 | date=2026-03 | Stored text · unverified |
+| [4月第1周：海外平台控制权重构加速，国内 "AI即服务" 全场景闭环成型](reading/D-2754389349.md) | 周报 · 行业趋势 · 2026-04 · 平台化 · AI服务 | date=2026-04 | Summary/metadata · unverified |
+| [周论文推荐：多模态多篇论文，DeepMind新研究，北大清华联合多校提出LLM评估框架](reading/D-2754701360.md) | 论文推荐 · KV Cache · 多模态 · 评估框架 · 2026-04 | date=2026-04 | Summary/metadata · unverified |
+| [周论文推荐：阿里、Meta推理新研究，上海交大提出多智能体框架，快手广告推荐系统论文，DeepMind提出THFM模型](reading/D-2755515079.md) | 论文推荐 · 推理优化 · 多智能体 · 广告推荐 · THFM · 2026-04 | date=2026-04 | Summary/metadata · unverified |
+| [4月第2周：海外Agent平台化浪潮加速，中国模型调用量连续五周全球称冠](reading/D-2756722012.md) | 周报 · 行业趋势 · 2026-04 · Agent · 调用量 | date=2026-04 | Summary/metadata · unverified |
+| [4月第3周：海外加速争夺桌面与工作流入口，国内全面推进 Agent 与多模态落地](reading/D-2757129046.md) | 周报 · 行业趋势 · 2026-04 · 桌面AI · Agent落地 | date=2026-04 | Summary/metadata · unverified |
+| [周论文推荐：小红书、港科大等提出全新通用强化学习框架，智源开源 AI 智能体安全框架，北大、微信新研究，NUS/复旦/清华等联合推出大模型 Latent Space 综述](reading/D-2757411006.md) | 论文推荐 · 强化学习 · Agent安全 · Latent Space · 2026-04 | date=2026-04 | Summary/metadata · unverified |
+| [周论文推荐：剑桥发布长期个性化记忆基准ATM-Bench，清华提出ControlAudio，Google提出全新P*拓扑结构分析方法，上交大论文梳理Agent记忆/技能/协议/Harness工程四大支柱](reading/D-2758386547.md) | 论文推荐 · Agent记忆 · ATM-Bench · ControlAudio · MCP · Agent工程 · 2026-04 | date=2026-04 | Summary/metadata · unverified |
+| [4月第4周：海外模型竞争转向算力与工作流，国内应用生态从工具走向交易](reading/D-2759303657.md) | 周报 · 行业趋势 · 2026-04 · 算力竞争 · AI交易生态 | date=2026-04 | Summary/metadata · unverified |
+| [周论文推荐：李飞飞团队最新研究揭示多模态AI致命缺陷，DeepMind推出 Vision Banana，Jeff Dean新作，苹果新论文探讨大模型运作的最底层逻辑](reading/D-2759826337.md) | 论文推荐 · 多模态AI · DeepMind · 苹果 · 大模型原理 · 2026-04 | date=2026-04 | Summary/metadata · unverified |
+| [AI行业月度观察202604](reading/D-2760436637.md) | 月度观察 · AI行业趋势 | date=2026-05-06 | Summary/metadata · unverified |
+| [周论文推荐：苹果LaDiR/字节Agent-World/视觉世界模型/MIT数学基准](reading/D-2761127613.md) | AI框架 · Agent系统 · 视觉世界模型 · 多模态推理 | date=2026-05-13 | Summary/metadata · unverified |
+| [5月第1周：OpenAI拓宽Codex边界，国内Agent平台持续竞速](reading/D-2761760541.md) | Codex生态 · Agent平台 · 跨端协同 | date=2026-05-11 | Summary/metadata · unverified |
+| [5月第2周：模型能力转战组织渗透，Token套餐基础设施化](reading/D-2762763165.md) | 组织渗透 · Token经济 · AI基础设施化 | date=2026-05-18 | Summary/metadata · unverified |
+| [周论文推荐：清华On-Policy蒸馏/快手搜索框架/何恺明/Agent编程Token消耗](reading/D-2763119013.md) | 知识蒸馏 · 搜索框架 · Agent编程成本 | date=2026-05-20 | Summary/metadata · unverified |
+| [5月第3周：Google I/O百项发布旗舰缺席，腾讯阿里全栈AI生态](reading/D-2764494169.md) | Agent平台 · AI生态 · Token经济 · Google I/O | date=2026-05-25 | Summary/metadata · unverified |
+| [周论文推荐：谢赛宁RAEv2/Bengio递归推理/AlphaProof Nexus/Phone Harness](reading/D-2764733743.md) | 表征学习 · 扩散模型 · 递归推理 · 形式化证明 | date=2026-05-27 | Summary/metadata · unverified |
+| [Genius Makers: AI先驱者传记（Cade Metz著）](reading/D-408615494221825.md) | 人工智能历史 · 深度学习 · 科技人物传记 · AI伦理 · 科技公司竞争 · 机器学习 · 硅谷文化 · 科普读物 | Not provided | Summary/metadata · unverified |
+| [Gemini 1.5 Technical Report](reading/D-408615503233025.md) | 大语言模型 · 多模态AI · 长上下文理解 · 混合专家模型 · AI安全评估 | Not provided | Summary/metadata · unverified |
+| [DeepSeek-V3 技术报告](reading/D-408615557136385.md) | 大语言模型 · 混合专家模型 · MoE · 预训练 · FP8训练 · 多token预测 · 负载均衡 · 开源模型 · DeepSeek | Not provided | Summary/metadata · unverified |
+| [GPT-4 Technical Report](reading/D-408615561330689.md) | 大语言模型 · AI安全与风险 · 多模态模型 · GPT-4技术报告 · AI伦理与对齐 | Not provided | Summary/metadata · unverified |
+| [大语言模型综述（中文版）](reading/D-408615563427841.md) | 大语言模型 · LLM综述 · Transformer · 预训练 · 指令微调 · RLHF · 提示工程 · 涌现能力 · Scaling Law · 自然语言处理 · 中文NLP · 模型对齐 | Not provided | Summary/metadata · unverified |
+| [DeepSeek-R1 及类强推理模型开发解读](reading/D-408615731183617.md) | 大语言模型 · 强化学习 · 推理增强 | Not provided | Stored text · unverified |
+
