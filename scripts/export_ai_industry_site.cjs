@@ -37,6 +37,7 @@ const descriptions = {};
 
 // Display only: keep source Markdown and undecodable captures unchanged.
 function renderBody(text, render, zh) {
+  text = text.replace(/\r\n?/g, '\n');
   const blocks = [];
   const hold = (html, block = true) => {
     const key = '<!--material-fragment-' + blocks.push(html) + '-->';
