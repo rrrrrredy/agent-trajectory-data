@@ -6,6 +6,8 @@ Optional historical research material about AI companies, products, models and i
 
 **[Browse all 281 materials online](BROWSE.md) · [Five selected recoveries](recovered/README.md) · [Download all historical versions](https://github.com/rrrrrredy/agent-trajectory-data/releases/download/ai-industry-corpus-v1/ai-industry-v1.zip)**
 
+[Read the catalog and articles on the Toolkit website](https://rrrrrredy.github.io/research-toolkit/materials/). The Markdown here remains the source; the website is a static reading copy.
+
 The delivery includes readable documents, a JSONL catalog, normalized version metadata, unchanged original records, per-occurrence lineage, title-keyed excerpts, derived graph records, and an archive of every tracked input file. Differing versions remain separate; a reading copy chooses one existing record rather than assembling an article from unmatched versions. Generated summaries and metadata-generated text are explicitly separate from stored captures. Original date fields do not establish publication dates. Cleanup grants no additional redistribution or training rights.
 
 `existing-source-map.jsonl` associates the material with Toolkit's frozen source pack, whose original files are retained unchanged. Materials, task-specific source packs, evaluation tasks and actual runs remain different units. This delivery adds no evaluation tasks, model runs or training demonstrations and does not change historical results. Future tasks can explicitly select the recovered material as a new input version.
@@ -19,3 +21,5 @@ python scripts/build_ai_industry_corpus.py --inputs .. --output artifacts/ai-ind
 ```
 
 The standard-library-only script reuses existing immutable dataset writers and reads pinned Git objects without contacting original sites or models. Existing output directories are never overwritten. Raw deliverables follow the repository's existing `artifacts/` convention, outside the tracked source tree. The unchanged package is published as the separate `ai-industry-corpus-v1` prerelease, retaining historical versions and unverified labels without replacing the runtime dataset's latest release. This optional corpus adds neither a default Toolkit dependency nor cross-project retrieval.
+
+For website publication only, use Node 22+ with `marked@17.0.5` available, then run `node scripts/export_ai_industry_site.cjs ../research-toolkit/docs/materials` and Toolkit's existing `python scripts/build_site.py`. The exporter reuses this catalog, reading copies and recovery notes; it emits static HTML and page metadata. Toolkit installation and normal site builds do not require Node or marked. Source Markdown and the historical package are not rewritten.
