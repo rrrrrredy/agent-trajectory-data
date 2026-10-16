@@ -1,0 +1,844 @@
+[
+  {
+    "bytes": 336,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": ".gitignore",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "530f090ade1f752922f3092f91679bdaa126a335245bbd602b1f3e84794cdc05"
+  },
+  {
+    "bytes": 2258,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "README.md",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "f2ce6c8f196665743c16c416f7fc480b6bf3bbb9ba5592ec2d9caa1f06db605a"
+  },
+  {
+    "bytes": 68,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "aiknowledge/__init__.py",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "5794bf2e56dc75826a47384fcced93b54172f9cbdec8522b17bb96b569c5d183"
+  },
+  {
+    "bytes": 4598,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "aiknowledge/answerer.py",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "ed2686b677c302d4aa5f70b2f9e24520b1dd9013f687ee7becb5c1723cd97875"
+  },
+  {
+    "bytes": 8032,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "aiknowledge/cli.py",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "881ad054443063c8fd13b97fae599182cf9997f76b0d5f7c0f66b32bf8a8bc49"
+  },
+  {
+    "bytes": 5458,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "aiknowledge/retriever.py",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "4d42595212f72dd0abf77d8989eb46de12ea6bb81f5e41cf41cb52cdddeb69b0"
+  },
+  {
+    "bytes": 175795,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0010.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "7665a259ddc1ea13d0c73f87405d986e7f7ac8af3aa5a504bae99eb16590d85a",
+    "top_level_count": 10,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 373363,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0020.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "2cab29f733c104bdd2a022627d84f6212f6d0abdc1a61539a5dd215cb048bc73",
+    "top_level_count": 20,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 597339,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0030.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "5b53f5eedbfb5db7d86d6092d5247061246eb273d301bbf2990b998bfc2ceb85",
+    "top_level_count": 30,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 803623,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0040.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "38f648de2deb9338f73f44405841f4e0e835e58c2ad39a178aa97c28520d5623",
+    "top_level_count": 40,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 1032670,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0050.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "eb3151f6d29be83389987b00b144e6fe6a7b43c12f4a0a269f4b5dd72f58f5e1",
+    "top_level_count": 50,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 1242417,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0060.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "5e657b064adfd99c7b72748d8465f9aac03a31fd0c46f32531724e67c2eed264",
+    "top_level_count": 60,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 1452017,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0070.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "b22e5d329f0b7c4eab3843090da1ff4db6003e3dd3dfd4c7f134a6d6a5053eb0",
+    "top_level_count": 70,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 1652631,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0080.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "1f44964d56640fb9f5e6912edfb2237f745340faca8a2b9f14989b2347594fdd",
+    "top_level_count": 80,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 1862930,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0090.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "dc0f90e8aff647e36c091acb21af86dede07999712780e008805240239205132",
+    "top_level_count": 90,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 2075826,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0100.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "2cb5cf3792ca4239599e783633f12a24208c3684ba2f4ed05eab436a2c7c58ab",
+    "top_level_count": 100,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 2241852,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0110.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "082df0d7c2ff69ed90170c46fc0570111ba5a977898cd61e0c7999ff25360308",
+    "top_level_count": 110,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 2454981,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0120.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "0933279d1c968cc78c8a93e14bcb11e14032d5464d8956d415b585e27c2c3cc6",
+    "top_level_count": 120,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 2634568,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0130.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "f95f2dd847ce8196975acf8ef0e061ef800c956fe47ac28d4c5dc39bfcdb1b6e",
+    "top_level_count": 130,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 2850234,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0140.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "ba21b531fb387e7633c35cb7d1da5053c8ec09b9cdc35d4b6364fc34f8d1a650",
+    "top_level_count": 140,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 3067294,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0150.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "5226d1fd69191085b8c52129976b62a3e29fcd59a1fee73e151795c0a226b38d",
+    "top_level_count": 150,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 3278633,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0160.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "7e789b1a5d5067e3fbb5d133c8814868bc003aad4894724897a3e58672dccbdd",
+    "top_level_count": 160,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 3510626,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0170.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "9542e7a6bb6db1f638e67455ef05128fc61f9aede4564aac342b727e7464e72f",
+    "top_level_count": 170,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 3722608,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0180.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "bdeedaf8237563f00399866717c783fc482224605c2f05316270252c85adb3a5",
+    "top_level_count": 180,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 3923380,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0190.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "09d8092dd3f0ead125d7cd6aa6786ef408760df216648cbf5c56bef3290aa01d",
+    "top_level_count": 190,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 4130448,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0200.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "6f0be1c3f423c7bdf19eb79fe9cf54deb8d4e36ed844611d4404c7d30d64f358",
+    "top_level_count": 200,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 4218385,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0210.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "bff19e76153e746da9b027ae5295f20364dc89036d8004e83bbe1a7c8bbe7939",
+    "top_level_count": 210,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 4247540,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0220.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "e99509ec3de6e6b9019a17750511189b6a205d79d3cb30cd2dcd89f4bf1adf89",
+    "top_level_count": 220,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 4273997,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0230.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "1781da1609e5539367e422bed377cedf5fa2e324fe2c3df7f034791209e315c1",
+    "top_level_count": 230,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 4301876,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0240.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "fac586a7342134a7ef4a54ea263796e8f3d937a3bd8d9431571f63185fc6a47a",
+    "top_level_count": 240,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 4333802,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0250.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "f6da7d089ed254e63d20767f3f09155b208f3a769746cb9edb5e4fcf03ae981b",
+    "top_level_count": 250,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 4365376,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/checkpoints/ckpt_0260.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "1157bf3f79fe7bf0dad2a2125806c0da68a6ee69d206a4b61d0b5fbee0766be1",
+    "top_level_count": 260,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 642717,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/edges.json",
+    "repository": "aiknowledge-cli",
+    "role": "derived_edges",
+    "sha256": "f6ca4be4460ff8527bedb6219b47ae22de69331620be6997ccd7b4636134f66d",
+    "top_level_count": 6266,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 806064,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/kb_with_dates.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "dad9d9b2507c67e1208b949419c649e0a84fc96f63ca3b892f7a1a3a49099632",
+    "top_level_count": 263,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 5462181,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/knowledge_base.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "59d928ab9d3d84cad6f247f63f0ecdbbc597e44f1bc0c2f28e540ad5ad767ea7",
+    "top_level_count": 281,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 2318337,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/knowledge_base_checkpoint_100.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "2d5a86be5da9ab978bcde24a27a9f47b9f72c2e77eea8dd504992e6638257178",
+    "top_level_count": 263,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 2619174,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/knowledge_base_checkpoint_200.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "6abf7669be7af02311f5a71d06b69df92b1996c5b0b7aea52cc98b2574b36424",
+    "top_level_count": 263,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 797170,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/knowledge_base_public.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "8c9a845a60fd392fc0b408b969ebe4f22eac6293d0f872399cdaa20ae30c1171",
+    "top_level_count": 263,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 5337377,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/knowledge_base_rebuilt.json",
+    "repository": "aiknowledge-cli",
+    "role": "document_records",
+    "sha256": "6d4107e8cfd24629a07b63fd603b1b16c6f99121cde9839d66968b09a26bc94d",
+    "top_level_count": 263,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 1359959,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/nodes.json",
+    "repository": "aiknowledge-cli",
+    "role": "derived_nodes",
+    "sha256": "95c6ec59ee27acafe62bad9894d268fb605928363f497f93a1c223f842ddd952",
+    "top_level_count": 4407,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 58005,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/quality_check_full_report.json",
+    "repository": "aiknowledge-cli",
+    "role": "metadata",
+    "sha256": "4eacf48bdda86f04f836b2fce3066ec408815d490076d65770463da140218eb4",
+    "top_level_count": 6,
+    "top_level_type": "dict"
+  },
+  {
+    "bytes": 51925,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/quality_check_v2_report.json",
+    "repository": "aiknowledge-cli",
+    "role": "metadata",
+    "sha256": "b08b4d34769dae3ae0a67fee6e347c4bccb7cb9647ebf3eefa4ced6e79127c01",
+    "top_level_count": 6,
+    "top_level_type": "dict"
+  },
+  {
+    "bytes": 6990,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/rescue_list.json",
+    "repository": "aiknowledge-cli",
+    "role": "metadata",
+    "sha256": "9e57297b95e467a59c16e5ab7a9c10abd33554d05462d2adfb7594ffbb79b110",
+    "top_level_count": 3,
+    "top_level_type": "dict"
+  },
+  {
+    "bytes": 400,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "data/stats.json",
+    "repository": "aiknowledge-cli",
+    "role": "metadata",
+    "sha256": "bf6accbff1508b5301386ec727cc10f1688f71ddb8d67647b291f2af7c905a2a",
+    "top_level_count": 6,
+    "top_level_type": "dict"
+  },
+  {
+    "bytes": 14,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "requirements.txt",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "a18fff893a90061eed874102bdd758035df1856333de5749b3988700821b6b4b"
+  },
+  {
+    "bytes": 2990,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/catclaw_llm.py",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "2531fdf14b279d9aa3adefcac8e89da6058b045390614709ad6bd0a302ce888e"
+  },
+  {
+    "bytes": 11198,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/enhance_extract.py",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "d6c42a8b9537ede09cb4a094bf238ec7e517f8cd95c9d54d2c467652896d7799"
+  },
+  {
+    "bytes": 1443,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/export_public_kb.py",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "3aece040ae47b3a2081b28ee1f266d742bc1a86af4f92fc15143f117dd71f345"
+  },
+  {
+    "bytes": 12344,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/fill36_run.log",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "5cd00b2b98c3973acb1349496670b0c7efb3c56f171f257a5b5ca883cf62c7e4"
+  },
+  {
+    "bytes": 14268,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/fill36_v2_run.log",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "574e893ff55f511ac0d76e5d585d6dea5e625e3d78b552e476cd71a204293d02"
+  },
+  {
+    "bytes": 7886,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/fill_missing_36.py",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "a34a4d7e0ce3644e9c08b75be32f8741777aa228fdc0ba6520874e0f6841f040"
+  },
+  {
+    "bytes": 9264,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/fill_missing_36_v2.py",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "41975215d2e3d4782d7b87bff439955fd186fe98a05aafa0b3736b2c8983a1ea"
+  },
+  {
+    "bytes": 11540,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/full_extract_v2.py",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "cc5fe6e69aa18930073771e31d46439bca073329875ab9a43f330a672ecbe51d"
+  },
+  {
+    "bytes": 10073,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/full_rebuild.py",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "33e2651b7bdfc93917cffaf77e11eeff6416170b76ee2ea6f80dd0361675c8d7"
+  },
+  {
+    "bytes": 24694,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/qc_full_run.log",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "c49a8ccf35ffb43f024b9292eaf6fccbcd3f27fc4724e7d0c7440657c4395165"
+  },
+  {
+    "bytes": 1468,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/qc_v2_run.log",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "fc8c8b0c2393f240f15d2f56acea2db11902a40c5cb586909b69dfe0e14b869d"
+  },
+  {
+    "bytes": 10014,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/quality_check_bc.py",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "b07119fedbe7835b83f99f575b33e99c8a6b1197dc3f1dd34c02722192bda366"
+  },
+  {
+    "bytes": 3086,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/quality_check_full.py",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "a82b43b9c81cba65eb5684dacdb5284d8d3712516f2072ee95877c688adaae2b"
+  },
+  {
+    "bytes": 4648,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/quality_check_v2.py",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "bca3a057b0624507b07197491b379285811dbfa15741667bcb700c04d255ca93"
+  },
+  {
+    "bytes": 14299,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/quality_report.md",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "e8a232b876d9aa7447bb75393fca53b27e24fcb8058f85277f0eceb1c345f227"
+  },
+  {
+    "bytes": 8416,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/quality_run.log",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "431da0499d1acc30d6c1c9ef903b6ad890dffc63d8d5343af101ab7f6f986776"
+  },
+  {
+    "bytes": 14781,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/rebuild_log.md",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "6f1fb433b1c9d96032b995d66af7272597d99fc62404ef815528dac5d3e9c6d7"
+  },
+  {
+    "bytes": 78194,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/rebuild_run.log",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "33d8fe6da87fb659309c4416387cd179339db2c6281cae69b4770b746675e6e3"
+  },
+  {
+    "bytes": 2979,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/rescue_log.md",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "9d62c252efa000fc21cdf407cfd7ac680633694da4eefda06c53c0bb6d95bb56"
+  },
+  {
+    "bytes": 9232,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/rescue_part2.py",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "9c0d92b88aa3a6eda5f67bb99e8e68b2838d714192e4558092cff144cd25e009"
+  },
+  {
+    "bytes": 10879,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/rescue_rebuild.py",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "58b194e96ede959e6a85527614493dc7481d248ae6dfab9120099b403abf939d"
+  },
+  {
+    "bytes": 74160,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/rescue_run.log",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "71de4b34142d12f149d180129e9f671d3f496e59542f68d521436f4175923493"
+  },
+  {
+    "bytes": 5127,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/resum_long_docs.py",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "9517fec0b324181e311a58266feb3180d70fbc9acd78bd86cce482b2771c3f34"
+  },
+  {
+    "bytes": 32403,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/resum_long_run.log",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "de033cad4fb7b206febf1939e10fe5132878e90158ee6a1b5e3f9e887415114c"
+  },
+  {
+    "bytes": 6371,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "scripts/retry_extract.py",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "db099aceebc0e6a3c29defff1eec8b6b87109a74294c6c850fbf378c39029ca3"
+  },
+  {
+    "bytes": 401,
+    "commit": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63",
+    "path": "setup.py",
+    "repository": "aiknowledge-cli",
+    "role": "code_or_documentation",
+    "sha256": "7c95c464679c8a72cf5e9c78847edaef9c771bc2fa82c34b70046d6540c18ba8"
+  },
+  {
+    "bytes": 694,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": ".github/workflows/deploy.yml",
+    "repository": "ai-knowledge-graph",
+    "role": "code_or_documentation",
+    "sha256": "74e5e3398e8689a6b7fa507763e792cdf3ebca05cb4216b472737d5416178fd8"
+  },
+  {
+    "bytes": 50,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": ".gitignore",
+    "repository": "ai-knowledge-graph",
+    "role": "code_or_documentation",
+    "sha256": "2ded19701c53cc991b0cfd5a71d5f72258afa497b6f08a2766d358614a9d4944"
+  },
+  {
+    "bytes": 1580,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "README.md",
+    "repository": "ai-knowledge-graph",
+    "role": "code_or_documentation",
+    "sha256": "373658faeb7a36c494552d585d25d43ec466bf8a71c4c6f49a98ca411ecdd7af"
+  },
+  {
+    "bytes": 4826,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "browse.html",
+    "repository": "ai-knowledge-graph",
+    "role": "code_or_documentation",
+    "sha256": "389434ed15296f46d92ba07e970037d94b4f80bc989a06c9b8867ddcde2f6bde"
+  },
+  {
+    "bytes": 11705,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "css/style.css",
+    "repository": "ai-knowledge-graph",
+    "role": "code_or_documentation",
+    "sha256": "9f4ed712f469639fbc57ea10b4dd7bdaf94bf8ed91544a9bac4ccd85eebeb5ba"
+  },
+  {
+    "bytes": 207005,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "data/collected_texts.json",
+    "repository": "ai-knowledge-graph",
+    "role": "title_keyed_excerpts",
+    "sha256": "11ade2220a6ae2da45e7e4323d17d4b7fee24f92db3a84bb0c7c6fadae848618",
+    "top_level_count": 103,
+    "top_level_type": "dict"
+  },
+  {
+    "bytes": 20322,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "data/doc_categories.json",
+    "repository": "ai-knowledge-graph",
+    "role": "title_categories",
+    "sha256": "f4450b56cdb0c7781b4aea5aa4eac4784d5a34918f9e7871098947155723e2a8",
+    "top_level_count": 4,
+    "top_level_type": "dict"
+  },
+  {
+    "bytes": 35416,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "data/doc_list.json",
+    "repository": "ai-knowledge-graph",
+    "role": "document_records",
+    "sha256": "97f1e3a1cdd86f90eee56d748647b9372649989ea72aa51a4c53533d1ba2d7a6",
+    "top_level_count": 221,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 1604425,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "data/docs.json",
+    "repository": "ai-knowledge-graph",
+    "role": "document_records",
+    "sha256": "605b8a8f70590d90fc45aa1073ae4740bc32dfaa40622c31a40a1a35d12f2cf3",
+    "top_level_count": 263,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 642568,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "data/edges.json",
+    "repository": "ai-knowledge-graph",
+    "role": "derived_edges",
+    "sha256": "487d0769a22bd7f6ec49e5c40328464c3a2b6f4e7b8ced097a29c925d849c411",
+    "top_level_count": 6265,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 953,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "data/edges_from_titles.json",
+    "repository": "ai-knowledge-graph",
+    "role": "derived_edges",
+    "sha256": "481cfb386d4e254abe7bb8147fda7cc5b4eca5598f0382f752199f1fbfd7914c",
+    "top_level_count": 9,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 5561,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "data/meta.json",
+    "repository": "ai-knowledge-graph",
+    "role": "metadata",
+    "sha256": "ff36508cb4717fdd37c277084750f00746d238578e9abe4c6fe052b752edf4a8",
+    "top_level_count": 6,
+    "top_level_type": "dict"
+  },
+  {
+    "bytes": 1049543,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "data/nodes.json",
+    "repository": "ai-knowledge-graph",
+    "role": "derived_nodes",
+    "sha256": "3dbb288192544d348cec05fcc3172db35398ae0af2150b0eb6ea738fdc18c877",
+    "top_level_count": 4424,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 56893,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "data/nodes_from_titles.json",
+    "repository": "ai-knowledge-graph",
+    "role": "derived_nodes",
+    "sha256": "b9157d162c53cb6ebc7d796db7bf85cdac0fe1b31115ad287d780ec35a11336f",
+    "top_level_count": 79,
+    "top_level_type": "list"
+  },
+  {
+    "bytes": 370,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "data/stats.json",
+    "repository": "ai-knowledge-graph",
+    "role": "metadata",
+    "sha256": "9fd6385329bbb995754177791c71191cd6c169090b356478c872f3d8a74b7c6a",
+    "top_level_count": 5,
+    "top_level_type": "dict"
+  },
+  {
+    "bytes": 18520,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "index.html",
+    "repository": "ai-knowledge-graph",
+    "role": "code_or_documentation",
+    "sha256": "ddf69471a8087ed294bf981b20de6a8d7b4583418a8328a90f19960c66354751"
+  },
+  {
+    "bytes": 8535,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "js/browse.js",
+    "repository": "ai-knowledge-graph",
+    "role": "code_or_documentation",
+    "sha256": "4a5e7092821c4aabd76b9dc1f1072ace80096c4e732be4d9e96fdadcbec902ce"
+  },
+  {
+    "bytes": 21148,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "js/graph.js",
+    "repository": "ai-knowledge-graph",
+    "role": "code_or_documentation",
+    "sha256": "16fc27b7cf6d3868c9cd5a20e901d07d9046e2b2e2090f23f7f5a1328fb58ea6"
+  },
+  {
+    "bytes": 3926,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "js/ranking.js",
+    "repository": "ai-knowledge-graph",
+    "role": "code_or_documentation",
+    "sha256": "de2b34b0da2df2cbe1c6d677a8e66dd3d3f28e371fa7ede3541e70bc5b47d20b"
+  },
+  {
+    "bytes": 4622476,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "public/kb_bm25.json",
+    "repository": "ai-knowledge-graph",
+    "role": "document_records",
+    "sha256": "900aa9c88f48f97176623eeb9284e6d03dd9f4cc563e7817f88335db0dfc318d",
+    "top_level_count": 7,
+    "top_level_type": "dict"
+  },
+  {
+    "bytes": 3839,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "ranking.html",
+    "repository": "ai-knowledge-graph",
+    "role": "code_or_documentation",
+    "sha256": "b6468710a96e9ff4893752fb0d38338dd0ba21dc4c7559c5efa01d2470da825b"
+  },
+  {
+    "bytes": 11268,
+    "commit": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "path": "scripts/extract.py",
+    "repository": "ai-knowledge-graph",
+    "role": "code_or_documentation",
+    "sha256": "164c39b4417b08dc9c7ba639394c5b367de069fbbc892ef035d99871f7bc9fa3"
+  }
+]

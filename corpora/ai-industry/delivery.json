@@ -1,0 +1,15 @@
+{
+  "artifact": "artifacts/ai-industry-v1.zip",
+  "bytes": 34305855,
+  "sha256": "becb75fe435f1ebdce6f29ca4993a54df4161cd5231fdfa746e0cf6334090ea7",
+  "data_reconciliation": {
+    "original_files_preserved": 93,
+    "lineage_occurrences": 5851,
+    "distinct_record_versions": 2133,
+    "recovered_cells_match_original": 59,
+    "scope": "delivery data reconciliation; no model evaluation or existing test suite"
+  },
+  "publication": "published as a separate prerelease; original package unchanged",
+  "release_url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/ai-industry-corpus-v1",
+  "download_url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/ai-industry-corpus-v1/ai-industry-v1.zip"
+}

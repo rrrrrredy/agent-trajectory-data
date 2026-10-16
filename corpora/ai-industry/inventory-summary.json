@@ -1,0 +1,28 @@
+{
+  "distinct_graph_edges": 6294,
+  "distinct_graph_nodes": 4549,
+  "distinct_record_versions": 2133,
+  "document_families": 281,
+  "document_occurrences": 5851,
+  "exact_duplicate_record_occurrences": 3718,
+  "expanded_tables": 39,
+  "generated_text_hashes": 5,
+  "input_files": 93,
+  "json_files": 49,
+  "mapped_existing_sources": 12,
+  "new_evaluation_tasks": 0,
+  "new_model_runs": 0,
+  "selected_capture_kinds": {
+    "stored_capture_unverified": 259,
+    "summary_or_metadata_only": 22
+  },
+  "source_commits": {
+    "ai-knowledge-graph": "67584ce8abe5155c049354a7be9baf150573ce3f",
+    "aiknowledge-cli": "63f5c8b1803aa9aa6551a97a50afff9bfa4daf63"
+  },
+  "title_keyed_excerpt_groups": 103,
+  "records_with_unexpanded_table": 151,
+  "selected_deep_recovery_documents": 5,
+  "complete_cells_recovered_from_truncated_tables": 59,
+  "toolkit_core_upgrade": false
+}

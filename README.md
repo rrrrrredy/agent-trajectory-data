@@ -8,6 +8,8 @@ Public since 2026-10-13. See the [public evaluation inventory](docs/PUBLIC-EVALU
 
 Public task data, observable agent trajectories, executable environments and reproducible evaluation.
 
+**Optional research input: [AI industry research corpus](corpora/ai-industry/README.md).** Browse prepared texts, summaries and historical versions, associated with the existing source pack. Materials are counted separately from evaluation tasks and actual runs.
+
 **Collector repair and format study completed (2026-09-29).** All 32 new episodes reach a terminal state; 31 pass and one retains a real deliverable-contract failure. A minimal JSON example reduces aggregate model turns from 334 to 312 and missing visible rationales from 141 to 9, but 56 format rejections remain. The collector now separates model rationale, missingness, explicit parser feedback and actual environment actions. All captures remain diagnostic-only. [Results and limitations](docs/FORMAT-STUDY.zh-CN.md) · [Public study data](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/format-study-2026-09-29).
 
 **Four-model usefulness study completed (2026-09-29).** All 48 episodes pass, including the baseline condition. Full demonstrations reduce 42 aggregate steps, of which 41 are fewer outer-format rejections, while reported input tokens increase to 3.50x baseline. This does not demonstrate better business outcomes. The study preserves 901 environment steps and 906 service attempts, including five recovered unusable responses. All new episodes remain diagnostic-only. [Results and limitations](docs/USEFULNESS-STUDY.zh-CN.md) · [Public study data](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/study-2026-09-29).
