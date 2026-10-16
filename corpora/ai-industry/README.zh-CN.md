@@ -4,9 +4,11 @@
 
 供研究者按题目选择的材料集：AI 公司、产品、模型、产业趋势和论文相关的历史报告、保存正文、摘要与来源线索。材料来自 `aiknowledge-cli` 和 `ai-knowledge-graph` 的固定版本。清洗后的文件可以直接阅读，也可以作为当前研究任务的附件；无需安装检索服务或导入 Toolkit。
 
+**[在线分类目录：281 份材料](BROWSE.zh-CN.md) · [五份重点整理](recovered/README.zh-CN.md) · [下载完整历史版本包](https://github.com/rrrrrredy/agent-trajectory-data/releases/download/ai-industry-corpus-v1/ai-industry-v1.zip)**
+
 ## 使用
 
-下载 [ai-industry-v1.zip](https://github.com/rrrrrredy/agent-trajectory-data/releases/download/ai-industry-corpus-v1/ai-industry-v1.zip)，解压后打开 `README.zh-CN.md`，按标题选择材料，再打开对应的 `documents/` 文件；五份重点恢复材料从 `recovered/README.zh-CN.md` 进入。每份阅读稿标明所选记录、正文性质及其他历史版本的位置。[Release 页面](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/ai-industry-corpus-v1)另附 SHA-256 校验值和盘点结果。
+在线可直接阅读分类目录和单篇材料；需要原始记录与其他历史版本时，下载 [ai-industry-v1.zip](https://github.com/rrrrrredy/agent-trajectory-data/releases/download/ai-industry-corpus-v1/ai-industry-v1.zip)，解压后打开 `README.zh-CN.md`，按标题选择材料，再打开对应的 `documents/` 文件；五份重点恢复材料从 `recovered/README.zh-CN.md` 进入。每份阅读稿标明所选记录、正文性质及其他历史版本的位置。[Release 页面](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/ai-industry-corpus-v1)另附 SHA-256 校验值和盘点结果。
 
 例如，研究历史 API 价格变化时，读取《大模型降价潮分析》的保存正文与表格，保留元／千 tokens、元／百万 tokens、输入／输出及时间差异。旧生成摘要放在单独章节，不能代替正文证据。要判断当下价格，需要另外读取当前官方资料。
 
