@@ -42,8 +42,29 @@ for (const [source, target] of routes) {
   const catalog = source.startsWith('BROWSE');
   const description = zh ? title + '。保留已有材料、来源与历史版本，以及未核实和缺失内容说明。' : title + '. Existing material with source links, historical versions and unverified labels retained.';
   descriptions['materials/' + target] = description;
+  const article = /^(reading|recovered)\/D-\d+\.md$/.test(source);
+  const provenance = '<a href="' + sourceUrl + source + '">' + (zh ? '原始 Markdown' : 'Original Markdown') + '</a> · <a href="' + archive + '">' + (zh ? '全部历史版本' : 'All historical versions') + '</a>';
   // Join blank-separated table rows for display only; original Markdown stays unchanged.
-  let content = marked.parse(markdown.replace(/\|\r?\n(?:[ \t]*\r?\n)+(?=\|)/g, '|\n'), {gfm: true});
+  const render = text => marked.parse(text.replace(/\|\r?\n(?:[ \t]*\r?\n)+(?=\|)/g, '|\n'), {gfm: true});
+  let content;
+  if (article) {
+    const reading = source.startsWith('reading/');
+    const boundary = reading ? /^## /m.exec(markdown) : /^仅从同一保存版本恢复正文和完整单元格，不补写缺失内容。事实与发布日期仍按恢复说明判断。/m.exec(markdown);
+    if (!boundary) throw new Error('Missing existing body boundary: ' + source);
+    const start = boundary.index + (reading ? 0 : boundary[0].length);
+    const titleEnd = markdown.indexOf('\n');
+    const notes = markdown.slice(titleEnd, start).trim();
+    const state = reading ? /^材料性质：([^。\n]+)/m.exec(notes)?.[1] : '恢复阅读稿，尚未核实';
+    if (!state) throw new Error('Missing existing material status: ' + source);
+    const correction = notes.includes('归属有误') ? ' · 含已知更正（见说明）' : '';
+    content = render(markdown.slice(0, titleEnd)) +
+      '<p class="material-status">' + escape(state + correction) + '</p>\n' +
+      '<details class="material-notes"><summary>' + (zh ? '来源、历史版本与整理说明' : 'Sources, historical versions and notes') + '</summary>\n' +
+      render(notes) + '<p>' + provenance + '</p></details>\n' +
+      '<section class="material-body">' + render(markdown.slice(start)) + '</section>\n';
+  } else {
+    content = render(markdown);
+  }
   content = content.replace(/href="([^"]*)"/g, (whole, href) => {
     if (!href || /^(?:[a-z][a-z\d+.-]*:|#|\/)/i.test(href)) return whole;
     const [file, fragment] = href.split('#');
@@ -71,7 +92,7 @@ ${alternates}
 <body><main class="report-shell materials-reader${catalog ? ' materials-catalog' : ''}">
 <nav class="report-nav" aria-label="${zh ? '阅读导航' : 'Reading navigation'}"><a data-home-link href="${home}">Research Toolkit</a><a href="${relative(target, 'index.zh-CN.html')}">中文目录</a><a href="${relative(target, 'index.html')}">English catalog</a></nav>
 <article class="report-article">${content}</article>
-<footer class="materials-provenance"><a href="${sourceUrl + source}">${zh ? '原始 Markdown' : 'Original Markdown'}</a> · <a href="${archive}">${zh ? '全部历史版本' : 'All historical versions'}</a></footer>
+${article ? '' : '<footer class="materials-provenance">' + provenance + '</footer>'}
 </main></body></html>
 `;
   const file = path.join(destination, target);
