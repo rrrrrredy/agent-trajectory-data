@@ -60,9 +60,11 @@ for (const [source, target] of routes) {
   const text = `<!DOCTYPE html>
 <html lang="${zh ? 'zh-CN' : 'en'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${escape(title)} · Research Toolkit</title>
+<!-- discovery:start -->
 <meta name="description" content="${escape(description)}">
 <link rel="canonical" href="${site + target.replace(/index\.html$/, '')}">
 ${alternates}
+<!-- discovery:end -->
 <link rel="stylesheet" href="${assets}/showcase.css?v=site-20261015">
 <link rel="stylesheet" href="${assets}/materials.css">
 <script src="${assets}/reading-preferences.js?v=site-20261015"></script></head>
