@@ -6,7 +6,7 @@
 
 ## 使用
 
-本地交付位于本仓库 `artifacts/ai-industry-v1/`。打开其中的 `README.zh-CN.md`，按标题选择材料，再打开对应的 `documents/` 文件。每份阅读稿标明所选记录、正文性质及其他历史版本的位置。
+下载 [ai-industry-v1.zip](https://github.com/rrrrrredy/agent-trajectory-data/releases/download/ai-industry-corpus-v1/ai-industry-v1.zip)，解压后打开 `README.zh-CN.md`，按标题选择材料，再打开对应的 `documents/` 文件；五份重点恢复材料从 `recovered/README.zh-CN.md` 进入。每份阅读稿标明所选记录、正文性质及其他历史版本的位置。[Release 页面](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/ai-industry-corpus-v1)另附 SHA-256 校验值和盘点结果。
 
 例如，研究历史 API 价格变化时，读取《大模型降价潮分析》的保存正文与表格，保留元／千 tokens、元／百万 tokens、输入／输出及时间差异。旧生成摘要放在单独章节，不能代替正文证据。要判断当下价格，需要另外读取当前官方资料。
 
@@ -39,6 +39,6 @@
 python scripts/build_ai_industry_corpus.py --inputs .. --output artifacts/ai-industry-v1
 ```
 
-Python 标准库即可。脚本使用 `git show` 读取固定提交，复用现有数据集的哈希和不可覆盖写入逻辑，不调用模型或原站服务。输出目录已存在时停止；选择新目录才能生成另一版本。原始材料遵循仓库现有约定保存在 `artifacts/`，不写入 Git 源码树；本轮交付为本地材料包，尚未发布 release 资产。
+Python 标准库即可。脚本使用 `git show` 读取固定提交，复用现有数据集的哈希和不可覆盖写入逻辑，不调用模型或原站服务。输出目录已存在时停止；选择新目录才能生成另一版本。原始材料遵循仓库现有约定保存在 `artifacts/`，不写入 Git 源码树。本轮已将原有材料包原样发布为独立的 `ai-industry-corpus-v1` 预发布资产，保留历史版本及未核实标记，不替换现有运行数据集的 latest。
 
 盘点结果见 [inventory-summary.json](inventory-summary.json)，深度恢复说明见 [recovery-notes.zh-CN.md](recovery-notes.zh-CN.md)。

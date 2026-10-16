@@ -9,5 +9,7 @@
     "recovered_cells_match_original": 59,
     "scope": "delivery data reconciliation; no model evaluation or existing test suite"
   },
-  "publication": "local delivery; not uploaded as a release asset"
+  "publication": "published as a separate prerelease; original package unchanged",
+  "release_url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/ai-industry-corpus-v1",
+  "download_url": "https://github.com/rrrrrredy/agent-trajectory-data/releases/download/ai-industry-corpus-v1/ai-industry-v1.zip"
 }

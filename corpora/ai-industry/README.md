@@ -2,7 +2,7 @@
 
 [English](README.md) · [简体中文](README.zh-CN.md)
 
-Optional historical research material about AI companies, products, models and industry developments, prepared from pinned versions of `aiknowledge-cli` and `ai-knowledge-graph`. Open `artifacts/ai-industry-v1/README.zh-CN.md` locally, choose a title and read its document. No retrieval service or Toolkit installation is needed.
+Optional historical research material about AI companies, products, models and industry developments, prepared from pinned versions of `aiknowledge-cli` and `ai-knowledge-graph`. Download [ai-industry-v1.zip](https://github.com/rrrrrredy/agent-trajectory-data/releases/download/ai-industry-corpus-v1/ai-industry-v1.zip), extract it and open `README.zh-CN.md` to choose a document, or `recovered/README.zh-CN.md` for the five selected recoveries. The [release page](https://github.com/rrrrrredy/agent-trajectory-data/releases/tag/ai-industry-corpus-v1) also provides SHA-256 checksums and the inventory. No retrieval service or Toolkit installation is needed.
 
 The delivery includes readable documents, a JSONL catalog, normalized version metadata, unchanged original records, per-occurrence lineage, title-keyed excerpts, derived graph records, and an archive of every tracked input file. Differing versions remain separate; a reading copy chooses one existing record rather than assembling an article from unmatched versions. Generated summaries and metadata-generated text are explicitly separate from stored captures. Original date fields do not establish publication dates. Cleanup grants no additional redistribution or training rights.
 
@@ -16,4 +16,4 @@ To rebuild, place the two source repositories and `research-toolkit` beside this
 python scripts/build_ai_industry_corpus.py --inputs .. --output artifacts/ai-industry-v1
 ```
 
-The standard-library-only script reuses existing immutable dataset writers and reads pinned Git objects without contacting original sites or models. Existing output directories are never overwritten. Raw deliverables follow the repository's existing `artifacts/` convention, outside the tracked source tree. This delivery is local; no release asset has been published. This optional corpus adds neither a default Toolkit dependency nor cross-project retrieval.
+The standard-library-only script reuses existing immutable dataset writers and reads pinned Git objects without contacting original sites or models. Existing output directories are never overwritten. Raw deliverables follow the repository's existing `artifacts/` convention, outside the tracked source tree. The unchanged package is published as the separate `ai-industry-corpus-v1` prerelease, retaining historical versions and unverified labels without replacing the runtime dataset's latest release. This optional corpus adds neither a default Toolkit dependency nor cross-project retrieval.
