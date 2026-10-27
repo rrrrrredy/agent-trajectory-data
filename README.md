@@ -2,6 +2,14 @@
 
 [English](README.md) · [简体中文](README.zh-CN.md)
 
+**Start with a concrete finding:** full demonstrations saved 42 model turns in the four-task usefulness study; 41 came from fewer format rejections. Environment actions fell by only one while reported input tokens rose to 3.50x baseline. This supports investigating interface overhead, not a claim of better business outcomes.
+
+[Task cases and first use (Chinese)](docs/START-HERE.zh-CN.md) · [Runnable standard-library reader](examples/read_study.py)
+
+Download an existing study archive and run `python -X utf8 examples/read_study.py <extracted-study-data-directory>`. Add `--run kimi/wren-delivery-A --output case.md` to render the observed task, all events, request/response links and final deliverables. The guide also covers a final content failure after validation and correct blocking with excess reads. No API call is made.
+
+**Public access is not an open license.** The current [LICENSE](LICENSE) reserves all rights; archived source and usage restrictions remain in force. Historical training-eligibility flags describe selection criteria, not a grant of training or redistribution rights to outside users.
+
 Existing and future user tasks, development tasks, reference tests and cases are real independent tasks; tests actually executed are real tests. Task identity follows the research question, so repeated runs of one task remain repeated runs. Source materials retain their stated provenance, including supplied or constructed data. Astra in a separate context can review independently; no outside person, different model vendor or additional external material is required. Changes to task assignment, reviewer inputs or acceptance criteria require targeted revalidation.
 
 Public since 2026-10-13. See the [public evaluation inventory](docs/PUBLIC-EVALUATIONS.md) for repositories and release assets.
