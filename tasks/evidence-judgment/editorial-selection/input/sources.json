@@ -1,0 +1,47 @@
+{
+  "prepared_on": "2026-10-27",
+  "task_origin": "author_composed_from_existing_project_records",
+  "split": "development",
+  "training_eligible": false,
+  "model_runs": 0,
+  "reference_answer_origin": "author_model_written_not_independently_validated",
+  "sha256_scope": "git show COMMIT:PATH bytes; working-tree line endings may differ",
+  "sources": [
+    {
+      "id": "E1-E2-Style",
+      "repository": "rrrrrredy/editorial-guard",
+      "commit": "e5c7f2b86c955f0daa062352c2910f538d910f1c",
+      "path": "datasets/StyleBench-ZH/DATASET_CARD.md",
+      "git_blob_content_sha256": "e573ae5388bae0f63ea206d9fbb6343bcbb5ccdba99ce13926f1e68468ebc54c",
+      "url": "https://github.com/rrrrrredy/editorial-guard/blob/e5c7f2b86c955f0daa062352c2910f538d910f1c/datasets/StyleBench-ZH/DATASET_CARD.md",
+      "selection": "规模与生成分布、中文范围与事实来源、自动标注、本版公开标注统计、分区与许可"
+    },
+    {
+      "id": "E1-E2-Delivery",
+      "repository": "rrrrrredy/editorial-guard",
+      "commit": "e5c7f2b86c955f0daa062352c2910f538d910f1c",
+      "path": "datasets/DeliveryBench-ZH/DATASET_CARD.md",
+      "git_blob_content_sha256": "0d44096b0d5567557fd717b5f51007e33ab79cb15153f79f53d18493b840792a",
+      "url": "https://github.com/rrrrrredy/editorial-guard/blob/e5c7f2b86c955f0daa062352c2910f538d910f1c/datasets/DeliveryBench-ZH/DATASET_CARD.md",
+      "selection": "规模与生成分布、中文范围与事实来源、自动标注、本版公开标注统计、分区与许可"
+    },
+    {
+      "id": "E3-E4",
+      "repository": "rrrrrredy/editorial-guard",
+      "commit": "e5c7f2b86c955f0daa062352c2910f538d910f1c",
+      "path": "reports/article-study-20261027/README.md",
+      "git_blob_content_sha256": "0654fbe5c963d40ef931f844211a49602f8034d779084c298bcb05d24bde8eb6",
+      "url": "https://github.com/rrrrrredy/editorial-guard/blob/e5c7f2b86c955f0daa062352c2910f538d910f1c/reports/article-study-20261027/README.md",
+      "selection": "选了哪些文章、实际看到了什么、程序检查、同日后续修订；不复制私有文章"
+    },
+    {
+      "id": "E5",
+      "repository": "rrrrrredy/editorial-guard",
+      "commit": "e5c7f2b86c955f0daa062352c2910f538d910f1c",
+      "path": "docs/dataset-use.md",
+      "git_blob_content_sha256": "f0bbb68995c9922907e5af8e69086daef358b93f4cf50b4d28b5fd0d46de2d26",
+      "url": "https://github.com/rrrrrredy/editorial-guard/blob/e5c7f2b86c955f0daa062352c2910f538d910f1c/docs/dataset-use.md",
+      "selection": "先读一个完整源家族、实际覆盖、现有案例及读取入口；覆盖盘点也供 E1 使用"
+    }
+  ]
+}

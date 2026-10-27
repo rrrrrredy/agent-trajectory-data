@@ -1,0 +1,47 @@
+{
+  "prepared_on": "2026-10-27",
+  "task_origin": "author_composed_from_existing_project_records",
+  "split": "development",
+  "training_eligible": false,
+  "model_runs": 0,
+  "reference_answer_origin": "author_model_written_not_independently_validated",
+  "sha256_scope": "git show COMMIT:PATH bytes; working-tree line endings may differ",
+  "sources": [
+    {
+      "id": "S1",
+      "repository": "rrrrrredy/agent-trajectory-data",
+      "commit": "e01be7cb6b96f31bad3b748f98cdbbe3d2e2b249",
+      "path": "docs/USEFULNESS-STUDY.zh-CN.md",
+      "git_blob_content_sha256": "f9cf3449be70b8cbd7e82dfc247cef8ce833333e3d3e279ec41389c9369a7931",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/blob/e01be7cb6b96f31bad3b748f98cdbbe3d2e2b249/docs/USEFULNESS-STUDY.zh-CN.md",
+      "selection": "实验与结果的条件表及调用/计数说明；数据来源与可用边界"
+    },
+    {
+      "id": "S2",
+      "repository": "rrrrrredy/agent-trajectory-data",
+      "commit": "e01be7cb6b96f31bad3b748f98cdbbe3d2e2b249",
+      "path": "docs/FORMAT-STUDY.zh-CN.md",
+      "git_blob_content_sha256": "b11c852fefe5ebbacbc22e8499e18b22b098eacd1967beb05bbdd022358d589a",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/blob/e01be7cb6b96f31bad3b748f98cdbbe3d2e2b249/docs/FORMAT-STUDY.zh-CN.md",
+      "selection": "开头交付状态；两个条件的实际结果；与旧完整轨迹实验的关系"
+    },
+    {
+      "id": "S3",
+      "repository": "rrrrrredy/agent-trajectory-data",
+      "commit": "e01be7cb6b96f31bad3b748f98cdbbe3d2e2b249",
+      "path": "docs/analysis/paired-A-C.json",
+      "git_blob_content_sha256": "3c913608c40f815ce654bd5f1eeeee5d631725852a77ff0f646f0fe639209649",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/blob/e01be7cb6b96f31bad3b748f98cdbbe3d2e2b249/docs/analysis/paired-A-C.json",
+      "selection": "完整 JSON 原样保留"
+    },
+    {
+      "id": "S4",
+      "repository": "rrrrrredy/agent-trajectory-data",
+      "commit": "e01be7cb6b96f31bad3b748f98cdbbe3d2e2b249",
+      "path": "docs/analysis/paired-N-E.json",
+      "git_blob_content_sha256": "07ff8463af0bc2d903a7e7adb17472f9d746e131ef9ea49b221661b1bb7840ed",
+      "url": "https://github.com/rrrrrredy/agent-trajectory-data/blob/e01be7cb6b96f31bad3b748f98cdbbe3d2e2b249/docs/analysis/paired-N-E.json",
+      "selection": "完整 JSON 原样保留"
+    }
+  ]
+}

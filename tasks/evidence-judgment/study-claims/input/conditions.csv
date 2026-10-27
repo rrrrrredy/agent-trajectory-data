@@ -1,0 +1,6 @@
+study,condition,description,runs,reward_one,model_turns,format_rejections,environment_actions,reported_input_tokens
+usefulness,A,basic instructions,16,16,308,58,250,705489
+usefulness,B,short experience summary,16,16,327,83,244,806511
+usefulness,C,complete demonstration,16,16,266,17,249,2467220
+format,N,repaired interface without JSON example,16,15,334,68,266,934600
+format,E,same repaired interface with one JSON example,16,16,312,56,256,841240

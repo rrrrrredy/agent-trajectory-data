@@ -1,0 +1,700 @@
+{
+  "left_condition": "A",
+  "right_condition": "C",
+  "pair_count": 16,
+  "task_count": 4,
+  "results_sha256": "8a8c085c2424067bc746d74fd022c07c97f5b6b8bc47bd51a4beeae923ab6bbe",
+  "totals": {
+    "reward": {
+      "left": 16,
+      "right": 16,
+      "delta": 0,
+      "lower": 0,
+      "equal": 16,
+      "higher": 0
+    },
+    "model_turns": {
+      "left": 308,
+      "right": 266,
+      "delta": -42,
+      "lower": 12,
+      "equal": 3,
+      "higher": 1
+    },
+    "format_rejections": {
+      "left": 58,
+      "right": 17,
+      "delta": -41,
+      "lower": 11,
+      "equal": 4,
+      "higher": 1
+    },
+    "environment_actions": {
+      "left": 250,
+      "right": 249,
+      "delta": -1,
+      "lower": 5,
+      "equal": 8,
+      "higher": 3
+    },
+    "reported_input_tokens": {
+      "left": 705489,
+      "right": 2467220,
+      "delta": 1761731,
+      "lower": 0,
+      "equal": 0,
+      "higher": 16
+    },
+    "reported_output_tokens": {
+      "left": 133085,
+      "right": 141395,
+      "delta": 8310,
+      "lower": 7,
+      "equal": 0,
+      "higher": 9
+    }
+  },
+  "pairs": [
+    {
+      "provider": "deepseek",
+      "task": "cedar-pilot",
+      "left": {
+        "reward": 1,
+        "model_turns": 25,
+        "format_rejections": 5,
+        "environment_actions": 20,
+        "reported_input_tokens": 64909,
+        "reported_output_tokens": 23946
+      },
+      "right": {
+        "reward": 1,
+        "model_turns": 22,
+        "format_rejections": 2,
+        "environment_actions": 20,
+        "reported_input_tokens": 222980,
+        "reported_output_tokens": 20934
+      },
+      "delta_right_minus_left": {
+        "reward": 0,
+        "model_turns": -3,
+        "format_rejections": -3,
+        "environment_actions": 0,
+        "reported_input_tokens": 158071,
+        "reported_output_tokens": -3012
+      },
+      "ticket_status": {
+        "A": "ready",
+        "C": "ready"
+      },
+      "failed_checks": {
+        "A": [],
+        "C": []
+      },
+      "run_paths": {
+        "A": "runs/deepseek/cedar-pilot-A",
+        "C": "runs/deepseek/cedar-pilot-C"
+      }
+    },
+    {
+      "provider": "deepseek",
+      "task": "harbor-backlog",
+      "left": {
+        "reward": 1,
+        "model_turns": 23,
+        "format_rejections": 6,
+        "environment_actions": 17,
+        "reported_input_tokens": 54630,
+        "reported_output_tokens": 12081
+      },
+      "right": {
+        "reward": 1,
+        "model_turns": 22,
+        "format_rejections": 4,
+        "environment_actions": 18,
+        "reported_input_tokens": 212885,
+        "reported_output_tokens": 18321
+      },
+      "delta_right_minus_left": {
+        "reward": 0,
+        "model_turns": -1,
+        "format_rejections": -2,
+        "environment_actions": 1,
+        "reported_input_tokens": 158255,
+        "reported_output_tokens": 6240
+      },
+      "ticket_status": {
+        "A": "ready",
+        "C": "ready"
+      },
+      "failed_checks": {
+        "A": [],
+        "C": []
+      },
+      "run_paths": {
+        "A": "runs/deepseek/harbor-backlog-A",
+        "C": "runs/deepseek/harbor-backlog-C"
+      }
+    },
+    {
+      "provider": "deepseek",
+      "task": "linden-retention",
+      "left": {
+        "reward": 1,
+        "model_turns": 14,
+        "format_rejections": 4,
+        "environment_actions": 10,
+        "reported_input_tokens": 22643,
+        "reported_output_tokens": 4891
+      },
+      "right": {
+        "reward": 1,
+        "model_turns": 10,
+        "format_rejections": 0,
+        "environment_actions": 10,
+        "reported_input_tokens": 87515,
+        "reported_output_tokens": 8603
+      },
+      "delta_right_minus_left": {
+        "reward": 0,
+        "model_turns": -4,
+        "format_rejections": -4,
+        "environment_actions": 0,
+        "reported_input_tokens": 64872,
+        "reported_output_tokens": 3712
+      },
+      "ticket_status": {
+        "A": "blocked",
+        "C": "blocked"
+      },
+      "failed_checks": {
+        "A": [],
+        "C": []
+      },
+      "run_paths": {
+        "A": "runs/deepseek/linden-retention-A",
+        "C": "runs/deepseek/linden-retention-C"
+      }
+    },
+    {
+      "provider": "deepseek",
+      "task": "wren-delivery",
+      "left": {
+        "reward": 1,
+        "model_turns": 23,
+        "format_rejections": 7,
+        "environment_actions": 16,
+        "reported_input_tokens": 51115,
+        "reported_output_tokens": 10984
+      },
+      "right": {
+        "reward": 1,
+        "model_turns": 18,
+        "format_rejections": 1,
+        "environment_actions": 17,
+        "reported_input_tokens": 171303,
+        "reported_output_tokens": 15911
+      },
+      "delta_right_minus_left": {
+        "reward": 0,
+        "model_turns": -5,
+        "format_rejections": -6,
+        "environment_actions": 1,
+        "reported_input_tokens": 120188,
+        "reported_output_tokens": 4927
+      },
+      "ticket_status": {
+        "A": "ready",
+        "C": "ready"
+      },
+      "failed_checks": {
+        "A": [],
+        "C": []
+      },
+      "run_paths": {
+        "A": "runs/deepseek/wren-delivery-A",
+        "C": "runs/deepseek/wren-delivery-C"
+      }
+    },
+    {
+      "provider": "glm",
+      "task": "cedar-pilot",
+      "left": {
+        "reward": 1,
+        "model_turns": 23,
+        "format_rejections": 3,
+        "environment_actions": 20,
+        "reported_input_tokens": 59638,
+        "reported_output_tokens": 13094
+      },
+      "right": {
+        "reward": 1,
+        "model_turns": 19,
+        "format_rejections": 2,
+        "environment_actions": 17,
+        "reported_input_tokens": 172848,
+        "reported_output_tokens": 8918
+      },
+      "delta_right_minus_left": {
+        "reward": 0,
+        "model_turns": -4,
+        "format_rejections": -1,
+        "environment_actions": -3,
+        "reported_input_tokens": 113210,
+        "reported_output_tokens": -4176
+      },
+      "ticket_status": {
+        "A": "ready",
+        "C": "ready"
+      },
+      "failed_checks": {
+        "A": [],
+        "C": []
+      },
+      "run_paths": {
+        "A": "runs/glm/cedar-pilot-A",
+        "C": "runs/glm/cedar-pilot-C"
+      }
+    },
+    {
+      "provider": "glm",
+      "task": "harbor-backlog",
+      "left": {
+        "reward": 1,
+        "model_turns": 20,
+        "format_rejections": 3,
+        "environment_actions": 17,
+        "reported_input_tokens": 46589,
+        "reported_output_tokens": 7596
+      },
+      "right": {
+        "reward": 1,
+        "model_turns": 17,
+        "format_rejections": 0,
+        "environment_actions": 17,
+        "reported_input_tokens": 154230,
+        "reported_output_tokens": 7656
+      },
+      "delta_right_minus_left": {
+        "reward": 0,
+        "model_turns": -3,
+        "format_rejections": -3,
+        "environment_actions": 0,
+        "reported_input_tokens": 107641,
+        "reported_output_tokens": 60
+      },
+      "ticket_status": {
+        "A": "ready",
+        "C": "ready"
+      },
+      "failed_checks": {
+        "A": [],
+        "C": []
+      },
+      "run_paths": {
+        "A": "runs/glm/harbor-backlog-A",
+        "C": "runs/glm/harbor-backlog-C"
+      }
+    },
+    {
+      "provider": "glm",
+      "task": "linden-retention",
+      "left": {
+        "reward": 1,
+        "model_turns": 13,
+        "format_rejections": 1,
+        "environment_actions": 12,
+        "reported_input_tokens": 23893,
+        "reported_output_tokens": 4656
+      },
+      "right": {
+        "reward": 1,
+        "model_turns": 18,
+        "format_rejections": 2,
+        "environment_actions": 16,
+        "reported_input_tokens": 154761,
+        "reported_output_tokens": 11297
+      },
+      "delta_right_minus_left": {
+        "reward": 0,
+        "model_turns": 5,
+        "format_rejections": 1,
+        "environment_actions": 4,
+        "reported_input_tokens": 130868,
+        "reported_output_tokens": 6641
+      },
+      "ticket_status": {
+        "A": "blocked",
+        "C": "blocked"
+      },
+      "failed_checks": {
+        "A": [],
+        "C": []
+      },
+      "run_paths": {
+        "A": "runs/glm/linden-retention-A",
+        "C": "runs/glm/linden-retention-C"
+      }
+    },
+    {
+      "provider": "glm",
+      "task": "wren-delivery",
+      "left": {
+        "reward": 1,
+        "model_turns": 18,
+        "format_rejections": 2,
+        "environment_actions": 16,
+        "reported_input_tokens": 39085,
+        "reported_output_tokens": 7783
+      },
+      "right": {
+        "reward": 1,
+        "model_turns": 17,
+        "format_rejections": 1,
+        "environment_actions": 16,
+        "reported_input_tokens": 150584,
+        "reported_output_tokens": 6750
+      },
+      "delta_right_minus_left": {
+        "reward": 0,
+        "model_turns": -1,
+        "format_rejections": -1,
+        "environment_actions": 0,
+        "reported_input_tokens": 111499,
+        "reported_output_tokens": -1033
+      },
+      "ticket_status": {
+        "A": "ready",
+        "C": "ready"
+      },
+      "failed_checks": {
+        "A": [],
+        "C": []
+      },
+      "run_paths": {
+        "A": "runs/glm/wren-delivery-A",
+        "C": "runs/glm/wren-delivery-C"
+      }
+    },
+    {
+      "provider": "kimi",
+      "task": "cedar-pilot",
+      "left": {
+        "reward": 1,
+        "model_turns": 17,
+        "format_rejections": 0,
+        "environment_actions": 17,
+        "reported_input_tokens": 41399,
+        "reported_output_tokens": 3622
+      },
+      "right": {
+        "reward": 1,
+        "model_turns": 16,
+        "format_rejections": 0,
+        "environment_actions": 16,
+        "reported_input_tokens": 141934,
+        "reported_output_tokens": 4418
+      },
+      "delta_right_minus_left": {
+        "reward": 0,
+        "model_turns": -1,
+        "format_rejections": 0,
+        "environment_actions": -1,
+        "reported_input_tokens": 100535,
+        "reported_output_tokens": 796
+      },
+      "ticket_status": {
+        "A": "ready",
+        "C": "ready"
+      },
+      "failed_checks": {
+        "A": [],
+        "C": []
+      },
+      "run_paths": {
+        "A": "runs/kimi/cedar-pilot-A",
+        "C": "runs/kimi/cedar-pilot-C"
+      }
+    },
+    {
+      "provider": "kimi",
+      "task": "harbor-backlog",
+      "left": {
+        "reward": 1,
+        "model_turns": 16,
+        "format_rejections": 0,
+        "environment_actions": 16,
+        "reported_input_tokens": 36889,
+        "reported_output_tokens": 4032
+      },
+      "right": {
+        "reward": 1,
+        "model_turns": 16,
+        "format_rejections": 0,
+        "environment_actions": 16,
+        "reported_input_tokens": 142841,
+        "reported_output_tokens": 4850
+      },
+      "delta_right_minus_left": {
+        "reward": 0,
+        "model_turns": 0,
+        "format_rejections": 0,
+        "environment_actions": 0,
+        "reported_input_tokens": 105952,
+        "reported_output_tokens": 818
+      },
+      "ticket_status": {
+        "A": "ready",
+        "C": "ready"
+      },
+      "failed_checks": {
+        "A": [],
+        "C": []
+      },
+      "run_paths": {
+        "A": "runs/kimi/harbor-backlog-A",
+        "C": "runs/kimi/harbor-backlog-C"
+      }
+    },
+    {
+      "provider": "kimi",
+      "task": "linden-retention",
+      "left": {
+        "reward": 1,
+        "model_turns": 10,
+        "format_rejections": 0,
+        "environment_actions": 10,
+        "reported_input_tokens": 16500,
+        "reported_output_tokens": 1789
+      },
+      "right": {
+        "reward": 1,
+        "model_turns": 10,
+        "format_rejections": 0,
+        "environment_actions": 10,
+        "reported_input_tokens": 82599,
+        "reported_output_tokens": 2590
+      },
+      "delta_right_minus_left": {
+        "reward": 0,
+        "model_turns": 0,
+        "format_rejections": 0,
+        "environment_actions": 0,
+        "reported_input_tokens": 66099,
+        "reported_output_tokens": 801
+      },
+      "ticket_status": {
+        "A": "blocked",
+        "C": "blocked"
+      },
+      "failed_checks": {
+        "A": [],
+        "C": []
+      },
+      "run_paths": {
+        "A": "runs/kimi/linden-retention-A",
+        "C": "runs/kimi/linden-retention-C"
+      }
+    },
+    {
+      "provider": "kimi",
+      "task": "wren-delivery",
+      "left": {
+        "reward": 1,
+        "model_turns": 16,
+        "format_rejections": 0,
+        "environment_actions": 16,
+        "reported_input_tokens": 35622,
+        "reported_output_tokens": 3531
+      },
+      "right": {
+        "reward": 1,
+        "model_turns": 16,
+        "format_rejections": 0,
+        "environment_actions": 16,
+        "reported_input_tokens": 141693,
+        "reported_output_tokens": 4451
+      },
+      "delta_right_minus_left": {
+        "reward": 0,
+        "model_turns": 0,
+        "format_rejections": 0,
+        "environment_actions": 0,
+        "reported_input_tokens": 106071,
+        "reported_output_tokens": 920
+      },
+      "ticket_status": {
+        "A": "ready",
+        "C": "ready"
+      },
+      "failed_checks": {
+        "A": [],
+        "C": []
+      },
+      "run_paths": {
+        "A": "runs/kimi/wren-delivery-A",
+        "C": "runs/kimi/wren-delivery-C"
+      }
+    },
+    {
+      "provider": "longcat",
+      "task": "cedar-pilot",
+      "left": {
+        "reward": 1,
+        "model_turns": 24,
+        "format_rejections": 6,
+        "environment_actions": 18,
+        "reported_input_tokens": 62572,
+        "reported_output_tokens": 9966
+      },
+      "right": {
+        "reward": 1,
+        "model_turns": 19,
+        "format_rejections": 2,
+        "environment_actions": 17,
+        "reported_input_tokens": 188152,
+        "reported_output_tokens": 7573
+      },
+      "delta_right_minus_left": {
+        "reward": 0,
+        "model_turns": -5,
+        "format_rejections": -4,
+        "environment_actions": -1,
+        "reported_input_tokens": 125580,
+        "reported_output_tokens": -2393
+      },
+      "ticket_status": {
+        "A": "ready",
+        "C": "ready"
+      },
+      "failed_checks": {
+        "A": [],
+        "C": []
+      },
+      "run_paths": {
+        "A": "runs/longcat/cedar-pilot-A",
+        "C": "runs/longcat/cedar-pilot-C"
+      }
+    },
+    {
+      "provider": "longcat",
+      "task": "harbor-backlog",
+      "left": {
+        "reward": 1,
+        "model_turns": 28,
+        "format_rejections": 10,
+        "environment_actions": 18,
+        "reported_input_tokens": 70453,
+        "reported_output_tokens": 10830
+      },
+      "right": {
+        "reward": 1,
+        "model_turns": 19,
+        "format_rejections": 2,
+        "environment_actions": 17,
+        "reported_input_tokens": 187659,
+        "reported_output_tokens": 7945
+      },
+      "delta_right_minus_left": {
+        "reward": 0,
+        "model_turns": -9,
+        "format_rejections": -8,
+        "environment_actions": -1,
+        "reported_input_tokens": 117206,
+        "reported_output_tokens": -2885
+      },
+      "ticket_status": {
+        "A": "ready",
+        "C": "ready"
+      },
+      "failed_checks": {
+        "A": [],
+        "C": []
+      },
+      "run_paths": {
+        "A": "runs/longcat/harbor-backlog-A",
+        "C": "runs/longcat/harbor-backlog-C"
+      }
+    },
+    {
+      "provider": "longcat",
+      "task": "linden-retention",
+      "left": {
+        "reward": 1,
+        "model_turns": 18,
+        "format_rejections": 7,
+        "environment_actions": 11,
+        "reported_input_tokens": 32619,
+        "reported_output_tokens": 5668
+      },
+      "right": {
+        "reward": 1,
+        "model_turns": 11,
+        "format_rejections": 1,
+        "environment_actions": 10,
+        "reported_input_tokens": 99935,
+        "reported_output_tokens": 4396
+      },
+      "delta_right_minus_left": {
+        "reward": 0,
+        "model_turns": -7,
+        "format_rejections": -6,
+        "environment_actions": -1,
+        "reported_input_tokens": 67316,
+        "reported_output_tokens": -1272
+      },
+      "ticket_status": {
+        "A": "blocked",
+        "C": "blocked"
+      },
+      "failed_checks": {
+        "A": [],
+        "C": []
+      },
+      "run_paths": {
+        "A": "runs/longcat/linden-retention-A",
+        "C": "runs/longcat/linden-retention-C"
+      }
+    },
+    {
+      "provider": "longcat",
+      "task": "wren-delivery",
+      "left": {
+        "reward": 1,
+        "model_turns": 20,
+        "format_rejections": 4,
+        "environment_actions": 16,
+        "reported_input_tokens": 46933,
+        "reported_output_tokens": 8616
+      },
+      "right": {
+        "reward": 1,
+        "model_turns": 16,
+        "format_rejections": 0,
+        "environment_actions": 16,
+        "reported_input_tokens": 155301,
+        "reported_output_tokens": 6782
+      },
+      "delta_right_minus_left": {
+        "reward": 0,
+        "model_turns": -4,
+        "format_rejections": -4,
+        "environment_actions": 0,
+        "reported_input_tokens": 108368,
+        "reported_output_tokens": -1834
+      },
+      "ticket_status": {
+        "A": "ready",
+        "C": "ready"
+      },
+      "failed_checks": {
+        "A": [],
+        "C": []
+      },
+      "run_paths": {
+        "A": "runs/longcat/wren-delivery-A",
+        "C": "runs/longcat/wren-delivery-C"
+      }
+    }
+  ],
+  "scope": "Same archive and provider/task pairing, one observed run per cell; no independent-task count, causal estimate, significance test or monetary-cost comparison. Reward may mean correct blocking. No new model execution."
+}
