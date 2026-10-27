@@ -8,6 +8,8 @@
 
 [**从任务案例开始使用**](docs/START-HERE.zh-CN.md) · [用途实验](docs/USEFULNESS-STUDY.zh-CN.md) · [格式实验](docs/FORMAT-STUDY.zh-CN.md)
 
+[按任务浏览目录](docs/tasks/README.md)：同四个开发任务的 80 次执行并列展示，三个代表案例可直接阅读全部观察事件和最终交付件；原始归档与历史版本继续保留。
+
 第一次使用可下载现有实验包，用 `python -X utf8 examples/read_study.py <解压后的实验数据目录>` 汇总结果；加 `--run kimi/wren-delivery-A --output case.md` 可展开任务、观察、行动与最终文件。指南还包含“校验通过但内容失败”和“正确阻塞但反复重读”的完整阅读入口，无需 API。
 
 **公开访问不等于开放许可。** 当前 [LICENSE](LICENSE) 仍保留所有权利，包内历史来源和用途限制继续有效。下文的训练资格是既有筛选口径，不构成外部训练或再分发授权。

@@ -6,6 +6,8 @@
 
 [Task cases and first use (Chinese)](docs/START-HERE.zh-CN.md) · [Runnable standard-library reader](examples/read_study.py)
 
+[Browse by task (Chinese)](docs/tasks/README.md): four development tasks, all 80 archived diagnostic runs, and three portable cases with every observed event and final deliverable. Original archives and version history remain available.
+
 Download an existing study archive and run `python -X utf8 examples/read_study.py <extracted-study-data-directory>`. Add `--run kimi/wren-delivery-A --output case.md` to render the observed task, all events, request/response links and final deliverables. The guide also covers a final content failure after validation and correct blocking with excess reads. No API call is made.
 
 **Public access is not an open license.** The current [LICENSE](LICENSE) reserves all rights; archived source and usage restrictions remain in force. Historical training-eligibility flags describe selection criteria, not a grant of training or redistribution rights to outside users.
